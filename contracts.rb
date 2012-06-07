@@ -4,6 +4,7 @@ require 'decorators'
 
 class Contract < Decorator
   attr_accessor :typeclasses, :klass, :method
+  decorator_name :contract
   def initialize(klass, method, *typeclasses)
     @klass, @method, @typeclasses = klass, method, typeclasses
   end
@@ -80,6 +81,7 @@ class Class
   include MethodDecorators
 end
 
+
 class Odd
   def self.typecheck val
     val % 2 == 1
@@ -116,7 +118,13 @@ class None
   end
 end
 
-class Or
+class CallableClass
+  def self.[](*vals)
+    self.new(*vals)
+  end
+end
+
+class Or < CallableClass
   def initialize(*vals)
     @vals = vals
   end
@@ -132,7 +140,7 @@ class Or
   end
 end
 
-class And
+class And < CallableClass
   def initialize(*vals)
     @vals = vals
   end
@@ -148,7 +156,7 @@ class And
   end
 end
 
-class RespondsTo
+class RespondsTo < CallableClass
   def initialize(*meths)
     @meths = meths
   end
@@ -164,7 +172,23 @@ class RespondsTo
   end
 end
 
-class From
+class Send < CallableClass
+  def initialize(*meths)
+    @meths = meths
+  end
+
+  def typecheck(val)
+    @meths.all? do |meth|
+      val.send(meth)
+    end
+  end
+
+  def to_s
+    "a value that returns true for all of #{@meths.inspect}"
+  end  
+end
+
+class Subclasses < CallableClass
   def initialize(cls)
     @cls = cls
   end
@@ -178,21 +202,7 @@ class From
   end
 end
 
-class In
-  def initialize(*vals)
-    @vals = vals
-  end
-
-  def typecheck(val)
-    @vals.include?(val)
-  end
-
-  def to_s
-    "a value in #{@vals.inspect}"
-  end
-end
-
-class Not
+class Not < CallableClass
   def initialize(*vals)
     @vals = vals
   end

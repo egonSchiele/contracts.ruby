@@ -6,7 +6,10 @@ module MethodDecorators
   end
 
   def method_missing(name, *args, &blk)
-    if Object.const_defined?(name)
+    # if the const isn't capitalized, then const_defined will throw an
+    # error. So first check to make sure it is capitalized.
+    letter = name.to_s[0]
+    if letter >= 65 && letter <= 90 && Object.const_defined?(name)
       const = Object.const_get(name)
     elsif Decorator.decorators.key?(name)
       const = Decorator.decorators[name]
