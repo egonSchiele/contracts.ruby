@@ -52,8 +52,13 @@ class Contract < Decorator
       error(arg, typeclass) unless arg.is_a?(Hash)
       results = validate_hash(arg, typeclass)
     else
-      results = []
-      results << error(arg, typeclass) unless typeclass.typecheck(arg)
+      if typeclass.respond_to? :typecheck
+        results = []
+        results << error(arg, typeclass) unless typeclass.typecheck(arg)
+      else
+        results = []
+        results << error(arg, typeclass) unless arg == typeclass
+      end
     end
     return nil if results == [] || results == ""
     if results.is_a? Array
@@ -166,5 +171,39 @@ class From
 
   def typecheck(val)
     val.class < @cls
+  end
+
+  def to_s
+    "a subclass of #{@cls.inspect}"
+  end
+end
+
+class In
+  def initialize(*vals)
+    @vals = vals
+  end
+
+  def typecheck(val)
+    @vals.include?(val)
+  end
+
+  def to_s
+    "a value in #{@vals.inspect}"
+  end
+end
+
+class Not
+  def initialize(*vals)
+    @vals = vals
+  end
+
+  def typecheck(val)
+    @vals.all? do |typeclass|
+      Contract.validate(val, typeclass)
+    end
+  end
+
+  def to_s
+    "a value that is none of #{@vals.inspect}"
   end
 end

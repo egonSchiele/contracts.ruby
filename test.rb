@@ -4,8 +4,9 @@ require 'contracts'
 # - remove .new in Or
 # - pretty error messages for procs?
 # functions?
+# - namespacing? don't want classes with names like Any, All etc lying around.
 class Object
-  Contract(Fixnum, Fixnum)
+  Contract(Not.new(6))
   def fib(x)
     return x if x < 2
     return fib(x - 1) + fib(x - 2)
