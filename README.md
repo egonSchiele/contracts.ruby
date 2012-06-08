@@ -61,26 +61,27 @@ See the full documentation (TBD) on builtin contracts for more information on ea
 
 ## More Examples
 
-    # Array arguments
-    Contract [String, String, Num], nil
-    def person(some_array)
+```ruby
+# Array arguments
+Contract [String, String, Num], nil
+def person(some_array)
 
-    # An array of numbers
-    Contract ArrayOf[Num], Num
-    def sum(vals)
+# An array of numbers
+Contract ArrayOf[Num], Num
+def sum(vals)
 
-    # Multiple choice
-    Contract Or[Fixnum, Float], Num
-    def add_ten(x)
+# Multiple choice
+Contract Or[Fixnum, Float], Num
+def add_ten(x)
 
-    # Negate
-    Contract Not[nil], nil
-    def save(val)
+# Negate
+Contract Not[nil], nil
+def save(val)
 
-    # Nested contracts
-    Contract Or[And[RespondsTo[:to_s], Not[nil]], String, 5], String
-    def some_crazy_function(x)
-
+# Nested contracts
+Contract Or[And[RespondsTo[:to_s], Not[nil]], String, 5], String
+def some_crazy_function(x)
+```
 ## Defining Your Own Contracts
 
 Contracts are very easy to define. There are 4 kinds of contracts:
