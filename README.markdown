@@ -196,7 +196,7 @@ Contracts don't work on top level functions yet. Any function with a contract sh
 
 ## Credits
 
-Inspired by [contracts.coffee](http://disnetdev.com/contracts.coffee/). I also heavily "borrowed" from the README. Sorry/thanks!
+Inspired by [contracts.coffee](http://disnetdev.com/contracts.coffee/). I also heavily "borrowed" from their README to write this one. Sorry/thanks!
 
 Copyright 2012 [Aditya Bhargava](http://adit.io).
 
