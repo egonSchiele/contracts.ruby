@@ -51,31 +51,32 @@ contracts.ruby comes with a lot of builtin contracts, including:
 
     Num, Pos, Neg, Any, None, Or, Xor, And, Not, RespondsTo, Send, IsA, ArrayOf
 
-To use any of these contracts, include them first with
+To use any of these contracts, include the module first with
 
     include Contracts
 
-See the full documentation on builtin contracts for more information on each one.
+See the full documentation (TBD) on builtin contracts for more information on each one.
 
 ## More Examples
 
-    # array arguments
-    Contract [String, String, Num, nil]
-    def person(firstname, lastname, age)
+    # Array arguments
+    Contract [String, String, Num], nil
+    def person(some_array)
 
-    Contract ArrayOf[Num]
+    # An array of numbers
+    Contract ArrayOf[Num], Num
     def sum(vals)
 
     # Multiple choice
-    Contract Or[Fixnum, Float]
+    Contract Or[Fixnum, Float], Num
     def add_ten(x)
 
     # Negate
-    Contract Not[nil]
+    Contract Not[nil], nil
     def save(val)
 
     # Nested contracts
-    Contract Or[And[RespondsTo[:to_s], Not[nil]], String, 5]
+    Contract Or[And[RespondsTo[:to_s], Not[nil]], String, 5], String
     def some_crazy_function(x)
 
 ## Defining Your Own Contracts
@@ -117,7 +118,7 @@ class Or < CallableClass
 end
 ```
 
-The `Or` contract takes a sequence of contracts, and passes if any of them pass.
+The `Or` contract takes a sequence of contracts, and passes if any of them pass. It uses `Contract.valid?`, which returns a array of [result, data], where result is a boolean and data is a hash. The values in data are listed in [Failure and Success Callbacks](#failure-and-success-callbacks).
 
 This class inherits from `CallableClass`, which allows us to use `[]` when using the class:
 
@@ -167,7 +168,7 @@ Now the error says:
 
 Supposing you don't want contract failures to become exceptions. You run a popular website, and when there's a contract exception you would rather log it and continue than break your site.
 
-contracts.ruby provides a `failure_callback` that gets called when a contract fails. By overriding `failure_callback`, you can customize the behavior of contracts.ruby. For example, here we log every failure:
+contracts.ruby provides a `failure_callback` that gets called when a contract fails. By overriding `failure_callback`, you can customize the behavior of contracts.ruby. For example, here we log every failure instead of raising an error:
 
 ```ruby
 class Contract
@@ -193,7 +194,10 @@ There's also a `success_callback` that gets called when a contract succeeds.
 
 Contracts don't work on top level functions yet. Any function with a contract should be in a class.
 
+## Credits
 
 Inspired by [contracts.coffee](http://disnetdev.com/contracts.coffee/). I also heavily "borrowed" from the README. Sorry/thanks!
+
 Copyright 2012 [Aditya Bhargava](http://adit.io).
+
 BSD Licensed.
