@@ -1,0 +1,3 @@
+- How to avoid writing "class Object"?
+- optional args
+- functions?

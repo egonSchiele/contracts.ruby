@@ -1,219 +1,106 @@
 require 'decorators'
-#require 'rubygems'
-#require 'ruby-debug'
-
-class Contract < Decorator
-  attr_accessor :typeclasses, :klass, :method
-  decorator_name :contract
-  def initialize(klass, method, *typeclasses)
-    @klass, @method, @typeclasses = klass, method, typeclasses
-  end
-
-  def self.error(arg, typeclass)
-    "type error: expected #{typeclass}, got #{arg} (#{arg.class})"
-  end
-
-  def self.validate_hash(arg, typeclass)
-    arg.keys.map { |k|
-      validate(arg[k], typeclass[k])
-    }.compact
-  end
-
-  def self.validate_proc(arg, typeclass)
-    error(arg, typeclass) unless typeclass[arg]
-  end
-
-  def self.validate_class(arg, typeclass)
-    valid = if typeclass.respond_to? :typecheck
-              typeclass.typecheck arg
-            else
-              typeclass == arg.class
-            end
-    error(arg, typeclass) unless valid
-  end
-
-  def self.validate_all(args, typeclasses)
-    args.zip(typeclasses).each { |arg, typeclass|
-      res = validate(arg, typeclass)
-      raise res if res
-    }
-  end
-
-  def self.validate(arg, typeclass)
-    case typeclass
-    when Class
-      results = validate_class arg, typeclass
-    when Proc
-      results = validate_proc arg, typeclass
-    when Array
-      # TODO account for these errors too
-      error(arg, typeclass) unless arg.is_a?(Array)
-      results = validate_all(arg, typeclass)
-    when Hash
-      error(arg, typeclass) unless arg.is_a?(Hash)
-      results = validate_hash(arg, typeclass)
-    else
-      if typeclass.respond_to? :typecheck
-        results = []
-        results << error(arg, typeclass) unless typeclass.typecheck(arg)
-      else
-        results = []
-        results << error(arg, typeclass) unless arg == typeclass
-      end
-    end
-    return nil if results == [] || results == ""
-    if results.is_a? Array
-      results.join("\n")
-    else
-      results
-    end
-  end
-
-  def call(this, *args)
-    Contract.validate_all(args, @typeclasses)
-    result = @method.bind(this).call(*args)
-    Contract.validate_all([result], [@typeclasses[-1]])
-    result
-  end
-end
+require 'builtin_contracts'
 
 class Class
   include MethodDecorators
 end
 
-
-class Odd
-  def self.typecheck val
-    val % 2 == 1
-  end
-end
-
-class Even
-  def self.typecheck val
-    val % 2 == 0
-  end
-end
-
-class Pos
-  def self.typecheck val
-    val > 0
-  end
-end
-
-class Neg
-  def self.typecheck val
-    val < 0
-  end
-end
-
-class Any
-  def self.typecheck val
-    true
-  end
-end
-
-class None
-  def self.typecheck val
-    false
-  end
-end
-
-class CallableClass
-  def self.[](*vals)
-    self.new(*vals)
-  end
-end
-
-class Or < CallableClass
-  def initialize(*vals)
-    @vals = vals
+class Contract < Decorator
+  attr_accessor :contracts, :klass, :method
+  decorator_name :contract
+  def initialize(klass, method, *contracts)
+    @klass, @method, @contracts = klass, method, contracts
   end
 
-  def typecheck(val)
-    @vals.any? do |typeclass|
-      !Contract.validate(val, typeclass)
+  def self.mkerror(validates, arg, contract)
+    if validates
+      [true, {}]
+    else
+      [false, { :arg => arg, :contract => contract }]
     end
   end
 
-  def to_s
-    @vals[0, @vals.size-1].join(", ") + " or " + @vals[-1].to_s
+  def self.failure_msg(data)
+   # TODO __file__ and __line__ won't work in Ruby 1.9.
+   # It provides a source_location method instead.
+%{Contract violation:
+    Expected: #{data[:contract]},
+    Actual: #{data[:arg].inspect}
+    Value guarded in: #{data[:class]}::#{data[:method].name}
+    With Contract: #{data[:contracts].map { |t| t.is_a?(Class) ? t.name : t.class.name }.join(", ") }
+    At: #{data[:method].__file__}:#{data[:method].__line__} }
   end
-end
-
-class And < CallableClass
-  def initialize(*vals)
-    @vals = vals
-  end
-
-  def typecheck(val)
-    @vals.all? do |typeclass|
-      !Contract.validate(val, typeclass)
-    end
+  def self.failure_callback(data)
+    raise failure_msg(data)
   end
 
-  def to_s
-    @vals[0, @vals.size-1].join(", ") + " and " + @vals[-1].to_s
-  end
-end
-
-class RespondsTo < CallableClass
-  def initialize(*meths)
-    @meths = meths
-  end
-
-  def typecheck(val)
-    @meths.all? do |meth|
-      val.respond_to? meth
-    end
-  end
-
-  def to_s
-    "a value that responds to #{@meths.inspect}"
-  end
-end
-
-class Send < CallableClass
-  def initialize(*meths)
-    @meths = meths
-  end
-
-  def typecheck(val)
-    @meths.all? do |meth|
-      val.send(meth)
-    end
-  end
-
-  def to_s
-    "a value that returns true for all of #{@meths.inspect}"
+  def self.success_callback(data)
   end  
-end
 
-class Subclasses < CallableClass
-  def initialize(cls)
-    @cls = cls
-  end
-
-  def typecheck(val)
-    val.class < @cls
-  end
-
-  def to_s
-    "a subclass of #{@cls.inspect}"
-  end
-end
-
-class Not < CallableClass
-  def initialize(*vals)
-    @vals = vals
-  end
-
-  def typecheck(val)
-    @vals.all? do |typeclass|
-      Contract.validate(val, typeclass)
+  def self.validate_hash(arg, contract)
+    arg.keys.each do |k|
+      result, info = validate(arg[k], contract[k])
+      return [result, info] unless result
     end
   end
 
-  def to_s
-    "a value that is none of #{@vals.inspect}"
+  def self.validate_proc(arg, contract)
+    mkerror(contract[arg], arg, contract)
+  end
+
+  def self.validate_class(arg, contract)
+    valid = if contract.respond_to? :valid?
+              contract.valid? arg
+            else
+              contract == arg.class
+            end
+    mkerror(valid, arg, contract)
+  end
+
+  def self.validate_all(args, contracts, klass, method)
+    args.zip(contracts).each do |arg, contract|
+      validate(arg, contract, klass, method, contracts)
+    end
+  end
+
+  def self.validate(arg, contract, klass, method, contracts)
+    result, _ = valid?(arg, contract)
+    if result
+      success_callback({:arg => arg, :contract => contract, :class => klass, :method => method, :contracts => contracts})
+    else
+      failure_callback({:arg => arg, :contract => contract, :class => klass, :method => method, :contracts => contracts})
+    end
+  end
+
+  # arg to method -> contract it should satisfy -> (Boolean, metadata)
+  def self.valid?(arg, contract)
+    case contract
+    when Class
+      validate_class arg, contract
+    when Proc
+      validate_proc arg, contract
+    when Array
+      # TODO account for these errors too
+      return mkerror(false, arg, contract) unless arg.is_a?(Array)
+      validate_all(arg, contract)
+    when Hash
+      return mkerror(false, arg, contract) unless arg.is_a?(Hash)
+      validate_hash(arg, contract)
+    else
+      if contract.respond_to? :valid?
+        mkerror(contract.valid?(arg), arg, contract)
+      else
+        mkerror(arg == contract, arg, contract)
+      end
+    end
+  end
+
+  def call(this, *args)
+    Contract.validate_all(args, @contracts, @klass, @method)
+    result = @method.bind(this).call(*args)
+    if args.size == @contracts.size - 1
+      Contract.validate(result, @contracts[-1], @klass, @method, @contracts)
+    end
+    result
   end
 end
