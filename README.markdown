@@ -6,6 +6,8 @@ Contracts let you clearly – even beautifully – express how your code behaves
 
 You can think of contracts as `assert` on steroids.
 
+Note: this is still a WIP. This library is usable, but the API may change.
+
 ## Installation
 
     gem install contracts
