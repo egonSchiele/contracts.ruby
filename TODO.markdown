@@ -1,4 +1,7 @@
-- documentation with RDoc
-- How to avoid writing "class Object"?
-- optional args
+- Shortform instead of Contract? That's too long. Maybe Is?
+- How to avoid writing "class Object"? Seriously.
 - functions?
+- documentation with RDoc
+- write specs
+- make a complete easy walkthrough
+- maybe make some screencasts

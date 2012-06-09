@@ -5,6 +5,7 @@ class Class
   include MethodDecorators
 end
 
+
 class Contract < Decorator
   attr_accessor :contracts, :klass, :method
   decorator_name :contract
@@ -23,8 +24,13 @@ class Contract < Decorator
   def self.failure_msg(data)
    # TODO __file__ and __line__ won't work in Ruby 1.9.
    # It provides a source_location method instead.
+   expected = if data[:contract].to_s == ""
+                data[:contract].inspect
+              else
+                data[:contract].to_s
+              end
 %{Contract violation:
-    Expected: #{data[:contract]},
+    Expected: #{expected},
     Actual: #{data[:arg].inspect}
     Value guarded in: #{data[:class]}::#{data[:method].name}
     With Contract: #{data[:contracts].map { |t| t.is_a?(Class) ? t.name : t.class.name }.join(", ") }
@@ -58,6 +64,21 @@ class Contract < Decorator
   end
 
   def self.validate_all(args, contracts, klass, method)
+    if args.size != contracts.size
+      # *args
+      if contracts[-2].is_a? Args
+        while contracts.size < args.size + 1
+          contracts.insert(-2, contracts[-2].dup)
+        end
+      else
+        raise %{The number of arguments doesn't match the number of contracts.
+Did you forget to write a contract for the return value of the function?
+Or if you want a variable number of arguments using *args, use the Args contract.
+Args: #{args.inspect}
+Contracts: #{contracts.map { |t| t.is_a?(Class) ? t.name : t.class.name }.join(", ")}}
+      end
+    end
+
     args.zip(contracts).each do |arg, contract|
       validate(arg, contract, klass, method, contracts)
     end
@@ -76,16 +97,22 @@ class Contract < Decorator
   def self.valid?(arg, contract)
     case contract
     when Class
+      # e.g. Fixnum
       validate_class arg, contract
     when Proc
+      # e.g. lambda {true}
       validate_proc arg, contract
     when Array
+      # e.g. [Num, String]
       # TODO account for these errors too
       return mkerror(false, arg, contract) unless arg.is_a?(Array)
       validate_all(arg, contract)
     when Hash
+      # e.g. { :a => Num, :b => String }
       return mkerror(false, arg, contract) unless arg.is_a?(Hash)
       validate_hash(arg, contract)
+    when Args
+      valid? arg, contract.contract
     else
       if contract.respond_to? :valid?
         mkerror(contract.valid?(arg), arg, contract)
@@ -102,5 +129,16 @@ class Contract < Decorator
       Contract.validate(result, @contracts[-1], @klass, @method, @contracts)
     end
     result
+  end
+end
+
+class Args < Contracts::CallableClass
+  attr_reader :contract
+  def initialize(contract)
+    @contract = contract
+  end
+
+  def to_s
+    "Args[#{@contract}]"
   end
 end

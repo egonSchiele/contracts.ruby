@@ -82,6 +82,27 @@ def save(val)
 Contract Or[And[RespondsTo[:to_s], Not[nil]], String, 5], String
 def some_crazy_function(x)
 ```
+
+## Synonyms For Contracts
+
+If you use a contract a lot, it's a good idea to give it a meaningful synonym that tells the reader more about what your code returns. For example, suppose you have many functions that return a `Hash` or `nil`. If a `Hash` is returned, it contains information about a person. Your contact might look like this:
+
+```ruby
+Contract String, Or[Hash, nil]
+def some_func(str)
+```
+
+You can make your contract more meaningful with a synonym:
+
+```ruby
+# the synonym
+Person = Or[Hash, nil]
+
+# use the synonym here
+Contract String, Person
+def some_func(str)
+```
+
 ## Defining Your Own Contracts
 
 Contracts are very easy to define. There are 4 kinds of contracts:
