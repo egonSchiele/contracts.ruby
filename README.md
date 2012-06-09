@@ -81,6 +81,11 @@ def save(val)
 # Nested contracts
 Contract Or[And[RespondsTo[:to_s], Not[nil]], String, 5], String
 def some_crazy_function(x)
+
+# Variable number of arguments with *args
+# Args takes a contract and applies it to every element in *vals
+Contract Args[Num], Num
+def sum(*vals)
 ```
 
 ## Synonyms For Contracts

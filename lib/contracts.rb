@@ -64,7 +64,7 @@ class Contract < Decorator
   end
 
   def self.validate_all(args, contracts, klass, method)
-    if args.size != contracts.size
+    if args.size > contracts.size - 1
       # *args
       if contracts[-2].is_a? Args
         while contracts.size < args.size + 1
@@ -122,9 +122,9 @@ Contracts: #{contracts.map { |t| t.is_a?(Class) ? t.name : t.class.name }.join("
     end
   end
 
-  def call(this, *args)
+  def call(this, *args, &blk)
     Contract.validate_all(args, @contracts, @klass, @method)
-    result = @method.bind(this).call(*args)
+    result = @method.bind(this).call(*args, &blk)
     if args.size == @contracts.size - 1
       Contract.validate(result, @contracts[-1], @klass, @method, @contracts)
     end
