@@ -49,14 +49,15 @@ Instead of throwing an exception, you could log it, print a clean error message 
 
 ## Tutorial
 
-Check out [this awesome tutorial][http://egonschiele.github.com/contracts.ruby].
+Check out [this awesome tutorial](http://egonschiele.github.com/contracts.ruby).
 
 ## Gotchas
 
 Contracts don't work on top level functions. Any function with a contract should be in a class. In our example we just stuck the `double` function in the `Object` class.
 
-Q. Is this compatible with Ruby 1.9?
-A. Yes.
+**Q.** Is this compatible with Ruby 1.9?
+
+**A.** Yes.
 
 If you're using the library, please [let me know](https://github.com/egonSchiele) what project you're using it on :)
 

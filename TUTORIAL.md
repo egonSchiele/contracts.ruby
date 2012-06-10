@@ -308,9 +308,11 @@ When a contract fails, part of the error message prints the contract:
 
 You can customize this message by overriding the `to_s` method on your class or proc. For example, suppose we overrode `Num`'s `to_s` method:
 
-    def Num.to_s
-      "a number please"
-    end
+```ruby
+def Num.to_s
+  "a number please"
+end
+```
 
 Now the error says:
 
