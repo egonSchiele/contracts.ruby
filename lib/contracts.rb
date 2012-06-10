@@ -5,7 +5,12 @@ class Class
   include MethodDecorators
 end
 
-
+# This is the main Contract class. When you write a new contract, you'll
+# write it as:
+#
+#   Contract [contract names]
+#
+# This class also provides useful callbacks and a validation method.
 class Contract < Decorator
   attr_accessor :contracts, :klass, :method
   decorator_name :contract
@@ -13,9 +18,10 @@ class Contract < Decorator
     @klass, @method, @contracts = klass, method, contracts
   end
 
+  # Given a hash, prints out a failure message.
+  # This function is used by the default #failure_callback method
+  # and uses the hash passed into the failure_callback method.
   def self.failure_msg(data)
-   # TODO __file__ and __line__ won't work in Ruby 1.9.
-   # It provides a source_location method instead.
    expected = if data[:contract].to_s == ""
                 data[:contract].inspect
               else
@@ -37,14 +43,34 @@ class Contract < Decorator
     At: #{position} }
   end
 
+  # Callback for when a contract fails. By default it raises
+  # an error and prints detailed info about the contract that
+  # failed. You can also monkeypatch this callback to do whatever
+  # you want...log the error, send you an email, print an error
+  # message, etc.
+  #
+  # Example of monkeypatching:
+  #
+  #   Contract.failure_callback(data)
+  #     puts "You had an error!"
+  #     puts failure_msg(data)
+  #     exit
+  #   end
   def self.failure_callback(data)
     raise failure_msg(data)
   end
 
+  # Callback for when a contract succeeds. Does nothing by default.
   def self.success_callback(data)
   end  
 
-  # arg to method -> contract it should satisfy -> (Boolean, metadata)
+  # Used to verify if an argument satisfies a contract.
+  #
+  # Takes: an argument and a contract.
+  #
+  # Returns: a tuple: [Boolean, metadata]. The boolean indicates
+  # whether the contract was valid or not. If it wasn't, metadata
+  # contains some useful information about the failure.
   def self.valid?(arg, contract)
     case contract
     when Class
@@ -62,7 +88,7 @@ class Contract < Decorator
       # e.g. { :a => Num, :b => String }
       return mkerror(false, arg, contract) unless arg.is_a?(Hash)
       validate_hash(arg, contract)
-    when Args
+    when Contracts::Args
       valid? arg, contract.contract
     else
       if contract.respond_to? :valid?
@@ -77,7 +103,7 @@ class Contract < Decorator
     _args = blk ? args + [blk] : args
     if _args.size != @contracts.size - 1
       # so it's not *args
-      if !@contracts[-2].is_a? Args
+      if !@contracts[-2].is_a? Contracts::Args
         raise %{The number of arguments doesn't match the number of contracts.
 Did you forget to write a contract for the return value of the function?
 Or if you want a variable number of arguments using *args, use the Args contract.
@@ -147,17 +173,5 @@ Contracts: #{@contracts.map { |t| t.is_a?(Class) ? t.name : t.class.name }.join(
     else
       failure_callback({:arg => arg, :contract => contract, :class => klass, :method => method, :contracts => contracts})
     end
-  end
-end
-
-# for *args
-class Args < Contracts::CallableClass
-  attr_reader :contract
-  def initialize(contract)
-    @contract = contract
-  end
-
-  def to_s
-    "Args[#{@contract}]"
   end
 end

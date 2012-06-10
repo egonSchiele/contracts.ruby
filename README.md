@@ -6,7 +6,6 @@ Contracts let you clearly – even beautifully – express how your code behaves
 
 You can think of contracts as `assert` on steroids.
 
-Note: this is still a WIP. This library is usable, but the API may change.
 
 ## Installation
 
@@ -222,6 +221,11 @@ There's also a `success_callback` that gets called when a contract succeeds.
 ## Gotchas
 
 Contracts don't work on top level functions yet. Any function with a contract should be in a class.
+
+## FAQ
+
+Q. Is this compatible with Ruby 1.9?
+A. Yes.
 
 ## Credits
 
