@@ -21,12 +21,20 @@ class Contract < Decorator
               else
                 data[:contract].to_s
               end
+
+    if RUBY_VERSION =~ /^1\.8/
+      position = data[:method].__file__ + ":" + data[:method].__line__.to_s
+    else
+      file, line = data[:method].source_location
+      position = file + ":" + line.to_s
+    end
+   
 %{Contract violation:
     Expected: #{expected},
     Actual: #{data[:arg].inspect}
     Value guarded in: #{data[:class]}::#{data[:method].name}
     With Contract: #{data[:contracts].map { |t| t.is_a?(Class) ? t.name : t.class.name }.join(", ") }
-    At: #{data[:method].__file__}:#{data[:method].__line__} }
+    At: #{position} }
   end
 
   def self.failure_callback(data)
@@ -67,10 +75,6 @@ class Contract < Decorator
 
   def call(this, *args, &blk)
     _args = blk ? args + [blk] : args
-    # need to check this twice because here ALL the contracts will be printed out
-    # (including the contract for the return value) and in validate_all we check
-    # b/c someone could call that externally with the wrong # of args.
-    # could probably refactor this into something shared.
     if _args.size != @contracts.size - 1
       # so it's not *args
       if !@contracts[-2].is_a? Args
@@ -82,7 +86,9 @@ Contracts: #{@contracts.map { |t| t.is_a?(Class) ? t.name : t.class.name }.join(
       end
     end    
     Contract.validate_all(_args, @contracts[0, @contracts.size - 1], @klass, @method)
+
     result = @method.bind(this).call(*args, &blk)
+    
     if args.size == @contracts.size - 1
       Contract.validate(result, @contracts[-1], @klass, @method, @contracts)
     end
