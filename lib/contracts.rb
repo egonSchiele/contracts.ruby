@@ -132,8 +132,8 @@ Contracts: #{@contracts.map { |t| t.is_a?(Class) ? t.name : t.class.name }.join(
   end
 
   def self.validate_hash(arg, contract)
-    arg.keys.each do |k|
-      result, info = validate(arg[k], contract[k])
+    contract.keys.each do |k|
+      result, info = valid?(arg[k], contract[k])
       return [result, info] unless result
     end
   end
