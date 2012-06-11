@@ -3,7 +3,6 @@ require 'fixtures/fixtures'
 
 include Contracts
 
-
 describe "Contracts:" do
   before :all do
     @o = Object.new
@@ -104,4 +103,44 @@ describe "Contracts:" do
       expect { @o.sum(1, 2, "bad") }.to raise_error
     end  
   end
+
+  describe "failure callbacks" do
+    before :each do
+      @old = (::Contract).method(:failure_callback)
+      def (::Contract).failure_callback(data)
+        false
+      end
+    end
+
+    it "should not call a function for which the contract fails when failure_callback returns false" do
+      res = @o.double("bad")
+      res.should == nil
+    end
+
+    after :each do
+      def (::Contract).failure_callback(data)
+        @old.bind(self).call(data)
+      end
+    end
+  end
+
+  describe "success callbacks" do
+    before :each do
+      @old = (::Contract).method(:success_callback)
+      def (::Contract).success_callback(data)
+        false
+      end
+    end
+
+    it "should not call a function for which the contract succeeds when success_callback returns false" do
+      res = @o.double(2)
+      res.should == nil
+    end
+
+    after :each do
+      def (::Contract).success_callback(data)
+        @old.bind(self).call(data)
+      end
+    end
+  end  
 end
