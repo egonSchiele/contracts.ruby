@@ -8,6 +8,10 @@ You can think of contracts as `assert` on steroids.
 
     gem install contracts
 
+## Running Tests
+
+    rspec spec/*.rb
+
 ## Hello World
 
 A contract is one line of code that you write above a method definition. It validates the arguments to the method, and validates it's return value.
