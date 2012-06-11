@@ -346,6 +346,8 @@ end
 
 There's also a `success_callback` that gets called when a contract succeeds. It doesn't do anything by default, but you can monkeypatch it to do whatever you would like.
 
+If either callback returns `false`, the method that the contract is guarding will not be called.
+
 ## Gotchas
 
 Contracts don't work on top level functions. Any function with a contract should be in a class.

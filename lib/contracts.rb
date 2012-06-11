@@ -119,7 +119,8 @@ Args: #{args.inspect}
 Contracts: #{@contracts.map { |t| t.is_a?(Class) ? t.name : t.class.name }.join(", ")}}
       end
     end    
-    Contract.validate_all(_args, @contracts[0, @contracts.size - 1], @klass, @method)
+    res = Contract.validate_all(_args, @contracts[0, @contracts.size - 1], @klass, @method)
+    return if res == false
 
     result = @method.bind(this).call(*args, &blk)
     
@@ -170,7 +171,8 @@ Contracts: #{@contracts.map { |t| t.is_a?(Class) ? t.name : t.class.name }.join(
     end
 
     args.zip(contracts).each do |arg, contract|
-      validate(arg, contract, klass, method, contracts)
+      result = validate(arg, contract, klass, method, contracts)
+      return result if result == false
     end
   end
 
