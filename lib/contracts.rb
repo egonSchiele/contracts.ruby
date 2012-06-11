@@ -5,6 +5,11 @@ class Class
   include MethodDecorators
 end
 
+class Module
+  include MethodDecorators
+end
+
+
 # This is the main Contract class. When you write a new contract, you'll
 # write it as:
 #
@@ -83,7 +88,10 @@ class Contract < Decorator
       # e.g. [Num, String]
       # TODO account for these errors too
       return mkerror(false, arg, contract) unless arg.is_a?(Array)
-      validate_all(arg, contract)
+      arg.zip(contract).each do |_arg, _contract|
+        res, info = valid?(_arg, _contract)
+        return mkerror(false, arg, contract) unless res
+      end
     when Hash
       # e.g. { :a => Num, :b => String }
       return mkerror(false, arg, contract) unless arg.is_a?(Hash)
