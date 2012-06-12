@@ -4,6 +4,12 @@ Contracts let you clearly – even beautifully – express how your code behaves
 
 You can think of contracts as `assert` on steroids.
 
+## Current Status
+
+**Experimental, actively developing.**
+
+This project is stable enough for use. However, it's API / usage is still evolving, and future versions will probably break older versions (for now!).
+
 ## Installation
 
     gem install contracts
