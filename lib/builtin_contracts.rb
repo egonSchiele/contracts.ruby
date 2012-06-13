@@ -304,7 +304,13 @@ module Contracts
     def test_data
       [[], [Testable.test_data(@contract)], [Testable.test_data(@contract), Testable.test_data(@contract)]]
     end    
-  end  
+  end
+
+  class Bool
+    def self.valid? val
+      val.is_a?(TrueClass) || val.is_a?(FalseClass)
+    end
+  end
 
   class ::Hash
     def testable?

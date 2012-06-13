@@ -116,4 +116,8 @@ class Object
       acc * x
     end
   end
+
+  Contract Bool, nil
+  def bool_test(x)
+  end
 end

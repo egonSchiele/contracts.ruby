@@ -164,4 +164,15 @@ describe "Contracts:" do
       expect { @o.product([1, 2, 3, "bad"]) }.to raise_error
     end
   end
+
+  describe "Bool:" do
+    it "should pass for an argument that is a boolean" do
+      expect { @o.bool_test(true) }.to_not raise_error
+      expect { @o.bool_test(false) }.to_not raise_error
+    end
+
+    it "should fail for nil" do
+      expect { @o.bool_test(nil) }.to raise_error
+    end
+  end  
 end
