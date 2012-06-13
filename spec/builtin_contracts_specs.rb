@@ -115,7 +115,7 @@ describe "Contracts:" do
     end
   end
 
-  describe "RespondsTo:" do
+  describe "RespondTo:" do
     it "should pass for an object that responds to :good" do
       expect { @o.responds_test(A.new) }.to_not raise_error
     end

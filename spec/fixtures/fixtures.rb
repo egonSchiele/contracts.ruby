@@ -86,15 +86,15 @@ class Object
   def num_or_string(x)
   end
 
-  Contract Xor[RespondsTo[:good], RespondsTo[:bad]], nil
+  Contract Xor[RespondTo[:good], RespondTo[:bad]], nil
   def xor_test(x)
   end
 
-  Contract And[IsA[A], RespondsTo[:good]], nil
+  Contract And[IsA[A], RespondTo[:good]], nil
   def and_test(x)
   end
 
-  Contract RespondsTo[:good], nil
+  Contract RespondTo[:good], nil
   def responds_test(x)
   end
 

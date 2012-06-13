@@ -1,3 +1,5 @@
+require 'testable'
+
 =begin rdoc
 This module contains all the builtin contracts.
 If you want to use them, first:
@@ -21,6 +23,14 @@ module Contracts
     def self.valid? val
       val.is_a? Numeric
     end
+
+    def self.testable?
+      true
+    end
+
+    def self.test_data
+      [-1, 0, 1, 1.5, 50000]
+    end
   end
 
   # Check that an argument is a positive number.
@@ -28,12 +38,28 @@ module Contracts
     def self.valid? val
       val > 0
     end
+
+    def testable?
+      true
+    end
+
+    def self.test_data
+      (0..5).map { rand(999) + 1 }
+    end
   end
 
   # Check that an argument is a negative number.
   class Neg
     def self.valid? val
       val < 0
+    end
+
+    def testable?
+      true
+    end
+
+    def self.test_data
+      (0..5).map { (rand(999) + 1) * -1 }
     end
   end
 
@@ -83,6 +109,19 @@ module Contracts
     def to_s
       @vals[0, @vals.size-1].join(", ") + " or " + @vals[-1].to_s
     end
+
+    # this can only be tested IF all the sub-contracts have a test_data method
+    def testable?
+      @vals.all? do |val|
+        Testable.testable?(val)
+      end    
+    end
+
+    def test_data
+      @vals.map { |val|
+        Testable.test_data(val)
+      }.flatten
+    end
   end
 
   # Takes a variable number of contracts.
@@ -104,6 +143,18 @@ module Contracts
     def to_s
       @vals[0, @vals.size-1].join(", ") + " xor " + @vals[-1].to_s
     end
+
+    def testable?
+      @vals.all? do |val|
+        Testable.testable? val
+      end    
+    end
+
+    def test_data
+      @vals.map { |val|
+        Testable.test_data val
+      }.flatten
+    end    
   end  
 
   # Takes a variable number of contracts.
@@ -129,8 +180,8 @@ module Contracts
   # Takes a variable number of method names as symbols.
   # The contract passes if the argument responds to all
   # of those methods.
-  # Example: <tt>RespondsTo[:password, :credit_card]</tt>
-  class RespondsTo < CallableClass
+  # Example: <tt>RespondTo[:password, :credit_card]</tt>
+  class RespondTo < CallableClass
     def initialize(*meths)
       @meths = meths
     end
@@ -222,6 +273,14 @@ module Contracts
     def to_s
       "an array of #{@contract}"
     end
+
+    def testable?
+      Testable.testable? @contract
+    end
+
+    def test_data
+      [[], [Testable.test_data(@contract)], [Testable.test_data(@contract), Testable.test_data(@contract)]]
+    end    
   end
 
   # Used for <tt>*args</tt> (variadic functions). Takes a contract
@@ -237,5 +296,54 @@ module Contracts
     def to_s
       "Args[#{@contract}]"
     end
+
+    def testable?
+      Testable.testable? @contract
+    end
+
+    def test_data
+      [[], [Testable.test_data(@contract)], [Testable.test_data(@contract), Testable.test_data(@contract)]]
+    end    
   end  
+
+  class ::Hash
+    def testable?
+      self.values.all? do |val|
+        Testable.testable?(val)
+      end
+    end
+
+    def test_data
+      keys = self.keys
+      _vals = keys.map do |key|
+        ret = Testable.test_data(self[key])
+        if ret.is_a? Array
+          ret
+        else
+          [ret]
+        end
+      end
+      all_vals = Testable.product(_vals)
+      hashes = []
+      all_vals.each do |vals|
+        hash = {}
+        keys.zip(vals).each do |key, val|
+          hash[key] = val
+        end
+        hashes << hash
+      end
+      hashes
+    end
+  end
+
+  class ::String
+    def self.testable?
+      true
+    end
+
+    def self.test_data
+      # send a random string
+      ('a'..'z').to_a.shuffle[0, 10].join
+    end
+  end
 end

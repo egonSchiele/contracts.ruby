@@ -61,7 +61,7 @@ By default, an exception is thrown when a contract fails. This can be changed to
 
 contracts.ruby comes with a lot of builtin contracts, including:
 
-    Num, Pos, Neg, Any, None, Or, Xor, And, Not, RespondsTo, Send, IsA, ArrayOf
+    Num, Pos, Neg, Any, None, Or, Xor, And, Not, RespondTo, Send, IsA, ArrayOf
 
 To see all the builtin contracts and what they do, check out the [rdoc](http://rubydoc.info/gems/contracts/Contracts).
 
