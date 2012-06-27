@@ -1,15 +1,17 @@
 require 'decorators'
 require 'builtin_contracts'
 
-# This is *bad*! This means that every class will now have its method_missing and method_added definitions overridden!
-class Class
-  include MethodDecorators
-end
+# So if you use contracts, your method_added definition gets overridden.
+# Would like to find a solution that avoid this if possible.
+module Contracts
+  def self.included(base)
+    base.extend MethodDecorators
+  end
 
-class Module
-  include MethodDecorators
+  def self.extended(base)
+    base.extend MethodDecorators
+  end  
 end
-
 
 # This is the main Contract class. When you write a new contract, you'll
 # write it as:

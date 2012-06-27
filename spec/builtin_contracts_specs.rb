@@ -3,7 +3,6 @@ require 'fixtures/fixtures'
 
 include Contracts
 
-
 describe "Contracts:" do
   before :all do
     @o = Object.new

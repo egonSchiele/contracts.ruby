@@ -1,5 +1,7 @@
-- How to avoid writing "class Object"?
 - maybe I could add better contracts for functions? specify a contract, and then save that in a hash as (:funcname => contract } for this scope only. Then check every function cal in that scope to see if there's a corresponding contract for that function. If so, validate that function call.
+  - another way would be to override it's call method to something where you first check it's contracts. See this for example, where he uses a proxy:
+    - https://github.com/bguthrie/handshake/blob/master/lib/handshake/block_contract.rb
+
 - maybe make some screencasts
 
 - bug: default args don't get typechecked at all, so they could violate your contract.
@@ -9,12 +11,11 @@ The reason is, of course, that they aren't passed in as args and we only check t
 - ugh. Ruby doesn't require *args to be the last element in the arg list. fix this.
 
 - you can now do something like Haskell's quickcheck. Every contract has a method 'test_data' or something. You can use that data to automatically check methods with contracts to make sure they are correct.
+  - http://www.cse.chalmers.se/~rjmh/QuickCheck/manual.html
   - for stuff like the Not contract, should I make a standard set of classes to check those functions with? Would that be useful at all?
   - also write specs for this stuff
 
 - change syntax to `Num, Num => Num` ? Looks easier to read.
-
-- what about multiple return values?
 
 - contracts don't work on class methods. So this:
 
@@ -50,4 +51,5 @@ Both exactly the same, except `b` has a contract on it. This causes problems:
 
 
 What happens if another library also monkeypatches method_missing and method_added? Especially since I'm doing it on Class, that seems quite likely. Then I'll be in hot water.
+
 

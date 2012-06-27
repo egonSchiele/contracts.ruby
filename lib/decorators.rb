@@ -41,6 +41,7 @@ module MethodDecorators
         ret
       end
     ruby_eval
+    super
   end
 
   def decorate(klass, *args)
