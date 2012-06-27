@@ -1,6 +1,7 @@
 require 'decorators'
 require 'builtin_contracts'
 
+# This is *bad*! This means that every class will now have its method_missing and method_added definitions overridden!
 class Class
   include MethodDecorators
 end
@@ -18,7 +19,7 @@ end
 # This class also provides useful callbacks and a validation method.
 class Contract < Decorator
   attr_accessor :contracts, :klass, :method
-  decorator_name :contract
+  # decorator_name :contract
   def initialize(klass, method, *contracts)
     @klass, @method, @contracts = klass, method, contracts
   end
