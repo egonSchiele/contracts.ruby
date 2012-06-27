@@ -200,6 +200,16 @@ person({:name => "Adit", :age => nil, :foo => "bar"})
 
 even though we don't specify a type for `:foo`.
 
+### Returning Multiple Values
+Treat the return value as an array. For example, here's a function that returns two numbers:
+
+```ruby
+Contract Num, [Num, Num]
+def mult(x)
+  return x, x+1
+end
+```
+
 ## Synonyms For Contracts
 
 If you use a contract a lot, it's a good idea to give it a meaningful synonym that tells the reader more about what your code returns. For example, suppose you have many functions that return a `Hash` or `nil`. If a `Hash` is returned, it contains information about a person. Your contact might look like this:
