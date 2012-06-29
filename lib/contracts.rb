@@ -1,8 +1,6 @@
 require 'decorators'
 require 'builtin_contracts'
 
-# So if you use contracts, your method_added definition gets overridden.
-# Would like to find a solution that avoid this if possible.
 module Contracts
   def self.included(base)
     base.extend MethodDecorators
@@ -10,7 +8,7 @@ module Contracts
 
   def self.extended(base)
     base.extend MethodDecorators
-  end  
+  end
 end
 
 # This is the main Contract class. When you write a new contract, you'll
@@ -186,5 +184,19 @@ Contracts: #{@contracts.map { |t| t.is_a?(Class) ? t.name : t.class.name }.join(
     else
       failure_callback({:arg => arg, :contract => contract, :class => klass, :method => method, :contracts => contracts})
     end
+  end
+end
+
+# convenience function for small scripts.
+# Use as:
+#   
+#   use_contracts self
+#
+# And then you can use contracts on functions
+# that aren't in any module or class.
+def use_contracts(this)
+  this.class.send(:include, Contracts)
+  def this.Contract(*args)
+    self.class.Contract(*args)
   end
 end

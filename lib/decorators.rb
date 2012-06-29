@@ -54,13 +54,6 @@ class Decorator
   # an attr_accessor for a class variable:
   class << self; attr_accessor :decorators; end
 
-=begin
-  def self.decorator_name(name)
-    Decorator.decorators ||= {}
-    Decorator.decorators[name] = self
-  end
-=end
-
   def self.inherited(klass)
     name = klass.name.gsub(/^./) {|m| m.downcase}
 
