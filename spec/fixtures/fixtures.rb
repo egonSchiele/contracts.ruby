@@ -24,105 +24,105 @@ class Object
     end
   end
 
-  Contract Num, Num
+  Contract Num => Num
   def self.a_class_method x
     x + 1
   end
   
-  Contract Num
+  Contract Num => nil
   def bad_double(x)
     x * 2
   end
 
-  Contract Num, Num
+  Contract Num => Num
   def double(x)
     x * 2
   end
 
-  Contract String, nil
+  Contract String => nil
   def hello(name)
   end
 
-  Contract lambda { |x| x.is_a? Numeric }, Num
+  Contract lambda { |x| x.is_a? Numeric } => Num
   def square(x)
     x ** 2
   end
 
-  Contract [Num, Num, Num], Num
+  Contract [Num, Num, Num] => Num
   def sum_three(vals)
     vals.inject(0) do |acc, x|
       acc + x
     end
   end
 
-  Contract ({:name => String, :age => Fixnum}), nil
+  Contract ({:name => String, :age => Fixnum}) => nil
   def person(data)
   end
 
-  Contract Proc, Any
+  Contract Proc => Any
   def call(&blk)
     blk.call
   end
 
-  Contract Args[Num], Num
+  Contract Args[Num] => Num
   def sum(*vals)
     vals.inject(0) do |acc, val|
       acc + val
     end
   end
 
-  Contract Pos, nil
+  Contract Pos => nil
   def pos_test(x)
   end
 
-  Contract Neg, nil
+  Contract Neg => nil
   def neg_test(x)
   end
 
-  Contract Any, nil
+  Contract Any => nil
   def show(x)
   end
 
-  Contract None, nil
+  Contract None => nil
   def fail_all(x)
   end
 
-  Contract Or[Num, String], nil
+  Contract Or[Num, String] => nil
   def num_or_string(x)
   end
 
-  Contract Xor[RespondTo[:good], RespondTo[:bad]], nil
+  Contract Xor[RespondTo[:good], RespondTo[:bad]] => nil
   def xor_test(x)
   end
 
-  Contract And[IsA[A], RespondTo[:good]], nil
+  Contract And[IsA[A], RespondTo[:good]] => nil
   def and_test(x)
   end
 
-  Contract RespondTo[:good], nil
+  Contract RespondTo[:good] => nil
   def responds_test(x)
   end
 
-  Contract Send[:good], nil
+  Contract Send[:good] => nil
   def send_test(x)
   end
 
-  Contract IsA[A], nil
+  Contract IsA[A] => nil
   def isa_test(x)
   end
 
-  Contract Not[nil], nil
+  Contract Not[nil] => nil
   def not_nil(x)
   end
 
-  Contract ArrayOf[Num], Num
+  Contract ArrayOf[Num] => Num
   def product(vals)
     vals.inject(1) do |acc, x|
       acc * x
     end
   end
 
-  Contract Bool, nil
+  Contract Bool => nil
   def bool_test(x)
   end
 end

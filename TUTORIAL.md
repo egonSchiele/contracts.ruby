@@ -17,13 +17,13 @@ contracts.ruby brings code contracts to the Ruby language. Code contracts allow 
 A simple example:
 
 ```ruby
-Contract Num, Num, Num
+Contract Num, Num => Num
 def add(a, b)
    a + b
  end
 ```
 
-Here, the contract is `Contract Num, Num, Num`. This says that the `add` function takes two numbers and returns a number.
+Here, the contract is `Contract Num, Num => Num`. This says that the `add` function takes two numbers and returns a number.
 
 Copy this code into a file and run it:
 
@@ -32,7 +32,7 @@ require 'contracts'
 include Contracts
 
 class Object
-  Contract Num, Num, Num
+  Contract Num, Num => Num
   def add(a, b)
      a + b
    end
@@ -70,7 +70,7 @@ To see all the builtin contracts and what they do, check out the [rdoc](http://r
 ### Hello, World
 
 ```ruby
-Contract String, nil
+Contract String => nil
 def hello(name)
   puts "hello, #{name}!"
 end
@@ -87,7 +87,7 @@ You always need to specify a contract for the return value. In this example, `he
 ### A Double Function
 
 ```ruby
-Contract Or[Fixnum, Float], Or[Fixnum, Float]
+Contract Or[Fixnum, Float] => Or[Fixnum, Float]
 def double(x)
   2 * x
 end
@@ -97,19 +97,19 @@ Sometimes you want to be able to choose between a few contracts. `Or` takes a va
 This introduces some new syntax. One of the valid values for a contract is an instance of a class that responds to the `valid?` method. This is what `Or[Fixnum, Float]` is. The longer way to write it would have been:
 
 ```ruby
-Contract Or.new(Fixnum, Float), Or.new(Fixnum, Float)
+Contract Or.new(Fixnum, Float) => Or.new(Fixnum, Float)
 ```
 
 All the builtin contracts have overridden the square brackets (`[]`) to give the same functionality. So you could write
 
 ```ruby
-Contract Or[Fixnum, Float], Or[Fixnum, Float]
+Contract Or[Fixnum, Float] => Or[Fixnum, Float]
 ```
 
 or
 
 ```ruby
-Contract Or.new(Fixnum, Float), Or.new(Fixnum, Float)
+Contract Or.new(Fixnum, Float) => Or.new(Fixnum, Float)
 ```
 
 whichever you prefer. They both mean the same thing here: make a new instance of `Or` with `Fixnum` and `Float`. Use that instance to validate the argument.
@@ -117,7 +117,7 @@ whichever you prefer. They both mean the same thing here: make a new instance of
 ### A Product Function
 
 ```ruby
-Contract ArrayOf[Num], Num
+Contract ArrayOf[Num] => Num
 def product(vals)
   total = 1
   vals.each do |val|
@@ -140,7 +140,7 @@ product([1, 2, 3, "foo"])
 ### Another Product Function
 
 ```ruby
-Contract Args[Num], Num
+Contract Args[Num] => Num
 def product(*vals)
   total = 1
   vals.each do |val|
@@ -164,7 +164,7 @@ If an array is one of the arguments and you know how many elements it's going to
 
 ```ruby
 # a function that takes an array of two elements...a person's age and a person's name.
-Contract [Num, String], nil
+Contract [Num, String] => nil
 def person(data)
   p data
 end
@@ -178,7 +178,7 @@ Here's a contract that requires a Hash. We can put contracts on each of the keys
 
 ```ruby
 # note the parentheses around the hash; without those you would get a syntax error
-Contract ({ :age => Num, :name => String }), nil
+Contract ({ :age => Num, :name => String }) => nil
 def person(data)
   p data
 end
@@ -204,7 +204,7 @@ even though we don't specify a type for `:foo`.
 Treat the return value as an array. For example, here's a function that returns two numbers:
 
 ```ruby
-Contract Num, [Num, Num]
+Contract Num => [Num, Num]
 def mult(x)
   return x, x+1
 end
@@ -215,7 +215,7 @@ end
 If you use a contract a lot, it's a good idea to give it a meaningful synonym that tells the reader more about what your code returns. For example, suppose you have many functions that return a `Hash` or `nil`. If a `Hash` is returned, it contains information about a person. Your contact might look like this:
 
 ```ruby
-Contract String, Or[Hash, nil]
+Contract String => Or[Hash, nil]
 def some_func(str)
 ```
 
@@ -226,7 +226,7 @@ You can make your contract more meaningful with a synonym:
 Person = Or[Hash, nil]
 
 # use the synonym here
-Contract String, Person
+Contract String => Person
 def some_func(str)
 ```
 
@@ -247,7 +247,7 @@ The first two don't need any extra work to define: you can just use any constant
 ### A Proc
 
 ```ruby
-Contract lambda { |x| x.is_a? Numeric }, Num
+Contract lambda { |x| x.is_a? Numeric } => Num
 def double(x)
 ```
 
@@ -292,16 +292,16 @@ The `Or` contract takes a sequence of contracts, and passes if any of them pass.
 This class inherits from `CallableClass`, which allows us to use `[]` when using the class:
 
 ```ruby
-Contract Or[Fixnum, Float]
+Contract Or[Fixnum, Float] => Num
 def double(x)
-2 * x
+  2 * x
 end
 ```
 
 Without `CallableClass`, we would have to use `.new` instead:
 
 ```ruby
-Contract Or.new(Fixnum, Float)
+Contract Or.new(Fixnum, Float) => Num
 def double(x)
 # etc
 ```

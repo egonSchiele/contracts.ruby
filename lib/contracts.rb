@@ -20,6 +20,12 @@ class Contract < Decorator
   attr_accessor :contracts, :klass, :method
   # decorator_name :contract
   def initialize(klass, method, *contracts)
+    if contracts[-1].is_a? Hash
+      # internally we just convert that return value syntax back to an array
+      contracts = contracts[0, contracts.size - 1] + contracts[-1].keys + contracts[-1].values
+    else
+      fail "It looks like your contract for #{method} doesn't have a return value. A contract should be written as `Contract arg1, arg2 => return_value`."
+    end
     @klass, @method, @contracts = klass, method, contracts
   end
 

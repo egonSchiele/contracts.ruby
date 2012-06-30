@@ -25,7 +25,7 @@ A contract is one line of code that you write above a method definition. It vali
 Here is a simple contract:
 
 ```ruby
-  Contract Num, Num
+  Contract Num => Num
   def double(x)
 ```
 
@@ -36,7 +36,7 @@ require 'contracts'
 include Contracts
 
 class Object
-  Contract Num, Num
+  Contract Num => Num
   def double(x)
     x * 2
   end
