@@ -125,4 +125,9 @@ class Object
   Contract Bool => nil
   def bool_test(x)
   end
+
+  Contract nil => Num
+  def no_args
+    1
+  end
 end

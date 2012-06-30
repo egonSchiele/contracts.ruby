@@ -30,6 +30,10 @@ describe "Contracts:" do
     end
   end
 
+  it "should work for functions with no args" do
+    expect { @o.no_args }.to_not raise_error
+  end
+
   describe "classes" do
     it "should pass for correct input" do
       expect { @o.hello("calvin") }.to_not raise_error
