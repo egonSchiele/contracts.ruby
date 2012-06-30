@@ -33,13 +33,11 @@ This says that double expects a number and returns a number. Here's the full cod
 
 ```ruby
 require 'contracts'
-include Contracts
+use_contracts self
 
-class Object
-  Contract Num => Num
-  def double(x)
-    x * 2
-  end
+Contract Num => Num
+def double(x)
+  x * 2
 end
 
 puts double("oops")
