@@ -121,17 +121,6 @@ class Contract < Decorator
 
   def call_with(this, *args, &blk)
     _args = blk ? args + [blk] : args
-    if _args.size != @contracts.size - 1
-      # so it's not *args
-      unless @contracts.any? { |contract| contract.is_a? Contracts::Args }
-        raise %{The number of arguments doesn't match the number of contracts.
-Did you forget to write a contract for the return value of the function?
-Or if you want a variable number of arguments using *args, use the Args contract.
-Args: #{args.inspect}
-Contracts: #{@contracts.map { |t| t.is_a?(Class) ? t.name : t.class.name }.join(", ")}}
-      end
-    end
-
     res = Contract.validate_all(_args, @contracts[0, @contracts.size - 1], @klass, @method)
     return if res == false
 
@@ -150,10 +139,8 @@ Contracts: #{@contracts.map { |t| t.is_a?(Class) ? t.name : t.class.name }.join(
       # class method
       result = @method.call(*args, &blk)
     end
-    
-    if args.size == @contracts.size - 1
-      Contract.validate(result, @contracts[-1], @klass, @method, @contracts)
-    end
+
+    Contract.validate(result, @contracts[-1], @klass, @method, @contracts)
     result
   end
 
