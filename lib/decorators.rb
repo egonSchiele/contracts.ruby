@@ -11,6 +11,16 @@ module MethodDecorators
   # to find the decorator for that method. This is how we associate decorators
   # with methods.
   def method_added(name)
+    common_method_added name, false
+    super
+  end
+
+  def singleton_method_added name
+    common_method_added name, true
+    super
+  end
+
+  def common_method_added name, is_class_method
     return unless @decorators
 
     decorators = @decorators.dup
@@ -24,7 +34,15 @@ module MethodDecorators
       # a reference to the method gets passed into the contract here. This is good because
       # we are going to redefine this method with a new name below...so this reference is
       # now the *only* reference to the old method that exists.
-      decorator = klass.respond_to?(:new) ? klass.new(self, instance_method(name), *args) : klass
+      if klass.respond_to? :new
+        if is_class_method
+          decorator = klass.new(self, method(name), *args)
+        else
+          decorator = klass.new(self, instance_method(name), *args)
+        end
+      else
+        decorator = klass
+      end
       @decorated_methods[name] << decorator
     end
 
@@ -33,16 +51,15 @@ module MethodDecorators
     # The decorator in turn has a reference to the actual method, so it can call it
     # on its own, after doing it's decorating of course.
     class_eval <<-ruby_eval, __FILE__, __LINE__ + 1
-      def #{name}(*args, &blk)
+      def #{is_class_method ? "self." : ""}#{name}(*args, &blk)
         ret = nil
-        self.class.decorated_methods[#{name.inspect}].each do |decorator|
+        self.#{is_class_method ? "" : "class."}decorated_methods[#{name.inspect}].each do |decorator|
           ret = decorator.call(self, *args, &blk)
         end
         ret
       end
     ruby_eval
-    super
-  end
+  end    
 
   def decorate(klass, *args)
     @decorators ||= []

@@ -122,7 +122,13 @@ Contracts: #{@contracts.map { |t| t.is_a?(Class) ? t.name : t.class.name }.join(
     res = Contract.validate_all(_args, @contracts[0, @contracts.size - 1], @klass, @method)
     return if res == false
 
-    result = @method.bind(this).call(*args, &blk)
+    if @method.respond_to? :bind
+      # instance method
+      result = @method.bind(this).call(*args, &blk)
+    else
+      # class method
+      result = @method.call(*args, &blk)
+    end
     
     if args.size == @contracts.size - 1
       Contract.validate(result, @contracts[-1], @klass, @method, @contracts)

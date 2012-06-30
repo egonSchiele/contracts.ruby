@@ -20,6 +20,16 @@ describe "Contracts:" do
     end
   end
 
+  describe "class methods" do
+    it "should pass for correct input" do
+      expect { Object.a_class_method(2) }.to_not raise_error
+    end
+
+    it "should fail for incorrect input" do
+      expect { Object.a_class_method("bad") }.to raise_error
+    end
+  end
+
   describe "classes" do
     it "should pass for correct input" do
       expect { @o.hello("calvin") }.to_not raise_error

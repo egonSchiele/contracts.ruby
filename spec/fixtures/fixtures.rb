@@ -23,6 +23,11 @@ class Object
       true
     end
   end
+
+  Contract Num, Num
+  def self.a_class_method x
+    x + 1
+  end
   
   Contract Num
   def bad_double(x)
