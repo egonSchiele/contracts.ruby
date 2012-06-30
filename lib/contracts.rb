@@ -1,6 +1,5 @@
 require 'decorators'
 require 'builtin_contracts'
-
 module Contracts
   def self.included(base)
     base.extend MethodDecorators
@@ -112,14 +111,14 @@ class Contract < Decorator
     _args = blk ? args + [blk] : args
     if _args.size != @contracts.size - 1
       # so it's not *args
-      if !@contracts[-2].is_a? Contracts::Args
+      unless @contracts.any? { |contract| contract.is_a? Contracts::Args }
         raise %{The number of arguments doesn't match the number of contracts.
 Did you forget to write a contract for the return value of the function?
 Or if you want a variable number of arguments using *args, use the Args contract.
 Args: #{args.inspect}
 Contracts: #{@contracts.map { |t| t.is_a?(Class) ? t.name : t.class.name }.join(", ")}}
       end
-    end    
+    end
     res = Contract.validate_all(_args, @contracts[0, @contracts.size - 1], @klass, @method)
     return if res == false
 
@@ -161,18 +160,25 @@ Contracts: #{@contracts.map { |t| t.is_a?(Class) ? t.name : t.class.name }.join(
     mkerror(valid, arg, contract)
   end
 
-  def self.validate_all(args, contracts, klass, method)
-    # we assume that any mismatch in # of args/contracts
+  def self.validate_all(params, contracts, klass, method)
+    # we assume that any mismatch in # of params/contracts
     # has been checked befoer this point.
-    if args.size != contracts.size
-      # assumed: contracts[-1].is_a? Args
-      while contracts.size < args.size
-        contracts << contracts[-1].dup
+    args_index = contracts.index do |contract|
+      contract.is_a? Contracts::Args
+    end
+    if args_index
+      # there is a *args at this index.
+      # Now we need to see how many arguments this contract
+      # accounts for and just duplicate the contract for all
+      # of those args.
+      args_contract = contracts[args_index]
+      while contracts.size < params.size
+        contracts.insert(args_index, args_contract.dup)
       end
     end
 
-    args.zip(contracts).each do |arg, contract|
-      result = validate(arg, contract, klass, method, contracts)
+    params.zip(contracts).each do |param, contract|
+      result = validate(param, contract, klass, method, contracts)
       return result if result == false
     end
   end
