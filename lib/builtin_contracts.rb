@@ -352,4 +352,11 @@ module Contracts
       ('a'..'z').to_a.shuffle[0, 10].join
     end
   end
+
+  class Func < CallableClass
+    attr_reader :contracts    
+    def initialize(*contracts)
+      @contracts = contracts
+    end
+  end
 end

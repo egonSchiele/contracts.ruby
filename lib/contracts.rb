@@ -39,11 +39,11 @@ class Contract < Decorator
       file, line = data[:method].source_location
       position = file + ":" + line.to_s
     end
-   
+   method_name = data[:method].is_a?(Proc) ? "Proc" : data[:method].name
 %{Contract violation:
     Expected: #{expected},
     Actual: #{data[:arg].inspect}
-    Value guarded in: #{data[:class]}::#{data[:method].name}
+    Value guarded in: #{data[:class]}::#{method_name}
     With Contract: #{data[:contracts].map { |t| t.is_a?(Class) ? t.name : t.class.name }.join(", ") }
     At: #{position} }
   end
@@ -98,6 +98,8 @@ class Contract < Decorator
       validate_hash(arg, contract)
     when Contracts::Args
       valid? arg, contract.contract
+    when Func
+      arg.is_a?(Method) || arg.is_a?(Proc)
     else
       if contract.respond_to? :valid?
         mkerror(contract.valid?(arg), arg, contract)
@@ -107,7 +109,11 @@ class Contract < Decorator
     end
   end
 
-  def call(this, *args, &blk)
+  def call(*args, &blk)
+    call_with(nil, *args, &blk)
+  end
+
+  def call_with(this, *args, &blk)
     _args = blk ? args + [blk] : args
     if _args.size != @contracts.size - 1
       # so it's not *args
@@ -119,9 +125,18 @@ Args: #{args.inspect}
 Contracts: #{@contracts.map { |t| t.is_a?(Class) ? t.name : t.class.name }.join(", ")}}
       end
     end
+
     res = Contract.validate_all(_args, @contracts[0, @contracts.size - 1], @klass, @method)
     return if res == false
 
+    # contracts on methods
+
+    contracts.each_with_index do |contract, i|
+      if contract.is_a? Func
+      args[i] = Contract.new(@klass, args[i], *contract.contracts)
+      end
+    end      
+    
     if @method.respond_to? :bind
       # instance method
       result = @method.bind(this).call(*args, &blk)

@@ -54,7 +54,7 @@ module MethodDecorators
       def #{is_class_method ? "self." : ""}#{name}(*args, &blk)
         ret = nil
         self.#{is_class_method ? "" : "class."}decorated_methods[#{name.inspect}].each do |decorator|
-          ret = decorator.call(self, *args, &blk)
+          ret = decorator.call_with(self, *args, &blk)
         end
         ret
       end
