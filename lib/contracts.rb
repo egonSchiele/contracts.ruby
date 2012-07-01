@@ -124,6 +124,10 @@ class Contract < Decorator
     end
   end
 
+  def [](*args, &blk)
+    call(*args, &blk)
+  end
+
   def call(*args, &blk)
     call_with(nil, *args, &blk)
   end

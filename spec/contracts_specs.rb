@@ -118,6 +118,16 @@ describe "Contracts:" do
     end  
   end
 
+  describe "contracts on functions" do
+    it "should pass for a function that passes the contract" do
+      expect { map([1, 2, 3], lambda { |x| x + 1 }).to_not raise_error }
+    end
+
+    it "should fail for a function that doesn't pass the contract" do
+      expect { map([1, 2, 3], lambda { |x| "bad return value" }).to raise_error }
+    end    
+  end    
+
   describe "failure callbacks" do
     before :each do
       @old = (::Contract).method(:failure_callback)

@@ -53,11 +53,15 @@ module MethodDecorators
     class_eval <<-ruby_eval, __FILE__, __LINE__ + 1
       def #{is_class_method ? "self." : ""}#{name}(*args, &blk)
         ret = nil
-        self.#{is_class_method ? "" : "class."}decorated_methods[#{name.inspect}].each do |decorator|
+        this = self#{is_class_method ? "" : ".class"}
+        unless this.respond_to?(:decorated_methods) && !this.decorated_methods.nil?
+          raise "Couldn't find decorator for method " + self.class.name + ":#{name}.\nDoes this method look correct to you? If you are using contracts from rspec, rspec wraps classes in it's own class.\nLook at the specs for contracts.ruby as an example of how to write contracts in this case."
+        end
+        this.decorated_methods[#{name.inspect}].each do |decorator|
           ret = decorator.call_with(self, *args, &blk)
         end
         ret
-      end
+      end    
     ruby_eval
   end    
 
