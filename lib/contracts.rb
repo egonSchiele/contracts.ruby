@@ -2,12 +2,21 @@ require 'decorators'
 require 'builtin_contracts'
 module Contracts
   def self.included(base)
-    base.extend MethodDecorators
+    common base
   end
 
   def self.extended(base)
-    base.extend MethodDecorators
+    common base
   end
+
+  def self.common base
+    base.extend MethodDecorators
+    base.class_eval do
+      def Contract(*args)
+        self.class.Contract(*args)
+      end
+    end
+  end    
 end
 
 # This is the main Contract class. When you write a new contract, you'll
@@ -204,19 +213,5 @@ class Contract < Decorator
     else
       failure_callback({:arg => arg, :contract => contract, :class => klass, :method => method, :contracts => contracts})
     end
-  end
-end
-
-# convenience function for small scripts.
-# Use as:
-#   
-#   use_contracts self
-#
-# And then you can use contracts on functions
-# that aren't in any module or class.
-def use_contracts(this)
-  this.class.send(:include, Contracts)
-  def this.Contract(*args)
-    self.class.Contract(*args)
   end
 end

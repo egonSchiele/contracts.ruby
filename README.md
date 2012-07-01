@@ -33,7 +33,7 @@ This says that double expects a number and returns a number. Here's the full cod
 
 ```ruby
 require 'contracts'
-use_contracts self
+include Contracts
 
 Contract Num => Num
 def double(x)

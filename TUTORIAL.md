@@ -31,11 +31,9 @@ Copy this code into a file and run it:
 require 'contracts'
 include Contracts
 
-class Object
-  Contract Num, Num => Num
-  def add(a, b)
-     a + b
-   end
+Contract Num, Num => Num
+def add(a, b)
+   a + b
 end
 
 puts add(1, "foo")
@@ -52,8 +50,6 @@ You'll see a detailed error message like so:
 
 That tells you that your contract was violated! `add` expected a `Num`, and got a string (`"foo"`) instead.
 By default, an exception is thrown when a contract fails. This can be changed to do whatever you want. More on this later.
-
-**Note**: contracts can only be applied on methods inside of a class. In this example, the `add` method was in the `Object` class.
 
 ## Builtin Contracts
 
