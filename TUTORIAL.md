@@ -196,6 +196,31 @@ person({:name => "Adit", :age => nil, :foo => "bar"})
 
 even though we don't specify a type for `:foo`.
 
+### Contracts On Functions
+
+If you're writing higher-order functions (functions that take functions as parameters) and want to write a contract for the passed-in function, you can!
+Use the `Func` contract. `Func` takes a contract as it's argument, and uses that contract on the function that you pass in.
+
+Here's a `map` function that requires an array of numbers, and a function that takes a number and returns a number:
+
+```ruby
+Contract ArrayOf[Num], Func[Num => Num] => ArrayOf[Num]
+def map(arr, func)
+  ret = []
+  arr.each do |x|
+    ret << func[x]
+  end
+  ret
+end
+```
+
+This will add the contract `Num => Num` on `func`. Try it with these two examples:
+
+```ruby
+p map([1, 2, 3], lambda { |x| x + 1 }) # works
+p map([1, 2, 3], lambda { |x| "oops" }) # fails, the lambda returns a string.
+```
+
 ### Returning Multiple Values
 Treat the return value as an array. For example, here's a function that returns two numbers:
 

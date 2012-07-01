@@ -10,7 +10,7 @@ And then use these or write your own!
 
 A simple example:
 
-  Contract Num, Num, Num
+  Contract Num, Num => Num
   def add(a, b)
      a + b
    end
@@ -353,6 +353,8 @@ module Contracts
     end
   end
 
+  # Used to define contracts on functions passed in as arguments.
+  # Example: <tt>Func[Num => Num] # the function should take a number and return a number</tt>
   class Func < CallableClass
     attr_reader :contracts    
     def initialize(*contracts)
