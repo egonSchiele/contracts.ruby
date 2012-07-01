@@ -4,10 +4,6 @@ Contracts let you clearly – even beautifully – express how your code behaves
 
 You can think of contracts as `assert` on steroids.
 
-## Current Status
-
-**Usable!**
-
 ## Installation
 
     gem install contracts
