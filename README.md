@@ -6,9 +6,7 @@ You can think of contracts as `assert` on steroids.
 
 ## Current Status
 
-**Experimental, actively developing.**
-
-This project is stable enough for use. However, it's API / usage is still evolving, and future versions will probably break older versions (for now!).
+**Usable!**
 
 ## Installation
 
@@ -20,7 +18,7 @@ This project is stable enough for use. However, it's API / usage is still evolvi
 
 ## Hello World
 
-A contract is one line of code that you write above a method definition. It validates the arguments to the method, and validates it's return value.
+A contract is one line of code that you write above a method definition. It validates the arguments to the method, and validates the return value of the method.
 
 Here is a simple contract:
 
@@ -71,7 +69,7 @@ If you're using the library, please [let me know](https://github.com/egonSchiele
 
 ## Credits
 
-Inspired by [contracts.coffee](http://disnetdev.com/contracts.coffee/). I also heavily "borrowed" from their README to write this one. Sorry/thanks!
+Inspired by [contracts.coffee](http://disnetdev.com/contracts.coffee/).
 
 Copyright 2012 [Aditya Bhargava](http://adit.io).
 

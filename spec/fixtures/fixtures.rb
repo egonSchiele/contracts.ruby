@@ -138,3 +138,8 @@ def map(arr, func)
   end
   ret
 end
+
+Contract Num => Num
+def default_args(x = 1)
+  2
+end

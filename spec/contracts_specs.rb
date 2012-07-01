@@ -120,13 +120,20 @@ describe "Contracts:" do
 
   describe "contracts on functions" do
     it "should pass for a function that passes the contract" do
-      expect { map([1, 2, 3], lambda { |x| x + 1 }).to_not raise_error }
+      expect { @o.map([1, 2, 3], lambda { |x| x + 1 }).to_not raise_error }
     end
 
     it "should fail for a function that doesn't pass the contract" do
-      expect { map([1, 2, 3], lambda { |x| "bad return value" }).to raise_error }
+      expect { @o.map([1, 2, 3], lambda { |x| "bad return value" }).to raise_error }
     end    
-  end    
+  end
+
+  describe "default args to functions" do
+    it "should work for a function call that relies on default args" do
+      expect { @o.default_args.to_not raise_error }
+      expect { @o.default_args("foo").to raise_error }
+    end
+  end
 
   describe "failure callbacks" do
     before :each do
