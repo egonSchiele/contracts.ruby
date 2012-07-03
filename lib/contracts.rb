@@ -113,7 +113,7 @@ class Contract < Decorator
       validate_hash(arg, contract)
     when Contracts::Args
       valid? arg, contract.contract
-    when Func
+    when Contracts::Func
       arg.is_a?(Method) || arg.is_a?(Proc)
     else
       if contract.respond_to? :valid?
@@ -140,7 +140,7 @@ class Contract < Decorator
     # contracts on methods
 
     contracts.each_with_index do |contract, i|
-      if contract.is_a? Func
+      if contract.is_a? Contracts::Func
       args[i] = Contract.new(@klass, args[i], *contract.contracts)
       end
     end      

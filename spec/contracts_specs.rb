@@ -137,7 +137,6 @@ describe "Contracts:" do
 
   describe "failure callbacks" do
     before :each do
-      @old = (::Contract).method(:failure_callback)
       def (::Contract).failure_callback(data)
         false
       end
@@ -150,14 +149,13 @@ describe "Contracts:" do
 
     after :each do
       def (::Contract).failure_callback(data)
-        @old.bind(self).call(data)
+        raise failure_msg(data)        
       end
     end
   end
 
   describe "success callbacks" do
     before :each do
-      @old = (::Contract).method(:success_callback)
       def (::Contract).success_callback(data)
         false
       end
@@ -170,7 +168,6 @@ describe "Contracts:" do
 
     after :each do
       def (::Contract).success_callback(data)
-        @old.bind(self).call(data)
       end
     end
   end  
