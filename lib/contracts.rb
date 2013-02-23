@@ -1,5 +1,6 @@
 require 'decorators'
 require 'builtin_contracts'
+
 module Contracts
   def self.included(base)
     common base
@@ -15,6 +16,15 @@ module Contracts
       def Contract(*args)
         self.class.Contract(*args)
       end
+
+      def functype(funcname)
+        contracts = self.class.decorated_methods[funcname]
+        if contracts.nil? || contracts.empty?
+          "No contract for #{self.class}.#{funcname}"
+        else
+          "#{funcname} :: #{contracts[0]}"
+        end
+      end
     end
   end    
 end
@@ -22,7 +32,7 @@ end
 # This is the main Contract class. When you write a new contract, you'll
 # write it as:
 #
-#   Contract [contract names]
+#   Contract [contract names] => return_value
 #
 # This class also provides useful callbacks and a validation method.
 class Contract < Decorator
@@ -36,6 +46,10 @@ class Contract < Decorator
       fail "It looks like your contract for #{method} doesn't have a return value. A contract should be written as `Contract arg1, arg2 => return_value`."
     end
     @klass, @method, @contracts = klass, method, contracts
+  end
+
+  def to_s
+    (contracts[0, contracts.size - 1].join(", ") + " => #{contracts[-1]}").gsub("Contracts::", "")
   end
 
   # Given a hash, prints out a failure message.

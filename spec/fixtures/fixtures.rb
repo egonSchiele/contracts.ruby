@@ -1,4 +1,4 @@
-require 'lib/contracts'
+require File.join(File.dirname(__FILE__), "../../lib/contracts")
 
 include Contracts
 
@@ -142,4 +142,13 @@ end
 Contract Num => Num
 def default_args(x = 1)
   2
+end
+
+Contract Maybe[Num] => Maybe[Num]
+def maybe_double x
+  if x.nil?
+    nil
+  else
+    x * 2
+  end
 end

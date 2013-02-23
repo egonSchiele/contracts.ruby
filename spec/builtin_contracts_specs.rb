@@ -1,4 +1,4 @@
-require 'lib/contracts'
+require File.join(File.dirname(__FILE__), "../lib/contracts")
 require 'fixtures/fixtures'
 
 include Contracts
@@ -172,6 +172,20 @@ describe "Contracts:" do
 
     it "should fail for nil" do
       expect { @o.bool_test(nil) }.to raise_error
+    end
+  end  
+
+  describe "Maybe:" do
+    it "should pass for nums" do
+      @o.maybe_double(1).should == 2
+    end
+
+    it "should pass for nils" do
+      @o.maybe_double(nil).should == nil
+    end    
+
+    it "should fail for strings" do
+      expect { @o.maybe_double("foo") }.to raise_error
     end
   end  
 end

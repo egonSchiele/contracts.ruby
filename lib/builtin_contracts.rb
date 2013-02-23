@@ -312,6 +312,15 @@ module Contracts
     end
   end
 
+  # Takes a Contract.
+  # The contract passes if the contract passes or the given value is nil.
+  # Maybe(foo) is equivalent to Or[foo, nil].
+  class Maybe < Or
+    def initialize(*vals)
+      super(*(vals + [nil]))
+    end
+  end
+
   class ::Hash
     def testable?
       self.values.all? do |val|

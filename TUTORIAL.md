@@ -51,13 +51,20 @@ You'll see a detailed error message like so:
 That tells you that your contract was violated! `add` expected a `Num`, and got a string (`"foo"`) instead.
 By default, an exception is thrown when a contract fails. This can be changed to do whatever you want. More on this later.
 
+You can also see the contract for a function with the `functype` method:
+
+    functype(:add)
+    => "add :: Num, Num => Num"
+
+This can be useful if you're in a repl and want to figure out how a function should be used.
+
 ## Builtin Contracts
 
 `Num` is one of the builtin contracts that contracts.ruby comes with. The builtin contracts are in the `Contracts` namespace. The easiest way to use them is to put `include Contracts` at the top of your file, but beware that they will pollute your namespace with new class names.
 
 contracts.ruby comes with a lot of builtin contracts, including:
 
-    Num, Pos, Neg, Any, None, Or, Xor, And, Not, RespondTo, Send, IsA, ArrayOf
+    Num, Pos, Neg, Any, None, Or, Xor, And, Not, RespondTo, Send, IsA, ArrayOf, Bool, Maybe
 
 To see all the builtin contracts and what they do, check out the [rdoc](http://rubydoc.info/gems/contracts/Contracts).
 
@@ -378,10 +385,6 @@ end
 There's also a `success_callback` that gets called when a contract succeeds. It doesn't do anything by default, but you can monkeypatch it to do whatever you would like.
 
 If either callback returns `false`, the method that the contract is guarding will not be called.
-
-## Gotchas
-
-Contracts don't work on top level functions. Any function with a contract should be in a class.
 
 ## Misc
 
