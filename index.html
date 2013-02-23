@@ -46,21 +46,17 @@
 
 <p>A simple example:</p>
 
-<div class="highlight">
-<pre><span class="no">Contract</span> <span class="no">Num</span><span class="p">,</span> <span class="no">Num</span> <span class="o">=&gt;</span> <span class="no">Num</span>
+<div class="highlight"><pre><span class="no">Contract</span> <span class="no">Num</span><span class="p">,</span> <span class="no">Num</span> <span class="o">=&gt;</span> <span class="no">Num</span>
 <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
    <span class="n">a</span> <span class="o">+</span> <span class="n">b</span>
  <span class="k">end</span>
-</pre>
-</div>
-
+</pre></div>
 
 <p>Here, the contract is <code>Contract Num, Num =&gt; Num</code>. This says that the <code>add</code> function takes two numbers and returns a number.</p>
 
 <p>Copy this code into a file and run it:</p>
 
-<div class="highlight">
-<pre><span class="nb">require</span> <span class="s1">'contracts'</span>
+<div class="highlight"><pre><span class="nb">require</span> <span class="s1">'contracts'</span>
 <span class="kp">include</span> <span class="no">Contracts</span>
 
 <span class="no">Contract</span> <span class="no">Num</span><span class="p">,</span> <span class="no">Num</span> <span class="o">=&gt;</span> <span class="no">Num</span>
@@ -69,9 +65,7 @@
 <span class="k">end</span>
 
 <span class="nb">puts</span> <span class="n">add</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">"foo"</span><span class="p">)</span>
-</pre>
-</div>
-
+</pre></div>
 
 <p>You'll see a detailed error message like so:</p>
 
@@ -86,13 +80,21 @@
 <p>That tells you that your contract was violated! <code>add</code> expected a <code>Num</code>, and got a string (<code>"foo"</code>) instead.
 By default, an exception is thrown when a contract fails. This can be changed to do whatever you want. More on this later.</p>
 
+<p>You can also see the contract for a function with the <code>functype</code> method:</p>
+
+<pre><code>functype(:add)
+=&gt; "add :: Num, Num =&gt; Num"
+</code></pre>
+
+<p>This can be useful if you're in a repl and want to figure out how a function should be used.</p>
+
 <h2>Builtin Contracts</h2>
 
 <p><code>Num</code> is one of the builtin contracts that contracts.ruby comes with. The builtin contracts are in the <code>Contracts</code> namespace. The easiest way to use them is to put <code>include Contracts</code> at the top of your file, but beware that they will pollute your namespace with new class names.</p>
 
 <p>contracts.ruby comes with a lot of builtin contracts, including:</p>
 
-<pre><code>Num, Pos, Neg, Any, None, Or, Xor, And, Not, RespondTo, Send, IsA, ArrayOf
+<pre><code>Num, Pos, Neg, Any, None, Or, Xor, And, Not, RespondTo, Send, IsA, ArrayOf, Bool, Maybe
 </code></pre>
 
 <p>To see all the builtin contracts and what they do, check out the <a href="http://rubydoc.info/gems/contracts/Contracts">rdoc</a>.</p>
@@ -101,14 +103,11 @@ By default, an exception is thrown when a contract fails. This can be changed to
 
 <h3>Hello, World</h3>
 
-<div class="highlight">
-<pre><span class="no">Contract</span> <span class="nb">String</span> <span class="o">=&gt;</span> <span class="kp">nil</span>
+<div class="highlight"><pre><span class="no">Contract</span> <span class="nb">String</span> <span class="o">=&gt;</span> <span class="kp">nil</span>
 <span class="k">def</span> <span class="nf">hello</span><span class="p">(</span><span class="nb">name</span><span class="p">)</span>
   <span class="nb">puts</span> <span class="s2">"hello, </span><span class="si">#{</span><span class="nb">name</span><span class="si">}</span><span class="s2">!"</span>
 <span class="k">end</span>
-</pre>
-</div>
-
+</pre></div>
 
 <p>You always need to specify a contract for the return value. In this example, <code>hello</code> doesn't return anything, so the contract is <code>nil</code>. Now you know that you can use a constant like <code>nil</code> as the of a contract. Valid values for a contract are:</p>
 
@@ -120,46 +119,33 @@ By default, an exception is thrown when a contract fails. This can be changed to
 <li>an instance of a class that responds to the <code>valid?</code> method (more on this later)</li>
 </ul><h3>A Double Function</h3>
 
-<div class="highlight">
-<pre><span class="no">Contract</span> <span class="no">Or</span><span class="o">[</span><span class="no">Fixnum</span><span class="p">,</span> <span class="nb">Float</span><span class="o">]</span> <span class="o">=&gt;</span> <span class="no">Or</span><span class="o">[</span><span class="no">Fixnum</span><span class="p">,</span> <span class="nb">Float</span><span class="o">]</span>
+<div class="highlight"><pre><span class="no">Contract</span> <span class="no">Or</span><span class="o">[</span><span class="no">Fixnum</span><span class="p">,</span> <span class="nb">Float</span><span class="o">]</span> <span class="o">=&gt;</span> <span class="no">Or</span><span class="o">[</span><span class="no">Fixnum</span><span class="p">,</span> <span class="nb">Float</span><span class="o">]</span>
 <span class="k">def</span> <span class="nf">double</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
   <span class="mi">2</span> <span class="o">*</span> <span class="n">x</span>
 <span class="k">end</span>
-</pre>
-</div>
-
+</pre></div>
 
 <p>Sometimes you want to be able to choose between a few contracts. <code>Or</code> takes a variable number of contracts and checks the argument against all of them. If it passes for any of the contracts, then the <code>Or</code> contract passes.
 This introduces some new syntax. One of the valid values for a contract is an instance of a class that responds to the <code>valid?</code> method. This is what <code>Or[Fixnum, Float]</code> is. The longer way to write it would have been:</p>
 
-<div class="highlight">
-<pre><span class="no">Contract</span> <span class="no">Or</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="no">Fixnum</span><span class="p">,</span> <span class="nb">Float</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="no">Or</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="no">Fixnum</span><span class="p">,</span> <span class="nb">Float</span><span class="p">)</span>
-</pre>
-</div>
-
+<div class="highlight"><pre><span class="no">Contract</span> <span class="no">Or</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="no">Fixnum</span><span class="p">,</span> <span class="nb">Float</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="no">Or</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="no">Fixnum</span><span class="p">,</span> <span class="nb">Float</span><span class="p">)</span>
+</pre></div>
 
 <p>All the builtin contracts have overridden the square brackets (<code>[]</code>) to give the same functionality. So you could write</p>
 
-<div class="highlight">
-<pre><span class="no">Contract</span> <span class="no">Or</span><span class="o">[</span><span class="no">Fixnum</span><span class="p">,</span> <span class="nb">Float</span><span class="o">]</span> <span class="o">=&gt;</span> <span class="no">Or</span><span class="o">[</span><span class="no">Fixnum</span><span class="p">,</span> <span class="nb">Float</span><span class="o">]</span>
-</pre>
-</div>
-
+<div class="highlight"><pre><span class="no">Contract</span> <span class="no">Or</span><span class="o">[</span><span class="no">Fixnum</span><span class="p">,</span> <span class="nb">Float</span><span class="o">]</span> <span class="o">=&gt;</span> <span class="no">Or</span><span class="o">[</span><span class="no">Fixnum</span><span class="p">,</span> <span class="nb">Float</span><span class="o">]</span>
+</pre></div>
 
 <p>or</p>
 
-<div class="highlight">
-<pre><span class="no">Contract</span> <span class="no">Or</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="no">Fixnum</span><span class="p">,</span> <span class="nb">Float</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="no">Or</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="no">Fixnum</span><span class="p">,</span> <span class="nb">Float</span><span class="p">)</span>
-</pre>
-</div>
-
+<div class="highlight"><pre><span class="no">Contract</span> <span class="no">Or</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="no">Fixnum</span><span class="p">,</span> <span class="nb">Float</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="no">Or</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="no">Fixnum</span><span class="p">,</span> <span class="nb">Float</span><span class="p">)</span>
+</pre></div>
 
 <p>whichever you prefer. They both mean the same thing here: make a new instance of <code>Or</code> with <code>Fixnum</code> and <code>Float</code>. Use that instance to validate the argument.</p>
 
 <h3>A Product Function</h3>
 
-<div class="highlight">
-<pre><span class="no">Contract</span> <span class="no">ArrayOf</span><span class="o">[</span><span class="no">Num</span><span class="o">]</span> <span class="o">=&gt;</span> <span class="no">Num</span>
+<div class="highlight"><pre><span class="no">Contract</span> <span class="no">ArrayOf</span><span class="o">[</span><span class="no">Num</span><span class="o">]</span> <span class="o">=&gt;</span> <span class="no">Num</span>
 <span class="k">def</span> <span class="nf">product</span><span class="p">(</span><span class="n">vals</span><span class="p">)</span>
   <span class="n">total</span> <span class="o">=</span> <span class="mi">1</span>
   <span class="n">vals</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">val</span><span class="o">|</span>
@@ -167,26 +153,20 @@ This introduces some new syntax. One of the valid values for a contract is an in
   <span class="k">end</span>
   <span class="n">total</span>
 <span class="k">end</span>
-</pre>
-</div>
-
+</pre></div>
 
 <p>This contract uses the <code>ArrayOf</code> contract. Here's how <code>ArrayOf</code> works: it takes a contract. It expects the argument to be a list. Then it checks every value in that list to see if it satisfies that contract.</p>
 
-<div class="highlight">
-<pre><span class="c1"># passes</span>
+<div class="highlight"><pre><span class="c1"># passes</span>
 <span class="n">product</span><span class="p">(</span><span class="o">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="o">]</span><span class="p">)</span>
 
 <span class="c1"># fails</span>
 <span class="n">product</span><span class="p">(</span><span class="o">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="s2">"foo"</span><span class="o">]</span><span class="p">)</span>
-</pre>
-</div>
-
+</pre></div>
 
 <h3>Another Product Function</h3>
 
-<div class="highlight">
-<pre><span class="no">Contract</span> <span class="no">Args</span><span class="o">[</span><span class="no">Num</span><span class="o">]</span> <span class="o">=&gt;</span> <span class="no">Num</span>
+<div class="highlight"><pre><span class="no">Contract</span> <span class="no">Args</span><span class="o">[</span><span class="no">Num</span><span class="o">]</span> <span class="o">=&gt;</span> <span class="no">Num</span>
 <span class="k">def</span> <span class="nf">product</span><span class="p">(</span><span class="o">*</span><span class="n">vals</span><span class="p">)</span>
   <span class="n">total</span> <span class="o">=</span> <span class="mi">1</span>
   <span class="n">vals</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">val</span><span class="o">|</span>
@@ -194,9 +174,7 @@ This introduces some new syntax. One of the valid values for a contract is an in
   <span class="k">end</span>
   <span class="n">total</span>
 <span class="k">end</span>
-</pre>
-</div>
-
+</pre></div>
 
 <p>This function uses varargs (<code>*args</code>) instead of an array. To make a contract on varargs, use the <code>Args</code> contract. It takes one contract as an argument and uses it to validate every element passed in through <code>*args</code>. So for example,</p>
 
@@ -210,15 +188,12 @@ This introduces some new syntax. One of the valid values for a contract is an in
 
 <p>If an array is one of the arguments and you know how many elements it's going to have, you can put a contract on it:</p>
 
-<div class="highlight">
-<pre><span class="c1"># a function that takes an array of two elements...a person's age and a person's name.</span>
+<div class="highlight"><pre><span class="c1"># a function that takes an array of two elements...a person's age and a person's name.</span>
 <span class="no">Contract</span> <span class="o">[</span><span class="no">Num</span><span class="p">,</span> <span class="nb">String</span><span class="o">]</span> <span class="o">=&gt;</span> <span class="kp">nil</span>
 <span class="k">def</span> <span class="nf">person</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
   <span class="nb">p</span> <span class="n">data</span>
 <span class="k">end</span>
-</pre>
-</div>
-
+</pre></div>
 
 <p>If you don't know how many elements it's going to have, use <code>ArrayOf</code>.</p>
 
@@ -226,33 +201,24 @@ This introduces some new syntax. One of the valid values for a contract is an in
 
 <p>Here's a contract that requires a Hash. We can put contracts on each of the keys:</p>
 
-<div class="highlight">
-<pre><span class="c1"># note the parentheses around the hash; without those you would get a syntax error</span>
+<div class="highlight"><pre><span class="c1"># note the parentheses around the hash; without those you would get a syntax error</span>
 <span class="no">Contract</span> <span class="p">({</span> <span class="ss">:age</span> <span class="o">=&gt;</span> <span class="no">Num</span><span class="p">,</span> <span class="ss">:name</span> <span class="o">=&gt;</span> <span class="nb">String</span> <span class="p">})</span> <span class="o">=&gt;</span> <span class="kp">nil</span>
 <span class="k">def</span> <span class="nf">person</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
   <span class="nb">p</span> <span class="n">data</span>
 <span class="k">end</span>
-</pre>
-</div>
-
+</pre></div>
 
 <p>Then if someone tries to call the function with bad data, it will fail:</p>
 
-<div class="highlight">
-<pre><span class="c1"># error: age can't be nil!</span>
+<div class="highlight"><pre><span class="c1"># error: age can't be nil!</span>
 <span class="n">person</span><span class="p">({</span><span class="ss">:name</span> <span class="o">=&gt;</span> <span class="s2">"Adit"</span><span class="p">,</span> <span class="ss">:age</span> <span class="o">=&gt;</span> <span class="kp">nil</span><span class="p">})</span>
-</pre>
-</div>
-
+</pre></div>
 
 <p>You don't need to put a contract on every key. So this call would succeed:</p>
 
-<div class="highlight">
-<pre><span class="c1"># error: age can't be nil!</span>
+<div class="highlight"><pre><span class="c1"># error: age can't be nil!</span>
 <span class="n">person</span><span class="p">({</span><span class="ss">:name</span> <span class="o">=&gt;</span> <span class="s2">"Adit"</span><span class="p">,</span> <span class="ss">:age</span> <span class="o">=&gt;</span> <span class="kp">nil</span><span class="p">,</span> <span class="ss">:foo</span> <span class="o">=&gt;</span> <span class="s2">"bar"</span><span class="p">})</span>
-</pre>
-</div>
-
+</pre></div>
 
 <p>even though we don't specify a type for <code>:foo</code>.</p>
 
@@ -263,8 +229,7 @@ Use the <code>Func</code> contract. <code>Func</code> takes a contract as it's a
 
 <p>Here's a <code>map</code> function that requires an array of numbers, and a function that takes a number and returns a number:</p>
 
-<div class="highlight">
-<pre><span class="no">Contract</span> <span class="no">ArrayOf</span><span class="o">[</span><span class="no">Num</span><span class="o">]</span><span class="p">,</span> <span class="no">Func</span><span class="o">[</span><span class="no">Num</span> <span class="o">=&gt;</span> <span class="no">Num</span><span class="o">]</span> <span class="o">=&gt;</span> <span class="no">ArrayOf</span><span class="o">[</span><span class="no">Num</span><span class="o">]</span>
+<div class="highlight"><pre><span class="no">Contract</span> <span class="no">ArrayOf</span><span class="o">[</span><span class="no">Num</span><span class="o">]</span><span class="p">,</span> <span class="no">Func</span><span class="o">[</span><span class="no">Num</span> <span class="o">=&gt;</span> <span class="no">Num</span><span class="o">]</span> <span class="o">=&gt;</span> <span class="no">ArrayOf</span><span class="o">[</span><span class="no">Num</span><span class="o">]</span>
 <span class="k">def</span> <span class="nf">map</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">func</span><span class="p">)</span>
   <span class="n">ret</span> <span class="o">=</span> <span class="o">[]</span>
   <span class="n">arr</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">x</span><span class="o">|</span>
@@ -272,55 +237,41 @@ Use the <code>Func</code> contract. <code>Func</code> takes a contract as it's a
   <span class="k">end</span>
   <span class="n">ret</span>
 <span class="k">end</span>
-</pre>
-</div>
-
+</pre></div>
 
 <p>This will add the contract <code>Num =&gt; Num</code> on <code>func</code>. Try it with these two examples:</p>
 
-<div class="highlight">
-<pre><span class="nb">p</span> <span class="n">map</span><span class="p">(</span><span class="o">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="o">]</span><span class="p">,</span> <span class="nb">lambda</span> <span class="p">{</span> <span class="o">|</span><span class="n">x</span><span class="o">|</span> <span class="n">x</span> <span class="o">+</span> <span class="mi">1</span> <span class="p">})</span> <span class="c1"># works</span>
+<div class="highlight"><pre><span class="nb">p</span> <span class="n">map</span><span class="p">(</span><span class="o">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="o">]</span><span class="p">,</span> <span class="nb">lambda</span> <span class="p">{</span> <span class="o">|</span><span class="n">x</span><span class="o">|</span> <span class="n">x</span> <span class="o">+</span> <span class="mi">1</span> <span class="p">})</span> <span class="c1"># works</span>
 <span class="nb">p</span> <span class="n">map</span><span class="p">(</span><span class="o">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="o">]</span><span class="p">,</span> <span class="nb">lambda</span> <span class="p">{</span> <span class="o">|</span><span class="n">x</span><span class="o">|</span> <span class="s2">"oops"</span> <span class="p">})</span> <span class="c1"># fails, the lambda returns a string.</span>
-</pre>
-</div>
-
+</pre></div>
 
 <h3>Returning Multiple Values</h3>
 
 <p>Treat the return value as an array. For example, here's a function that returns two numbers:</p>
 
-<div class="highlight">
-<pre><span class="no">Contract</span> <span class="no">Num</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="no">Num</span><span class="p">,</span> <span class="no">Num</span><span class="o">]</span>
+<div class="highlight"><pre><span class="no">Contract</span> <span class="no">Num</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="no">Num</span><span class="p">,</span> <span class="no">Num</span><span class="o">]</span>
 <span class="k">def</span> <span class="nf">mult</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
   <span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="n">x</span><span class="o">+</span><span class="mi">1</span>
 <span class="k">end</span>
-</pre>
-</div>
-
+</pre></div>
 
 <h2>Synonyms For Contracts</h2>
 
 <p>If you use a contract a lot, it's a good idea to give it a meaningful synonym that tells the reader more about what your code returns. For example, suppose you have many functions that return a <code>Hash</code> or <code>nil</code>. If a <code>Hash</code> is returned, it contains information about a person. Your contact might look like this:</p>
 
-<div class="highlight">
-<pre><span class="no">Contract</span> <span class="nb">String</span> <span class="o">=&gt;</span> <span class="no">Or</span><span class="o">[</span><span class="no">Hash</span><span class="p">,</span> <span class="kp">nil</span><span class="o">]</span>
+<div class="highlight"><pre><span class="no">Contract</span> <span class="nb">String</span> <span class="o">=&gt;</span> <span class="no">Or</span><span class="o">[</span><span class="no">Hash</span><span class="p">,</span> <span class="kp">nil</span><span class="o">]</span>
 <span class="k">def</span> <span class="nf">some_func</span><span class="p">(</span><span class="n">str</span><span class="p">)</span>
-</pre>
-</div>
-
+</pre></div>
 
 <p>You can make your contract more meaningful with a synonym:</p>
 
-<div class="highlight">
-<pre><span class="c1"># the synonym</span>
+<div class="highlight"><pre><span class="c1"># the synonym</span>
 <span class="no">Person</span> <span class="o">=</span> <span class="no">Or</span><span class="o">[</span><span class="no">Hash</span><span class="p">,</span> <span class="kp">nil</span><span class="o">]</span>
 
 <span class="c1"># use the synonym here</span>
 <span class="no">Contract</span> <span class="nb">String</span> <span class="o">=&gt;</span> <span class="no">Person</span>
 <span class="k">def</span> <span class="nf">some_func</span><span class="p">(</span><span class="n">str</span><span class="p">)</span>
-</pre>
-</div>
-
+</pre></div>
 
 <p>Now you can use <code>Person</code> wherever you would have used <code>Or[Hash, nil]</code>. Your code is now cleaner and more clearly says what the function is doing.</p>
 
@@ -338,12 +289,9 @@ Use the <code>Func</code> contract. <code>Func</code> takes a contract as it's a
 
 <h3>A Proc</h3>
 
-<div class="highlight">
-<pre><span class="no">Contract</span> <span class="nb">lambda</span> <span class="p">{</span> <span class="o">|</span><span class="n">x</span><span class="o">|</span> <span class="n">x</span><span class="o">.</span><span class="n">is_a?</span> <span class="no">Numeric</span> <span class="p">}</span> <span class="o">=&gt;</span> <span class="no">Num</span>
+<div class="highlight"><pre><span class="no">Contract</span> <span class="nb">lambda</span> <span class="p">{</span> <span class="o">|</span><span class="n">x</span><span class="o">|</span> <span class="n">x</span><span class="o">.</span><span class="n">is_a?</span> <span class="no">Numeric</span> <span class="p">}</span> <span class="o">=&gt;</span> <span class="no">Num</span>
 <span class="k">def</span> <span class="nf">double</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-</pre>
-</div>
-
+</pre></div>
 
 <p>The lambda takes one parameter: the argument that is getting passed to the function. It checks to see if it's a <code>Numeric</code>. If it is, it returns true. Otherwise it returns false.
 It's not good practice to write a lambda right in your contract...if you find yourself doing it often, write it as a class instead:</p>
@@ -352,15 +300,12 @@ It's not good practice to write a lambda right in your contract...if you find yo
 
 <p>Here's how the <code>Num</code> class is defined. It does exactly what the <code>lambda</code> did in the previous example:</p>
 
-<div class="highlight">
-<pre><span class="k">class</span> <span class="nc">Num</span>
+<div class="highlight"><pre><span class="k">class</span> <span class="nc">Num</span>
   <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">valid?</span> <span class="n">val</span>
     <span class="n">val</span><span class="o">.</span><span class="n">is_a?</span> <span class="no">Numeric</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</pre>
-</div>
-
+</pre></div>
 
 <p>The <code>valid?</code> class method takes one parameter: the argument that is getting passed to the function. It returns true or false.</p>
 
@@ -368,8 +313,7 @@ It's not good practice to write a lambda right in your contract...if you find yo
 
 <p>Here's how the <code>Or</code> class is defined:</p>
 
-<div class="highlight">
-<pre><span class="k">class</span> <span class="nc">Or</span> <span class="o">&lt;</span> <span class="no">CallableClass</span>
+<div class="highlight"><pre><span class="k">class</span> <span class="nc">Or</span> <span class="o">&lt;</span> <span class="no">CallableClass</span>
   <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="o">*</span><span class="n">vals</span><span class="p">)</span>
     <span class="vi">@vals</span> <span class="o">=</span> <span class="n">vals</span>
   <span class="k">end</span>
@@ -381,32 +325,24 @@ It's not good practice to write a lambda right in your contract...if you find yo
     <span class="k">end</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</pre>
-</div>
-
+</pre></div>
 
 <p>The <code>Or</code> contract takes a sequence of contracts, and passes if any of them pass. It uses <code>Contract.valid?</code> to validate the value against the contracts.</p>
 
 <p>This class inherits from <code>CallableClass</code>, which allows us to use <code>[]</code> when using the class:</p>
 
-<div class="highlight">
-<pre><span class="no">Contract</span> <span class="no">Or</span><span class="o">[</span><span class="no">Fixnum</span><span class="p">,</span> <span class="nb">Float</span><span class="o">]</span> <span class="o">=&gt;</span> <span class="no">Num</span>
+<div class="highlight"><pre><span class="no">Contract</span> <span class="no">Or</span><span class="o">[</span><span class="no">Fixnum</span><span class="p">,</span> <span class="nb">Float</span><span class="o">]</span> <span class="o">=&gt;</span> <span class="no">Num</span>
 <span class="k">def</span> <span class="nf">double</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
   <span class="mi">2</span> <span class="o">*</span> <span class="n">x</span>
 <span class="k">end</span>
-</pre>
-</div>
-
+</pre></div>
 
 <p>Without <code>CallableClass</code>, we would have to use <code>.new</code> instead:</p>
 
-<div class="highlight">
-<pre><span class="no">Contract</span> <span class="no">Or</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="no">Fixnum</span><span class="p">,</span> <span class="nb">Float</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="no">Num</span>
+<div class="highlight"><pre><span class="no">Contract</span> <span class="no">Or</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="no">Fixnum</span><span class="p">,</span> <span class="nb">Float</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="no">Num</span>
 <span class="k">def</span> <span class="nf">double</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 <span class="c1"># etc</span>
-</pre>
-</div>
-
+</pre></div>
 
 <p>You can use <code>CallableClass</code> in your own contracts to make them callable using <code>[]</code>.</p>
 
@@ -421,13 +357,10 @@ Expected: Contracts::Num,
 
 <p>You can customize this message by overriding the <code>to_s</code> method on your class or proc. For example, suppose we overrode <code>Num</code>'s <code>to_s</code> method:</p>
 
-<div class="highlight">
-<pre><span class="k">def</span> <span class="nc">Num</span><span class="o">.</span><span class="nf">to_s</span>
+<div class="highlight"><pre><span class="k">def</span> <span class="nc">Num</span><span class="o">.</span><span class="nf">to_s</span>
   <span class="s2">"a number please"</span>
 <span class="k">end</span>
-</pre>
-</div>
-
+</pre></div>
 
 <p>Now the error says:</p>
 
@@ -442,15 +375,12 @@ Expected: a number please,
 
 <p>contracts.ruby provides a <code>failure_callback</code> that gets called when a contract fails. By monkeypatching <code>failure_callback</code>, you can customize the behavior of contracts.ruby. For example, here we log every failure instead of raising an error:</p>
 
-<div class="highlight">
-<pre><span class="k">class</span> <span class="nc">Contract</span>
+<div class="highlight"><pre><span class="k">class</span> <span class="nc">Contract</span>
   <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">failure_callback</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
     <span class="n">info</span> <span class="n">failure_msg</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</pre>
-</div>
-
+</pre></div>
 
 <p><code>failure_msg</code> is a function that prints out information about the failure. <code>failure_callback</code> takes a hash with the following values:</p>
 
@@ -467,10 +397,6 @@ Expected: a number please,
 
 <p>If either callback returns <code>false</code>, the method that the contract is guarding will not be called.</p>
 
-<h2>Gotchas</h2>
-
-<p>Contracts don't work on top level functions. Any function with a contract should be in a class.</p>
-
 <h2>Misc</h2>
 
 <p>Please submit any bugs <a href="https://github.com/egonSchiele/contracts.ruby/issues">here</a> and I'll try to get them resolved ASAP!</p>
@@ -486,7 +412,7 @@ Expected: a number please,
       <p>Project maintained by <a href="https://github.com/egonSchiele">egonSchiele</a></p>
       <p>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></p>
     </footer>
-    <!--[if !IE]><script>fixScale(document);</script><!--<![endif]-->
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
               <script type="text/javascript">
             var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
             document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
