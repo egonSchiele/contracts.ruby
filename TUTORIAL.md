@@ -358,7 +358,7 @@ Now the error says:
     Expected: a number please,
     ...
 
-## Failure and Success Callbacks
+## Failure Callbacks
 
 Supposing you don't want contract failures to become exceptions. You run a popular website, and when there's a contract exception you would rather log it and continue than throw an exception and break your site.
 
@@ -379,12 +379,10 @@ end
       :contract => the contract that got violated,
       :class => the method's class,
       :method => the method,
-      :contracts => a list of contracts on the method
+      :contracts => the contract object
     }
 
-There's also a `success_callback` that gets called when a contract succeeds. It doesn't do anything by default, but you can monkeypatch it to do whatever you would like.
-
-If either callback returns `false`, the method that the contract is guarding will not be called.
+If `failure_callback` returns `false`, the method that the contract is guarding will not be called (the default behaviour).
 
 ## Misc
 
