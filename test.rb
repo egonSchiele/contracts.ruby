@@ -26,12 +26,12 @@ end
 def benchmark
   Benchmark.bm 30 do |x|
     x.report 'testing add' do
-      100000.times do |_|
+      1000000.times do |_|
         add(rand(1000), rand(1000))
       end
     end
     x.report 'testing contracts add' do
-      100000.times do |_|
+      1000000.times do |_|
         contracts_add(rand(1000), rand(1000))
       end
     end  
@@ -42,6 +42,9 @@ def profile
   profilers = []
   profilers << MethodProfiler.observe(Contract)
   profilers << MethodProfiler.observe(Object)
+  profilers << MethodProfiler.observe(MethodDecorators)
+  profilers << MethodProfiler.observe(Decorator)
+  profilers << MethodProfiler.observe(UnboundMethod)
   10000.times do |_|
     contracts_add(rand(1000), rand(1000))
   end  
@@ -58,4 +61,4 @@ printer = RubyProf::FlatPrinter.new(result)
 printer.print(STDOUT)
 end
 
-profile
+benchmark

@@ -1,5 +1,5 @@
-require 'decorators'
-require 'builtin_contracts'
+require './lib/decorators'
+require './lib/builtin_contracts'
 
 module Contracts
   def self.included(base)
@@ -19,10 +19,10 @@ module Contracts
 
       def functype(funcname)
         contracts = self.class.decorated_methods[funcname]
-        if contracts.nil? || contracts.empty?
+        if contracts.nil?
           "No contract for #{self.class}.#{funcname}"
         else
-          "#{funcname} :: #{contracts[0]}"
+          "#{funcname} :: #{contracts}"
         end
       end
     end
@@ -36,20 +36,34 @@ end
 #
 # This class also provides useful callbacks and a validation method.
 class Contract < Decorator
-  attr_accessor :contracts, :klass, :method
+  attr_reader :args_contracts, :ret_contract, :klass, :method
   # decorator_name :contract
   def initialize(klass, method, *contracts)
     if contracts[-1].is_a? Hash
       # internally we just convert that return value syntax back to an array
-      contracts = contracts[0, contracts.size - 1] + contracts[-1].keys + contracts[-1].values
+      @args_contracts = contracts[0, contracts.size - 1] + contracts[-1].keys
+      @ret_contract = contracts[-1].values[0]
+      @args_validators = @args_contracts.map do |contract|
+        Contract.make_validator(contract)
+      end
+      @ret_validator = Contract.make_validator(@ret_contract)
     else
       fail "It looks like your contract for #{method} doesn't have a return value. A contract should be written as `Contract arg1, arg2 => return_value`."
     end
-    @klass, @method, @contracts = klass, method, contracts
+    @klass, @method= klass, method
+    @has_func_contracts = args_contracts.index do |contract|
+      contract.is_a? Contracts::Func
+    end
+  end
+
+  def pretty_contract c
+    c.is_a?(Class) ? c.name : c.class.name
   end
 
   def to_s
-    (contracts[0, contracts.size - 1].join(", ") + " => #{contracts[-1]}").gsub("Contracts::", "")
+    args = @args_contracts.map { |c| pretty_contract(c) }.join(", ")
+    ret = pretty_contract(@ret_contract)
+    ("#{args} => #{ret}").gsub("Contracts::", "")
   end
 
   # Given a hash, prints out a failure message.
@@ -73,7 +87,7 @@ class Contract < Decorator
     Expected: #{expected},
     Actual: #{data[:arg].inspect}
     Value guarded in: #{data[:class]}::#{method_name}
-    With Contract: #{data[:contracts].map { |t| t.is_a?(Class) ? t.name : t.class.name }.join(", ") }
+    With Contract: #{data[:contracts]}
     At: #{position} }
   end
 
@@ -94,10 +108,6 @@ class Contract < Decorator
     raise failure_msg(data)
   end
 
-  # Callback for when a contract succeeds. Does nothing by default.
-  def self.success_callback(data)
-  end  
-
   # Used to verify if an argument satisfies a contract.
   #
   # Takes: an argument and a contract.
@@ -106,37 +116,56 @@ class Contract < Decorator
   # whether the contract was valid or not. If it wasn't, metadata
   # contains some useful information about the failure.
   def self.valid?(arg, contract)
-    case contract
-    when Class
-      # e.g. Fixnum
-      validate_class arg, contract
-    when Proc
+    make_validator(contract)[arg]
+  end
+
+  # This is a little weird. For each contract
+  # we pre-make a proc to validate it so we
+  # don't have to go through this decision tree every time.
+  # Seems silly but it saves us a bunch of time (4.3sec vs 5.2sec)
+  def self.make_validator(contract)
+    # if is faster than case!
+    klass = contract.class
+    if klass == Proc
       # e.g. lambda {true}
-      validate_proc arg, contract
-    when Array
+      contract
+    elsif klass == Array
       # e.g. [Num, String]
       # TODO account for these errors too
-      return mkerror(false, arg, contract) unless arg.is_a?(Array)
-      arg.zip(contract).each do |_arg, _contract|
-        res, info = valid?(_arg, _contract)
-        return mkerror(false, arg, contract) unless res
-      end
-    when Hash
+      lambda { |arg|
+        return false unless arg.is_a?(Array)
+        arg.zip(contract).all? do |_arg, _contract|
+          Contract.valid?(_arg, _contract)
+        end
+      }
+    elsif klass == Hash
       # e.g. { :a => Num, :b => String }
-      return mkerror(false, arg, contract) unless arg.is_a?(Hash)
-      validate_hash(arg, contract)
-    when Contracts::Args
-      valid? arg, contract.contract
-    when Contracts::Func
-      arg.is_a?(Method) || arg.is_a?(Proc)
+      lambda { |arg|
+        return false unless arg.is_a?(Hash)
+        contract.keys.all? do |k|
+          Contract.valid?(arg[k], contract[k])
+        end
+      }
+    elsif klass == Contracts::Args
+      lambda { |arg|
+        Contract.valid?(arg, contract.contract)
+      }
+    elsif klass == Contracts::Func
+      lambda { |arg|
+        arg.is_a?(Method) || arg.is_a?(Proc)
+      }
     else
+      # classes and everything else
+      # e.g. Fixnum, Num
       if contract.respond_to? :valid?
-        mkerror(contract.valid?(arg), arg, contract)
+        lambda { |arg| contract.valid?(arg) }
+      elsif klass == Class
+        lambda { |arg| contract == arg.class }
       else
-        mkerror(arg == contract, arg, contract)
+        lambda { |arg| contract == arg }        
       end
     end
-  end
+  end  
 
   def [](*args, &blk)
     call(*args, &blk)
@@ -148,88 +177,40 @@ class Contract < Decorator
 
   def call_with(this, *args, &blk)
     _args = blk ? args + [blk] : args
-    res = Contract.validate_all(_args, @contracts[0, @contracts.size - 1], @klass, @method)
-    return if res == false
 
-    # contracts on methods
-
-    contracts.each_with_index do |contract, i|
-      if contract.is_a? Contracts::Func
-      args[i] = Contract.new(@klass, args[i], *contract.contracts)
+    # check contracts on arguments
+    # fun fact! This is significantly faster than .zip (3.7 secs vs 4.7 secs). Why??
+    last_index = @args_validators.size - 1
+    # times is faster than (0..args.size).each
+    _args.size.times do |i|
+      # this is done to account for extra args (for *args)
+      j = i < last_index ? i : last_index
+      #unless true #@args_contracts[i].valid?(args[i])
+      unless @args_validators[j][_args[i]]
+        call_function = Contract.failure_callback({:arg => _args[i], :contract => @args_contracts[j], :class => @klass, :method => @method, :contracts => self})
+        return unless call_function
       end
-    end      
-    
-    if @method.respond_to? :bind
+    end
+
+    if @has_func_contracts
+      # contracts on methods
+      contracts.each_with_index do |contract, i|
+        if contract.is_a? Contracts::Func
+        args[i] = Contract.new(@klass, args[i], *contract.contracts)
+        end
+      end
+    end
+
+    result = if @method.respond_to? :bind
       # instance method
-      result = @method.bind(this).call(*args, &blk)
+      @method.bind(this).call(*args, &blk)
     else
       # class method
-      result = @method.call(*args, &blk)
+      @method.call(*args, &blk)
     end
-
-    Contract.validate(result, @contracts[-1], @klass, @method, @contracts)
+    unless @ret_validator[result]
+      Contract.failure_callback({:arg => result, :contract => @ret_contract, :class => @klass, :method => @method, :contracts => self})
+    end    
     result
-  end
-
-  private
-
-  def self.mkerror(validates, arg, contract)
-    if validates
-      [true, {}]
-    else
-      [false, { :arg => arg, :contract => contract }]
-    end
-  end
-
-  def self.validate_hash(arg, contract)
-    contract.keys.each do |k|
-      result, info = valid?(arg[k], contract[k])
-      return [result, info] unless result
-    end
-  end
-
-  def self.validate_proc(arg, contract)
-    mkerror(contract[arg], arg, contract)
-  end
-
-  def self.validate_class(arg, contract)
-    valid = if contract.respond_to? :valid?
-              contract.valid? arg
-            else
-              contract == arg.class
-            end
-    mkerror(valid, arg, contract)
-  end
-
-  def self.validate_all(params, contracts, klass, method)
-    # we assume that any mismatch in # of params/contracts
-    # has been checked befoer this point.
-    args_index = contracts.index do |contract|
-      contract.is_a? Contracts::Args
-    end
-    if args_index
-      # there is a *args at this index.
-      # Now we need to see how many arguments this contract
-      # accounts for and just duplicate the contract for all
-      # of those args.
-      args_contract = contracts[args_index]
-      while contracts.size < params.size
-        contracts.insert(args_index, args_contract.dup)
-      end
-    end
-
-    params.zip(contracts).each do |param, contract|
-      result = validate(param, contract, klass, method, contracts)
-      return result if result == false
-    end
-  end
-
-  def self.validate(arg, contract, klass, method, contracts)
-    result, _ = valid?(arg, contract)
-    if result
-      success_callback({:arg => arg, :contract => contract, :class => klass, :method => method, :contracts => contracts})
-    else
-      failure_callback({:arg => arg, :contract => contract, :class => klass, :method => method, :contracts => contracts})
-    end
   end
 end

@@ -1,7 +1,28 @@
 module MethodDecorators
+  @@decorated_method = nil
+  @@decorated_methods = {}
+  def self.decorated_method
+    @@decorated_method
+  end
+
+  def self.decorated_methods
+    @@decorated_methods
+  end
+
+  def self.decorated_methods_set(name, value)
+    @@decorated_methods[name] = value
+  end
+
   def self.extended(klass)
-    class << klass
-      attr_accessor :decorated_methods
+    klass.class_eval do
+      @@__decorated_methods ||= {}
+      def self.__decorated_methods
+        @@__decorated_methods
+      end
+
+      def self.__decorated_methods_set(k, v)
+        @@__decorated_methods[k] = v
+      end
     end
   end
 
@@ -15,6 +36,7 @@ module MethodDecorators
     super
   end
 
+  # For Ruby 1.9
   def singleton_method_added name
     common_method_added name, true
     super
@@ -25,10 +47,6 @@ module MethodDecorators
 
     decorators = @decorators.dup
     @decorators = nil
-    @decorated_methods ||= Hash.new {|h,k| h[k] = []}
-
-    # attr_accessor on the class variable decorated_methods
-    class << self; attr_accessor :decorated_methods; end
 
     decorators.each do |klass, args|
       # a reference to the method gets passed into the contract here. This is good because
@@ -43,26 +61,28 @@ module MethodDecorators
       else
         decorator = klass
       end
-      @decorated_methods[name] << decorator
+      #__decorated_methods_set(name, instance_method(name)) #decorator
+      __decorated_methods_set(name, decorator) #decorator
+      #MethodDecorators.decorated_methods_set(self, name => instance_method(name))
+      #@@decorated_method = instance_method(name)
     end
 
     # in place of this method, we are going to define our own method. This method
     # just calls the decorator passing in all args that were to be passed into the method.
     # The decorator in turn has a reference to the actual method, so it can call it
     # on its own, after doing it's decorating of course.
-    class_eval <<-ruby_eval, __FILE__, __LINE__ + 1
+    foo = <<-ruby_eval
       def #{is_class_method ? "self." : ""}#{name}(*args, &blk)
-        ret = nil
         this = self#{is_class_method ? "" : ".class"}
-        unless this.respond_to?(:decorated_methods) && !this.decorated_methods.nil?
-          raise "Couldn't find decorator for method " + self.class.name + ":#{name}.\nDoes this method look correct to you? If you are using contracts from rspec, rspec wraps classes in it's own class.\nLook at the specs for contracts.ruby as an example of how to write contracts in this case."
-        end
-        this.decorated_methods[#{name.inspect}].each do |decorator|
-          ret = decorator.call_with(self, *args, &blk)
-        end
-        ret
+        return this.__decorated_methods[#{name.inspect}].call_with(self, *args, &blk)
+        #return this.__decorated_methods[#{name.inspect}].bind(self).call(*args, &blk)
+        #return MethodDecorators.decorated_methods[this][#{name.inspect}].bind(self).call(*args, &blk)
+        #return MethodDecorators.decorated_method.bind(self).call(*args, &blk)
+        #return MethodDecorators.decorated_method.call_with(self, *args, &blk)        
+        #this.decorated_methods[#{name.inspect}].call_with(self, *args, &blk)
       end    
     ruby_eval
+    class_eval foo, __FILE__, __LINE__ + 1
   end    
 
   def decorate(klass, *args)

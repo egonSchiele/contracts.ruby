@@ -1,4 +1,4 @@
-require 'lib/contracts'
+require './lib/contracts'
 require 'fixtures/fixtures'
 
 include Contracts
@@ -153,22 +153,4 @@ describe "Contracts:" do
       end
     end
   end
-
-  describe "success callbacks" do
-    before :each do
-      def (::Contract).success_callback(data)
-        false
-      end
-    end
-
-    it "should not call a function for which the contract succeeds when success_callback returns false" do
-      res = @o.double(2)
-      res.should == nil
-    end
-
-    after :each do
-      def (::Contract).success_callback(data)
-      end
-    end
-  end  
 end
