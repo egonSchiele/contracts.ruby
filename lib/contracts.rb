@@ -1,5 +1,5 @@
-require './lib/decorators'
-require './lib/builtin_contracts'
+require 'decorators'
+require 'builtin_contracts'
 
 module Contracts
   def self.included(base)

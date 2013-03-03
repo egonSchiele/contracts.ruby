@@ -1,4 +1,4 @@
-require './lib/testable'
+require 'testable'
 
 =begin rdoc
 This module contains all the builtin contracts.
