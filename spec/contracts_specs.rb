@@ -20,6 +20,27 @@ describe "Contracts:" do
     end
   end
 
+  describe "instance methods" do
+    it "should allow two classes to have the same method with different contracts" do
+      a = A.new
+      b = B.new
+      expect {
+        a.triple(5)
+        b.triple("a string")
+      }.to_not raise_error
+    end
+  end
+
+  describe "instance and class methods" do
+    it "should allow a class to have an instance method and a class method with the same name" do
+      a = A.new
+      expect {
+        a.instance_and_class_method(5)
+        A.instance_and_class_method("a string")
+      }.to_not raise_error
+    end
+  end
+
   describe "class methods" do
     it "should pass for correct input" do
       expect { Object.a_class_method(2) }.to_not raise_error

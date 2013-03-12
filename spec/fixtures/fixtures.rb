@@ -6,12 +6,32 @@ class A
   def good
     true
   end
+
+  Contract Num => Num
+  def triple x
+    x * 3
+  end
+
+  Contract Num => Num
+  def instance_and_class_method x
+    x * 2
+  end
+
+  Contract String => String
+  def self.instance_and_class_method x
+    x * 2
+  end  
 end
 
 class B
   def bad
     false
   end
+
+  Contract String => String
+  def triple x
+    x * 3
+  end  
 end
 
 class C
