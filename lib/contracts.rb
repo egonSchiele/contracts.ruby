@@ -77,7 +77,11 @@ class Contract < Decorator
               end
 
     if RUBY_VERSION =~ /^1\.8/
-      position = data[:method].__file__ + ":" + data[:method].__line__.to_s
+      if data[:method].respond_to?(:__file__)
+        position = data[:method].__file__ + ":" + data[:method].__line__.to_s
+      else
+        position = data[:method].inspect
+      end
     else
       file, line = data[:method].source_location
       position = file + ":" + line.to_s
