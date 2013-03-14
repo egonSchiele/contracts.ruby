@@ -264,6 +264,7 @@ module Contracts
     end
 
     def valid?(vals)
+      return false unless vals.is_a?(Array)
       vals.all? do |val|
         res, _ = Contract.valid?(val, @contract)
         res

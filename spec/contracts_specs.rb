@@ -16,7 +16,7 @@ describe "Contracts:" do
     end
 
     it "should fail for insufficient contracts" do
-      expect { @o.bad_double(2) }.to raise_error
+      expect { @o.bad_double(2) }.to raise_error(ContractError)
     end
   end
 
@@ -47,7 +47,7 @@ describe "Contracts:" do
     end
 
     it "should fail for incorrect input" do
-      expect { Object.a_class_method("bad") }.to raise_error
+      expect { Object.a_class_method("bad") }.to raise_error(ContractError)
     end
   end
 
@@ -61,7 +61,7 @@ describe "Contracts:" do
     end
 
     it "should fail for incorrect input" do
-      expect { @o.hello(1) }.to raise_error
+      expect { @o.hello(1) }.to raise_error(ContractError)
     end
   end
 
@@ -71,7 +71,7 @@ describe "Contracts:" do
     end
 
     it "should fail for incorrect input" do
-      expect { @o.double("bad") }.to raise_error
+      expect { @o.double("bad") }.to raise_error(ContractError)
     end
   end
 
@@ -81,7 +81,7 @@ describe "Contracts:" do
     end
 
     it "should fail for incorrect input" do
-      expect { @o.square("bad") }.to raise_error
+      expect { @o.square("bad") }.to raise_error(ContractError)
     end  
   end
 
@@ -91,11 +91,11 @@ describe "Contracts:" do
     end
 
     it "should fail for insufficient items" do
-      expect { @o.square([1, 2]) }.to raise_error
+      expect { @o.square([1, 2]) }.to raise_error(ContractError)
     end
 
     it "should fail for some incorrect elements" do
-      expect { @o.sum_three([1, 2, "three"]) }.to raise_error
+      expect { @o.sum_three([1, 2, "three"]) }.to raise_error(ContractError)
     end
   end
 
@@ -109,11 +109,11 @@ describe "Contracts:" do
     end
 
     it "should fail if a key with a contract on it isn't provided" do
-      expect { @o.person({:name => "calvin"}) }.to raise_error
+      expect { @o.person({:name => "calvin"}) }.to raise_error(ContractError)
     end
 
     it "should fail for incorrect input" do
-      expect { @o.person({:name => 50, :age => 10}) }.to raise_error    
+      expect { @o.person({:name => 50, :age => 10}) }.to raise_error(ContractError)    
     end    
   end
 
@@ -125,7 +125,7 @@ describe "Contracts:" do
     end
 
     it "should fail for incorrect input" do
-      expect { @o.call() }.to raise_error
+      expect { @o.call(nil) }.to raise_error(ContractError)
     end
   end
 
@@ -135,7 +135,7 @@ describe "Contracts:" do
     end
 
     it "should fail for incorrect input" do
-      expect { @o.sum(1, 2, "bad") }.to raise_error
+      expect { @o.sum(1, 2, "bad") }.to raise_error(ContractError)
     end  
   end
 
@@ -145,14 +145,14 @@ describe "Contracts:" do
     end
 
     it "should fail for a function that doesn't pass the contract" do
-      expect { @o.map([1, 2, 3], lambda { |x| "bad return value" }).to raise_error }
+      expect { @o.map([1, 2, 3], lambda { |x| "bad return value" }).to raise_error(ContractError) }
     end    
   end
 
   describe "default args to functions" do
     it "should work for a function call that relies on default args" do
       expect { @o.default_args.to_not raise_error }
-      expect { @o.default_args("foo").to raise_error }
+      expect { @o.default_args("foo").to raise_error(ContractError) }
     end
   end
 

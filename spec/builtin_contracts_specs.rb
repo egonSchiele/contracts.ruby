@@ -18,7 +18,7 @@ describe "Contracts:" do
     end
 
     it "should fail for Strings" do
-      expect { @o.double("bad") }.to raise_error
+      expect { @o.double("bad") }.to raise_error(ContractError)
     end
   end
 
@@ -28,7 +28,7 @@ describe "Contracts:" do
     end
 
     it "should fail for negative numbers" do
-      expect { @o.pos_test(-1) }.to raise_error
+      expect { @o.pos_test(-1) }.to raise_error(ContractError)
     end
   end
 
@@ -38,7 +38,7 @@ describe "Contracts:" do
     end
 
     it "should fail for positive numbers" do
-      expect { @o.neg_test(1) }.to raise_error
+      expect { @o.neg_test(1) }.to raise_error(ContractError)
     end
   end
 
@@ -59,16 +59,16 @@ describe "Contracts:" do
 
   describe "None:" do
     it "should fail for numbers" do
-      expect { @o.fail_all(1) }.to raise_error
+      expect { @o.fail_all(1) }.to raise_error(ContractError)
     end
     it "should fail for strings" do
-      expect { @o.fail_all("bad") }.to raise_error
+      expect { @o.fail_all("bad") }.to raise_error(ContractError)
     end
     it "should fail for procs" do
-      expect { @o.fail_all(lambda {}) }.to raise_error
+      expect { @o.fail_all(lambda {}) }.to raise_error(ContractError)
     end
     it "should fail for nil" do
-      expect { @o.fail_all(nil) }.to raise_error
+      expect { @o.fail_all(nil) }.to raise_error(ContractError)
     end
   end
 
@@ -82,7 +82,7 @@ describe "Contracts:" do
     end
 
     it "should fail for nil" do
-      expect { @o.num_or_string(nil) }.to raise_error
+      expect { @o.num_or_string(nil) }.to raise_error(ContractError)
     end    
   end
 
@@ -96,11 +96,11 @@ describe "Contracts:" do
     end
 
     it "should fail for an object with neither method" do
-      expect { @o.xor_test(1) }.to raise_error
+      expect { @o.xor_test(1) }.to raise_error(ContractError)
     end
 
     it "should fail for an object with both methods :good and :bad" do
-      expect { @o.xor_test(C.new) }.to raise_error
+      expect { @o.xor_test(C.new) }.to raise_error(ContractError)
     end
   end
 
@@ -110,7 +110,7 @@ describe "Contracts:" do
     end
 
     it "should fail for an object that has a method :good but isn't of class A" do
-      expect { @o.and_test(C.new) }.to raise_error
+      expect { @o.and_test(C.new) }.to raise_error(ContractError)
     end
   end
 
@@ -120,7 +120,7 @@ describe "Contracts:" do
     end
 
     it "should fail for an object that doesn't respond to :good" do
-      expect { @o.responds_test(B.new) }.to raise_error
+      expect { @o.responds_test(B.new) }.to raise_error(ContractError)
     end
   end
 
@@ -130,7 +130,7 @@ describe "Contracts:" do
     end
 
     it "should fail for an object that returns false for method :good" do
-      expect { @o.send_test(C.new) }.to raise_error
+      expect { @o.send_test(C.new) }.to raise_error(ContractError)
     end
   end
 
@@ -140,7 +140,7 @@ describe "Contracts:" do
     end
 
     it "should fail for an object that is not an A" do
-      expect { @o.isa_test(B.new) }.to raise_error
+      expect { @o.isa_test(B.new) }.to raise_error(ContractError)
     end    
   end
 
@@ -150,7 +150,7 @@ describe "Contracts:" do
     end
 
     it "should fail for nil" do
-      expect { @o.not_nil(nil) }.to raise_error
+      expect { @o.not_nil(nil) }.to raise_error(ContractError)
     end
   end
 
@@ -160,8 +160,12 @@ describe "Contracts:" do
     end
 
     it "should fail for an array with one non-num" do
-      expect { @o.product([1, 2, 3, "bad"]) }.to raise_error
+      expect { @o.product([1, 2, 3, "bad"]) }.to raise_error(ContractError)
     end
+
+    it "should fail for a non-array" do
+      expect { @o.product(1) }.to raise_error(ContractError)
+    end    
   end
 
   describe "Bool:" do
@@ -171,7 +175,7 @@ describe "Contracts:" do
     end
 
     it "should fail for nil" do
-      expect { @o.bool_test(nil) }.to raise_error
+      expect { @o.bool_test(nil) }.to raise_error(ContractError)
     end
   end  
 
@@ -185,7 +189,7 @@ describe "Contracts:" do
     end    
 
     it "should fail for strings" do
-      expect { @o.maybe_double("foo") }.to raise_error
+      expect { @o.maybe_double("foo") }.to raise_error(ContractError)
     end
   end  
 end

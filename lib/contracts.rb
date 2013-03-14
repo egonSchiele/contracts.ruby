@@ -1,6 +1,9 @@
 require 'decorators'
 require 'builtin_contracts'
 
+class ContractError < ArgumentError
+end
+
 module Contracts
   def self.included(base)
     common base
@@ -109,7 +112,7 @@ class Contract < Decorator
   #     exit
   #   end
   def self.failure_callback(data)
-    raise failure_msg(data)
+    raise ContractError, failure_msg(data)
   end
 
   # Used to verify if an argument satisfies a contract.
