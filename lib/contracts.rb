@@ -73,7 +73,7 @@ class Contract < Decorator
   # This function is used by the default #failure_callback method
   # and uses the hash passed into the failure_callback method.
   def self.failure_msg(data)
-   expected = if data[:contract].to_s == ""
+   expected = if data[:contract].to_s == "" || data[:contract].is_a?(Hash)
                 data[:contract].inspect
               else
                 data[:contract].to_s
