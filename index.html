@@ -216,8 +216,7 @@ This introduces some new syntax. One of the valid values for a contract is an in
 
 <p>You don't need to put a contract on every key. So this call would succeed:</p>
 
-<div class="highlight"><pre><span class="c1"># error: age can't be nil!</span>
-<span class="n">person</span><span class="p">({</span><span class="ss">:name</span> <span class="o">=&gt;</span> <span class="s2">"Adit"</span><span class="p">,</span> <span class="ss">:age</span> <span class="o">=&gt;</span> <span class="kp">nil</span><span class="p">,</span> <span class="ss">:foo</span> <span class="o">=&gt;</span> <span class="s2">"bar"</span><span class="p">})</span>
+<div class="highlight"><pre><span class="n">person</span><span class="p">({</span><span class="ss">:name</span> <span class="o">=&gt;</span> <span class="s2">"Adit"</span><span class="p">,</span> <span class="ss">:age</span> <span class="o">=&gt;</span> <span class="mi">42</span><span class="p">,</span> <span class="ss">:foo</span> <span class="o">=&gt;</span> <span class="s2">"bar"</span><span class="p">})</span>
 </pre></div>
 
 <p>even though we don't specify a type for <code>:foo</code>.</p>
@@ -369,7 +368,7 @@ Expected: a number please,
 ...
 </code></pre>
 
-<h2>Failure and Success Callbacks</h2>
+<h2>Failure Callbacks</h2>
 
 <p>Supposing you don't want contract failures to become exceptions. You run a popular website, and when there's a contract exception you would rather log it and continue than throw an exception and break your site.</p>
 
@@ -389,13 +388,11 @@ Expected: a number please,
   :contract =&gt; the contract that got violated,
   :class =&gt; the method's class,
   :method =&gt; the method,
-  :contracts =&gt; a list of contracts on the method
+  :contracts =&gt; the contract object
 }
 </code></pre>
 
-<p>There's also a <code>success_callback</code> that gets called when a contract succeeds. It doesn't do anything by default, but you can monkeypatch it to do whatever you would like.</p>
-
-<p>If either callback returns <code>false</code>, the method that the contract is guarding will not be called.</p>
+<p>If <code>failure_callback</code> returns <code>false</code>, the method that the contract is guarding will not be called (the default behaviour).</p>
 
 <h2>Misc</h2>
 
