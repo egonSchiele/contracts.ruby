@@ -197,8 +197,7 @@ person({:name => "Adit", :age => nil})
 You don't need to put a contract on every key. So this call would succeed:
 
 ```ruby
-# error: age can't be nil!
-person({:name => "Adit", :age => nil, :foo => "bar"})
+person({:name => "Adit", :age => 42, :foo => "bar"})
 ```
 
 even though we don't specify a type for `:foo`.
