@@ -174,4 +174,14 @@ describe "Contracts:" do
       end
     end
   end
+
+  describe "functype" do
+    it "should correctly print out a instance method's type" do
+      @o.functype(:double).should_not == ""
+    end
+
+    it "should correctly print out a class method's type" do
+      A.functype(:a_class_method).should_not == ""
+    end    
+  end
 end

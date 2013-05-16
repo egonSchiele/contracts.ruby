@@ -3,6 +3,12 @@ require File.join(File.dirname(__FILE__), "../../lib/contracts")
 include Contracts
 
 class A
+
+  Contract Num => Num
+  def self.a_class_method x
+    x + 1
+  end
+
   def good
     true
   end
