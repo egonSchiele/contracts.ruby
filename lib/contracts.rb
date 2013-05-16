@@ -15,13 +15,23 @@ module Contracts
 
   def self.common base
     base.extend MethodDecorators
+    base.instance_eval do
+      def functype(funcname)
+        contracts = self.decorated_methods[:class_methods][funcname]
+        if contracts.nil?
+          "No contract for #{self}.#{funcname}"
+        else
+          "#{funcname} :: #{contracts}"
+        end
+      end
+    end
     base.class_eval do
       def Contract(*args)
         self.class.Contract(*args)
       end
 
       def functype(funcname)
-        contracts = self.class.decorated_methods[funcname]
+        contracts = self.class.decorated_methods[:instance_methods][funcname]
         if contracts.nil?
           "No contract for #{self.class}.#{funcname}"
         else
