@@ -49,6 +49,7 @@ class C
   end
 end
 
+public # we need this otherwise all these methods will automatically be marked private
 Contract Num => Num
 def Object.a_class_method x
   x + 1
@@ -177,4 +178,10 @@ def maybe_double x
   else
     x * 2
   end
+end
+
+private
+Contract nil => String
+def a_private_method
+  "works"
 end

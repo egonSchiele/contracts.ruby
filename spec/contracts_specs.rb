@@ -1,5 +1,5 @@
-require './lib/contracts'
-require 'fixtures/fixtures'
+require File.join(File.dirname(__FILE__), "../lib/contracts")
+require File.join(File.dirname(__FILE__), "fixtures/fixtures")
 
 include Contracts
 
@@ -183,5 +183,11 @@ describe "Contracts:" do
     it "should correctly print out a class method's type" do
       A.functype(:a_class_method).should_not == ""
     end    
+  end
+
+  describe "private methods" do
+    it "should raise an error if you try to access a private method" do
+      expect { @o.a_private_method }.to raise_error      
+    end
   end
 end

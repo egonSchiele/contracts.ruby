@@ -30,6 +30,7 @@ module MethodDecorators
     # attr_accessor on the class variable decorated_methods
     class << self; attr_accessor :decorated_methods; end
 
+    is_private = nil
     decorators.each do |klass, args|
       # a reference to the method gets passed into the contract here. This is good because
       # we are going to redefine this method with a new name below...so this reference is
@@ -38,9 +39,11 @@ module MethodDecorators
       if is_class_method
         decorator = klass.new(self, method(name), *args)
         @decorated_methods[:class_methods][name] = decorator
+        is_private = self.private_methods.include?(name)
       else
         decorator = klass.new(self, instance_method(name), *args)
         @decorated_methods[:instance_methods][name] = decorator
+        is_private = self.private_instance_methods.include?(name)
       end
     end
 
@@ -55,7 +58,8 @@ module MethodDecorators
           raise "Couldn't find decorator for method " + self.class.name + ":#{name}.\nDoes this method look correct to you? If you are using contracts from rspec, rspec wraps classes in it's own class.\nLook at the specs for contracts.ruby as an example of how to write contracts in this case."
         end
         this.decorated_methods[#{is_class_method ? ":class_methods" : ":instance_methods"}][#{name.inspect}].call_with(self, *args, &blk)
-      end    
+      end
+      #{is_private ? "private #{name.inspect}" : ""}
     ruby_eval
   end    
 
