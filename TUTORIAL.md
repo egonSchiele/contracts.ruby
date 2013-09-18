@@ -391,4 +391,6 @@ See any mistakes in this tutorial? I try to make it bug-free, but they can creep
 
 If you're using the library, please [let me know](https://github.com/egonSchiele) what project you're using it on :)
 
+See the [wiki](https://github.com/egonSchiele/contracts.ruby/wiki) for more info.
+
 Happy Coding!
