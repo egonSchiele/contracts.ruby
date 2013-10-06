@@ -39,11 +39,11 @@ module MethodDecorators
       if is_class_method
         decorator = klass.new(self, method(name), *args)
         @decorated_methods[:class_methods][name] = decorator
-        is_private = self.private_methods.include?(name)
+        is_private = self.private_methods.include?(name.to_s)
       else
         decorator = klass.new(self, instance_method(name), *args)
         @decorated_methods[:instance_methods][name] = decorator
-        is_private = self.private_instance_methods.include?(name)
+        is_private = self.private_instance_methods.include?(name.to_s)
       end
     end
 
