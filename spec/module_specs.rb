@@ -1,6 +1,6 @@
 require 'lib/contracts'
 require 'rubygems'
-require 'ruby-debug'
+
 module Mod
   include Contracts
   Contract Num => Num

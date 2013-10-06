@@ -53,11 +53,16 @@ module MethodDecorators
     # on its own, after doing it's decorating of course.
     class_eval <<-ruby_eval, __FILE__, __LINE__ + 1
       def #{is_class_method ? "self." : ""}#{name}(*args, &blk)
-        this = self#{is_class_method ? "" : ".class"}
-        unless this.respond_to?(:decorated_methods) && !this.decorated_methods.nil?
+        current = self#{is_class_method ? "" : ".class"}
+        ancestors = current.ancestors
+        ancestors.shift # first one is just the class itself
+        while current && !current.respond_to?(:decorated_methods) || current.decorated_methods.nil?
+          current = ancestors.shift
+        end
+        if !current.respond_to?(:decorated_methods) || current.decorated_methods.nil?
           raise "Couldn't find decorator for method " + self.class.name + ":#{name}.\nDoes this method look correct to you? If you are using contracts from rspec, rspec wraps classes in it's own class.\nLook at the specs for contracts.ruby as an example of how to write contracts in this case."
         end
-        this.decorated_methods[#{is_class_method ? ":class_methods" : ":instance_methods"}][#{name.inspect}].call_with(self, *args, &blk)
+        current.decorated_methods[#{is_class_method ? ":class_methods" : ":instance_methods"}][#{name.inspect}].call_with(self, *args, &blk)
       end
       #{is_private ? "private #{name.inspect}" : ""}
     ruby_eval
