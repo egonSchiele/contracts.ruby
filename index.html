@@ -420,28 +420,28 @@ Expected: a number please,
 
 <p>You can use contracts for method overloading! For example, here's a factorial function without method overloading:</p>
 
-<pre><code>Contract Num =&gt; Num
-def fact x
-  if x == 1
-    x
-  else
-    x * fact(x - 1)
-  end
-end
-</code></pre>
+<div class="highlight highlight-ruby"><pre><span class="no">Contract</span> <span class="no">Num</span> <span class="o">=&gt;</span> <span class="no">Num</span>
+<span class="k">def</span> <span class="nf">fact</span> <span class="n">x</span>
+  <span class="k">if</span> <span class="n">x</span> <span class="o">==</span> <span class="mi">1</span>
+    <span class="n">x</span>
+  <span class="k">else</span>
+    <span class="n">x</span> <span class="o">*</span> <span class="n">fact</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</pre></div>
 
 <p>Here it is again, re-written with method overloading:</p>
 
-<pre><code>Contract 1 =&gt; 1
-def fact x
-  x
-end
+<div class="highlight highlight-ruby"><pre><span class="no">Contract</span> <span class="mi">1</span> <span class="o">=&gt;</span> <span class="mi">1</span>
+<span class="k">def</span> <span class="nf">fact</span> <span class="n">x</span>
+  <span class="n">x</span>
+<span class="k">end</span>
 
-Contract Num =&gt; Num
-def fact x
-  x * fact(x - 1)
-end
-</code></pre>
+<span class="no">Contract</span> <span class="no">Num</span> <span class="o">=&gt;</span> <span class="no">Num</span>
+<span class="k">def</span> <span class="nf">fact</span> <span class="n">x</span>
+  <span class="n">x</span> <span class="o">*</span> <span class="n">fact</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+<span class="k">end</span>
+</pre></div>
 
 <p>For an argument, each function will be tried in order. The first function that doesn't raise a <code>ContractError</code> will be used. So in this case, if x == 1, the first function will be used. For all other values, the second function will be used.</p>
 
