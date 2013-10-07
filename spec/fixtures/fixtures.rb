@@ -185,3 +185,14 @@ Contract nil => String
 def a_private_method
   "works"
 end
+
+# for testing inheritance
+class Parent
+  Contract Num => Num
+  def double x
+    x * 2
+  end
+end
+
+class Child < Parent
+end

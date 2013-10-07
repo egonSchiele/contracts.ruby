@@ -190,4 +190,12 @@ describe "Contracts:" do
       expect { @o.a_private_method }.to raise_error      
     end
   end
+
+  describe "inherited methods" do
+    it "should apply the contract to an inherited method" do
+      c = Child.new
+      expect { c.double(2) }.to_not raise_error
+      expect { c.double("asd") }.to raise_error
+    end
+  end
 end
