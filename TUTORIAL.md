@@ -383,6 +383,33 @@ end
 
 If `failure_callback` returns `false`, the method that the contract is guarding will not be called (the default behaviour).
 
+## Method overloading
+
+You can use contracts for method overloading! For example, here's a factorial function without method overloading:
+
+    Contract Num => Num
+    def fact x
+      if x == 1
+        x
+      else
+        x * fact(x - 1)
+      end
+    end
+
+Here it is again, re-written with method overloading:
+
+    Contract 1 => 1
+    def fact x
+      x
+    end
+
+    Contract Num => Num
+    def fact x
+      x * fact(x - 1)
+    end
+
+For an argument, each function will be tried in order. The first function that doesn't raise a `ContractError` will be used. So in this case, if x == 1, the first function will be used. For all other values, the second function will be used.
+
 ## Misc
 
 Please submit any bugs [here](https://github.com/egonSchiele/contracts.ruby/issues) and I'll try to get them resolved ASAP!
