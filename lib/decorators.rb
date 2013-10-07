@@ -38,11 +38,13 @@ module MethodDecorators
       # We assume here that the decorator (klass) responds to .new
       if is_class_method
         decorator = klass.new(self, method(name), *args)
-        @decorated_methods[:class_methods][name] = decorator
+        @decorated_methods[:class_methods][name] ||= []
+        @decorated_methods[:class_methods][name] << decorator
         is_private = self.private_methods.include?(name.to_s)
       else
         decorator = klass.new(self, instance_method(name), *args)
-        @decorated_methods[:instance_methods][name] = decorator
+        @decorated_methods[:instance_methods][name] ||= []
+        @decorated_methods[:instance_methods][name] << decorator
         is_private = self.private_instance_methods.include?(name.to_s)
       end
     end
@@ -62,7 +64,26 @@ module MethodDecorators
         if !current.respond_to?(:decorated_methods) || current.decorated_methods.nil?
           raise "Couldn't find decorator for method " + self.class.name + ":#{name}.\nDoes this method look correct to you? If you are using contracts from rspec, rspec wraps classes in it's own class.\nLook at the specs for contracts.ruby as an example of how to write contracts in this case."
         end
-        current.decorated_methods[#{is_class_method ? ":class_methods" : ":instance_methods"}][#{name.inspect}].call_with(self, *args, &blk)
+        methods = current.decorated_methods[#{is_class_method ? ":class_methods" : ":instance_methods"}][#{name.inspect}]
+
+        # this adds support for overloading methods. Here we go through each method and call it with the arguments.
+        # If we get a ContractError, we move to the next function. Otherwise we return the result.
+        # If we run out of functions, we raise the last ContractError.
+        success = false
+        i = 0
+        result = nil
+        while !success
+          method = methods[i]
+          i += 1
+          begin
+            success = true
+            result = method.call_with(self, *args, &blk)
+          rescue ContractError => e
+            success = false
+            raise e unless methods[i]
+          end
+        end
+        result
       end
       #{is_private ? "private #{name.inspect}" : ""}
     ruby_eval
