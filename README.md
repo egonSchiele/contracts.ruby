@@ -1,5 +1,7 @@
 # contracts.ruby
 
+[![Build Status](https://travis-ci.org/egonSchiele/contracts.ruby.png?branch=master)](https://travis-ci.org/egonSchiele/contracts.ruby)
+
 Contracts let you clearly – even beautifully – express how your code behaves, and free you from writing tons of boilerplate, defensive code.
 
 You can think of contracts as `assert` on steroids.
