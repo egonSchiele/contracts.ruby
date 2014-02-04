@@ -53,9 +53,9 @@ Instead of throwing an exception, you could log it, print a clean error message 
 
 Check out [this awesome tutorial](http://egonschiele.github.com/contracts.ruby).
 
-**Q.** Is this compatible with Ruby 1.9?
+**Q.** What Rubies can I use this with?
 
-**A.** Yes.
+**A.** It's been tested with `1.8.7`, `1.9.2`, `1.9.3`, `2.0.0`, `2.1.0`, and `jruby` (both 1.8 and 1.9 modes).
 
 If you're using the library, please [let me know](https://github.com/egonSchiele) what project you're using it on :)
 
