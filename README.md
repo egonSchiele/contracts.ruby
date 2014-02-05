@@ -10,10 +10,6 @@ You can think of contracts as `assert` on steroids.
 
     gem install contracts
 
-## Running Tests
-
-    rspec spec/*.rb
-
 ## Hello World
 
 A contract is one line of code that you write above a method definition. It validates the arguments to the method, and validates the return value of the method.
@@ -54,6 +50,14 @@ Instead of throwing an exception, you could log it, print a clean error message 
 ## Tutorial
 
 Check out [this awesome tutorial](http://egonschiele.github.com/contracts.ruby).
+
+## Use Cases
+
+Check out [this screencast](https://vimeo.com/85883356).
+
+## Performance
+
+Using contracts.ruby results in very little slowdown. Check out [this blog post](http://adit.io/posts/2013-03-04-How-I-Made-My-Ruby-Project-10x-Faster.html#seconds-6) for more info.
 
 **Q.** What Rubies can I use this with?
 
