@@ -1,5 +1,10 @@
 require 'yard'
 
+# see these resources:
+#
+# http://yardoc.org/guides/extending-yard/writing-handlers.html
+# https://github.com/rkh/yard-sinatra/blob/master/lib/yard/sinatra.rb
+
 class ContractHandler < YARD::Handlers::Ruby::AttributeHandler
   handles method_call(:Contract)
 
