@@ -21,7 +21,7 @@ module Contracts
         if contracts.nil?
           "No contract for #{self}.#{funcname}"
         else
-          "#{funcname} :: #{contracts}"
+          "#{funcname} :: #{contracts[0]}"
         end
       end
     end
@@ -35,7 +35,7 @@ module Contracts
         if contracts.nil?
           "No contract for #{self.class}.#{funcname}"
         else
-          "#{funcname} :: #{contracts}"
+          "#{funcname} :: #{contracts[0]}"
         end
       end
     end
