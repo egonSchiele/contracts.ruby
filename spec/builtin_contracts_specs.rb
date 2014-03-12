@@ -192,4 +192,24 @@ describe "Contracts:" do
       expect { @o.maybe_double("foo") }.to raise_error(ContractError)
     end
   end
+
+  describe 'HashOf:' do
+    context 'given a fulfilled contract' do
+      it { expect(@o.gives_max_value(:panda => 1, :bamboo => 2)).to eq(2) }
+    end
+
+    context 'given an unfulfilled contract' do
+      it { expect { @o.gives_max_value(:panda => '1', :bamboo => '2') }.to raise_error(ContractError) }
+    end
+
+    describe '#to_s' do
+      context 'given Symbol => String' do
+        it { expect(HashOf[Symbol, String].to_s).to eq('Hash<Symbol, String>') }
+      end
+
+      context 'given String => Num' do
+        it { expect(HashOf[String, Num].to_s).to eq('Hash<String, Contracts::Num>') }
+      end
+    end
+  end
 end
