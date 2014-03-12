@@ -83,7 +83,7 @@ describe "Contracts:" do
 
     it "should fail for nil" do
       expect { @o.num_or_string(nil) }.to raise_error(ContractError)
-    end    
+    end
   end
 
   describe "Xor:" do
@@ -141,7 +141,7 @@ describe "Contracts:" do
 
     it "should fail for an object that is not an A" do
       expect { @o.isa_test(B.new) }.to raise_error(ContractError)
-    end    
+    end
   end
 
   describe "Not:" do
@@ -165,7 +165,7 @@ describe "Contracts:" do
 
     it "should fail for a non-array" do
       expect { @o.product(1) }.to raise_error(ContractError)
-    end    
+    end
   end
 
   describe "Bool:" do
@@ -177,7 +177,7 @@ describe "Contracts:" do
     it "should fail for nil" do
       expect { @o.bool_test(nil) }.to raise_error(ContractError)
     end
-  end  
+  end
 
   describe "Maybe:" do
     it "should pass for nums" do
@@ -186,10 +186,10 @@ describe "Contracts:" do
 
     it "should pass for nils" do
       @o.maybe_double(nil).should == nil
-    end    
+    end
 
     it "should fail for strings" do
       expect { @o.maybe_double("foo") }.to raise_error(ContractError)
     end
-  end  
+  end
 end
