@@ -313,6 +313,27 @@ module Contracts
     end
   end
 
+  # Use this to specify the Hash characteristics. Takes two contracts,
+  # one for hash keys and one for hash values.
+  # Example: <tt>HashOf[Symbol, String]</tt>
+  class HashOf < CallableClass
+    def initialize(key, value)
+      @key   = key
+      @value = value
+    end
+
+    def valid?(hash)
+      keys_match = hash.keys.map {|k| Contract.valid?(k, @key) }.all?
+      vals_match = hash.values.map {|v| Contract.valid?(v, @value) }.all?
+
+      [keys_match, vals_match].all?
+    end
+
+    def to_s
+      "Hash<#{@key.to_s}, #{@value.to_s}>"
+    end
+  end
+
   # Takes a Contract.
   # The contract passes if the contract passes or the given value is nil.
   # Maybe(foo) is equivalent to Or[foo, nil].

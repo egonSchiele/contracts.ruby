@@ -180,6 +180,11 @@ def maybe_double x
   end
 end
 
+Contract HashOf[Symbol, Num] => Num
+def gives_max_value(hash)
+  hash.values.max
+end
+
 private
 Contract nil => String
 def a_private_method
