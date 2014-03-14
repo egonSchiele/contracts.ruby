@@ -64,7 +64,7 @@ This can be useful if you're in a repl and want to figure out how a function sho
 
 contracts.ruby comes with a lot of builtin contracts, including:
 
-    Num, Pos, Neg, Any, None, Or, Xor, And, Not, RespondTo, Send, IsA, ArrayOf, Bool, Maybe
+    Num, Pos, Neg, Any, None, Or, Xor, And, Not, RespondTo, Send, IsA, ArrayOf, HashOf, Bool, Maybe
 
 To see all the builtin contracts and what they do, check out the [rdoc](http://rubydoc.info/gems/contracts/Contracts).
 
@@ -201,6 +201,23 @@ person({:name => "Adit", :age => 42, :foo => "bar"})
 ```
 
 even though we don't specify a type for `:foo`.
+
+Peruse this contract on the keys and values of a Hash.
+
+```ruby
+Contract HashOf[Symbol, Num] => Num
+def give_largest_value(hsh)
+  hsh.values.max
+end
+```
+Which you use like so:
+```ruby
+# succeeds
+give_largest_value(a: 1, b: 2, c: 3) # returns 3
+
+# fails
+give_largest_value("a" => 1, 2 => 2, c: 3)
+```
 
 ### Contracts On Functions
 
