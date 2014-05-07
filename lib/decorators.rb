@@ -40,12 +40,14 @@ module MethodDecorators
         decorator = klass.new(self, method(name), *args)
         @decorated_methods[:class_methods][name] ||= []
         @decorated_methods[:class_methods][name] << decorator
-        is_private = self.private_methods.include?(name.to_s)
+        # private_instance_methods is an array of strings on 1.8 and an array of symbols on 1.9
+        is_private = self.private_methods.include?(name) || self.private_methods.include?(name.to_s)
       else
         decorator = klass.new(self, instance_method(name), *args)
         @decorated_methods[:instance_methods][name] ||= []
         @decorated_methods[:instance_methods][name] << decorator
-        is_private = self.private_instance_methods.include?(name.to_s)
+        # private_instance_methods is an array of strings on 1.8 and an array of symbols on 1.9
+        is_private = self.private_instance_methods.include?(name) || self.private_instance_methods.include?(name.to_s)
       end
     end
 
@@ -53,9 +55,46 @@ module MethodDecorators
     # just calls the decorator passing in all args that were to be passed into the method.
     # The decorator in turn has a reference to the actual method, so it can call it
     # on its own, after doing it's decorating of course.
-    class_eval <<-ruby_eval, __FILE__, __LINE__ + 1
+
+=begin
+Very important: THe line `current = #{self}` in the start is crucial.
+Not having it means that any method that used contracts could NOT use `super`
+(see this issue for example: https://github.com/egonSchiele/contracts.ruby/issues/27).
+Here's why: Suppose you have this code:
+
+    class Foo
+      Contract nil => String
+      def to_s
+        "Foo"
+      end
+    end
+
+    class Bar < Foo
+      Contract nil => String
+      def to_s
+        super + "Bar"
+      end
+    end
+
+    b = Bar.new
+    p b.to_s
+        
+    `to_s` in Bar calls `super`. So you expect this to call `Foo`'s to_s. However,
+    we have overwritten the function (that's what this next defn is). So it gets a
+    reference to the function to call by looking at `decorated_methods`.
+
+    Now, this line used to read something like:
+
+      current = self#{is_class_method ? "" : ".class"}
+
+    In that case, `self` would always be `Bar`, regardless of whether you were calling
+    Foo's to_s or Bar's to_s. So you would keep getting Bar's decorated_methods, which
+    means you would always call Bar's to_s...infinite recursion! Instead, you want to
+    call Foo's version of decorated_methods. So the line needs to be `current = #{self}`.
+=end   
+    method_def = %{
       def #{is_class_method ? "self." : ""}#{name}(*args, &blk)
-        current = self#{is_class_method ? "" : ".class"}
+        current = #{self}
         ancestors = current.ancestors
         ancestors.shift # first one is just the class itself
         while current && !current.respond_to?(:decorated_methods) || current.decorated_methods.nil?
@@ -86,7 +125,9 @@ module MethodDecorators
         result
       end
       #{is_private ? "private #{name.inspect}" : ""}
-    ruby_eval
+        }
+
+    class_eval method_def, __FILE__, __LINE__ + 1
   end    
 
   def decorate(klass, *args)
