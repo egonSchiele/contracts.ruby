@@ -99,7 +99,7 @@ By default, an exception is thrown when a contract fails. This can be changed to
 
 <p>contracts.ruby comes with a lot of builtin contracts, including:</p>
 
-<pre><code>Num, Pos, Neg, Any, None, Or, Xor, And, Not, RespondTo, Send, IsA, ArrayOf, Bool, Maybe
+<pre><code>Num, Pos, Neg, Any, None, Or, Xor, And, Not, RespondTo, Send, Exactly, ArrayOf, HashOf, Bool, Maybe
 </code></pre>
 
 <p>To see all the builtin contracts and what they do, check out the <a href="http://rubydoc.info/gems/contracts/Contracts">rdoc</a>.</p>
@@ -232,6 +232,23 @@ This introduces some new syntax. One of the valid values for a contract is an in
 </pre></div>
 
 <p>even though we don't specify a type for <code>:foo</code>.</p>
+
+<p>Peruse this contract on the keys and values of a Hash.</p>
+
+<div class="highlight highlight-ruby"><pre><span class="no">Contract</span> <span class="no">HashOf</span><span class="o">[</span><span class="no">Symbol</span><span class="p">,</span> <span class="no">Num</span><span class="o">]</span> <span class="o">=&gt;</span> <span class="no">Num</span>
+<span class="k">def</span> <span class="nf">give_largest_value</span><span class="p">(</span><span class="n">hsh</span><span class="p">)</span>
+  <span class="n">hsh</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">max</span>
+<span class="k">end</span>
+</pre></div>
+
+<p>Which you use like so:</p>
+
+<div class="highlight highlight-ruby"><pre><span class="c1"># succeeds</span>
+<span class="n">give_largest_value</span><span class="p">(</span><span class="ss">a</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="ss">b</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="ss">c</span><span class="p">:</span> <span class="mi">3</span><span class="p">)</span> <span class="c1"># returns 3</span>
+
+<span class="c1"># fails</span>
+<span class="n">give_largest_value</span><span class="p">(</span><span class="s2">"a"</span> <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span> <span class="o">=&gt;</span> <span class="mi">2</span><span class="p">,</span> <span class="ss">c</span><span class="p">:</span> <span class="mi">3</span><span class="p">)</span>
+</pre></div>
 
 <h3>
 <a name="contracts-on-functions" class="anchor" href="#contracts-on-functions"><span class="octicon octicon-link"></span></a>Contracts On Functions</h3>
@@ -470,7 +487,7 @@ Expected: a number please,
           </script>
           <script type="text/javascript">
             try {
-              var pageTracker = _gat._getTracker("UA-29851666-1");
+              var pageTracker = _gat._getTracker("UA-32498338-1");
             pageTracker._trackPageview();
             } catch(err) {}
           </script>
