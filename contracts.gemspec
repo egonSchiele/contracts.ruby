@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
     s.name        = "contracts"
-    s.version     = "0.3"
-    s.date        = "2012-06-07"
+    s.version     = "0.4"
+    s.date        = "2014-05-08"
     s.summary     = "Contracts for Ruby."
     s.description = "This library provides contracts for Ruby. Contracts let you clearly express how your code behaves, and free you from writing tons of boilerplate, defensive code."
     s.author      = "Aditya Bhargava"
