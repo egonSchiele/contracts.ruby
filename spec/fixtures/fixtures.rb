@@ -121,7 +121,7 @@ Contract Xor[RespondTo[:good], RespondTo[:bad]] => nil
 def xor_test(x)
 end
 
-Contract And[IsA[A], RespondTo[:good]] => nil
+Contract And[A, RespondTo[:good]] => nil
 def and_test(x)
 end
 
@@ -131,10 +131,6 @@ end
 
 Contract Send[:good] => nil
 def send_test(x)
-end
-
-Contract IsA[A] => nil
-def isa_test(x)
 end
 
 Contract Not[nil] => nil
@@ -185,11 +181,11 @@ def gives_max_value(hash)
   hash.values.max
 end
 
-private
 Contract nil => String
 def a_private_method
   "works"
 end
+private :a_private_method
 
 # for testing inheritance
 class Parent
@@ -200,4 +196,13 @@ class Parent
 end
 
 class Child < Parent
+end
+
+Contract Parent => Parent
+def id_ a
+  a
+end
+
+Contract Exactly[Parent] => nil
+def exactly_test(x)
 end

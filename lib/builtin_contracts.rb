@@ -218,22 +218,23 @@ module Contracts
     end  
   end
 
-  # Takes a class +A+. If argument.is_a? +A+, the contract passes.
-  # Example: <tt>IsA[Numeric]</tt>
-  class IsA < CallableClass
+  # Takes a class +A+. If argument is an object of type +A+, the contract passes.
+  # If it is a subclass of A (or not related to A in any way), it fails.
+  # Example: <tt>Exactly[Numeric]</tt>
+  class Exactly < CallableClass
     def initialize(cls)
       @cls = cls
     end
 
     def valid?(val)
-      val.is_a? @cls
+      val.class == @cls
     end
 
     def to_s
-      "a #{@cls.inspect}"
+      "exactly #{@cls.inspect}"
     end
   end
-
+  
   # Takes a variable number of contracts. The contract
   # passes if all of those contracts fail for the given argument.
   # Example: <tt>Not[nil]</tt>

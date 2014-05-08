@@ -134,13 +134,17 @@ describe "Contracts:" do
     end
   end
 
-  describe "IsA:" do
-    it "should pass for an object that is an A" do
-      expect { @o.isa_test(A.new) }.to_not raise_error
+  describe "Exactly:" do
+    it "should pass for an object that is exactly a Parent" do
+      expect { @o.exactly_test(Parent.new) }.to_not raise_error
     end
 
-    it "should fail for an object that is not an A" do
-      expect { @o.isa_test(B.new) }.to raise_error(ContractError)
+    it "should fail for an object that inherits from Parent" do
+      expect { @o.exactly_test(Child.new) }.to raise_error(ContractError)
+    end
+
+    it "should fail for an object that is not related to Parent at all" do
+      expect { @o.exactly_test(A.new) }.to raise_error(ContractError)
     end
   end
 

@@ -64,7 +64,7 @@ This can be useful if you're in a repl and want to figure out how a function sho
 
 contracts.ruby comes with a lot of builtin contracts, including:
 
-    Num, Pos, Neg, Any, None, Or, Xor, And, Not, RespondTo, Send, IsA, ArrayOf, HashOf, Bool, Maybe
+    Num, Pos, Neg, Any, None, Or, Xor, And, Not, RespondTo, Send, Exactly, ArrayOf, HashOf, Bool, Maybe
 
 To see all the builtin contracts and what they do, check out the [rdoc](http://rubydoc.info/gems/contracts/Contracts).
 

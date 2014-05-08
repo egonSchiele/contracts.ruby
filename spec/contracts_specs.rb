@@ -141,18 +141,30 @@ describe "Contracts:" do
 
   describe "contracts on functions" do
     it "should pass for a function that passes the contract" do
-      expect { @o.map([1, 2, 3], lambda { |x| x + 1 }).to_not raise_error }
+      expect { @o.map([1, 2, 3], lambda { |x| x + 1 }) }.to_not raise_error
     end
 
     it "should fail for a function that doesn't pass the contract" do
-      expect { @o.map([1, 2, 3], lambda { |x| "bad return value" }).to raise_error(ContractError) }
+      expect { @o.map([1, 2, 3], lambda { |x| "bad return value" }) }.to raise_error(ContractError)
     end    
   end
 
   describe "default args to functions" do
     it "should work for a function call that relies on default args" do
-      expect { @o.default_args.to_not raise_error }
-      expect { @o.default_args("foo").to raise_error(ContractError) }
+      expect { @o.default_args }.to_not raise_error
+      expect { @o.default_args("foo") }.to raise_error(ContractError)
+    end
+  end
+
+  describe "classes" do
+    it "should not fail for an object that is the exact type as the contract" do
+      p = Parent.new
+      expect { @o.id_(p) }.to_not raise_error
+    end
+
+    it "should not fail for an object that is a subclass of the type in the contract" do
+      c = Child.new
+      expect { @o.id_(c) }.to_not raise_error
     end
   end
 

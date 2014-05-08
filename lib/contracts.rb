@@ -177,7 +177,7 @@ class Contract < Decorator
       if contract.respond_to? :valid?
         lambda { |arg| contract.valid?(arg) }
       elsif klass == Class
-        lambda { |arg| contract == arg.class }
+        lambda { |arg| arg.is_a?(contract) }
       else
         lambda { |arg| contract == arg }        
       end
