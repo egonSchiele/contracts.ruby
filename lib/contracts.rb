@@ -100,7 +100,7 @@ class Contract < Decorator
       position = file + ":" + line.to_s
     end
    method_name = data[:method].is_a?(Proc) ? "Proc" : data[:method].name
-%{Contract violation:
+%{Contract violation for argument #{data[:arg_pos]} of #{data[:total_args]}:
     Expected: #{expected},
     Actual: #{data[:arg].inspect}
     Value guarded in: #{data[:class]}::#{method_name}
@@ -204,7 +204,7 @@ class Contract < Decorator
       j = i < last_index ? i : last_index
       #unless true #@args_contracts[i].valid?(args[i])
       unless @args_validators[j][_args[i]]
-        call_function = Contract.failure_callback({:arg => _args[i], :contract => @args_contracts[j], :class => @klass, :method => @method, :contracts => self})
+        call_function = Contract.failure_callback({:arg => _args[i], :contract => @args_contracts[j], :class => @klass, :method => @method, :contracts => self, :arg_pos => i+1, :total_args => _args.size})
         return unless call_function
       end
     end
