@@ -100,7 +100,14 @@ class Contract < Decorator
       position = file + ":" + line.to_s
     end
    method_name = data[:method].is_a?(Proc) ? "Proc" : data[:method].name
-%{Contract violation for argument #{data[:arg_pos]} of #{data[:total_args]}:
+
+   header = if data[:return_value]
+     "Contract violation for return value:"
+   else
+     "Contract violation for argument #{data[:arg_pos]} of #{data[:total_args]}:"
+   end
+
+%{#{header}
     Expected: #{expected},
     Actual: #{data[:arg].inspect}
     Value guarded in: #{data[:class]}::#{method_name}
@@ -211,7 +218,7 @@ class Contract < Decorator
 
     if @has_func_contracts
       # contracts on methods
-      contracts.each_with_index do |contract, i|
+      @args_contracts.each_with_index do |contract, i|
         if contract.is_a? Contracts::Func
         args[i] = Contract.new(@klass, args[i], *contract.contracts)
         end
@@ -226,7 +233,7 @@ class Contract < Decorator
       @method.call(*args, &blk)
     end
     unless @ret_validator[result]
-      Contract.failure_callback({:arg => result, :contract => @ret_contract, :class => @klass, :method => @method, :contracts => self})
+      Contract.failure_callback({:arg => result, :contract => @ret_contract, :class => @klass, :method => @method, :contracts => self, :return_value => true})
     end    
     result
   end
