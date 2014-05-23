@@ -260,12 +260,14 @@ module Contracts
   # If it passes for all elements, the contract passes.
   # Example: <tt>ArrayOf[Num]</tt>
   class ArrayOf < CallableClass
-    def initialize(contract)
+    def initialize(contract, length = nil)
       @contract = contract
+      @length = length
     end
 
     def valid?(vals)
       return false unless vals.is_a?(Array)
+      return false if @length && vals.length != @length
       vals.all? do |val|
         res, _ = Contract.valid?(val, @contract)
         res
@@ -273,7 +275,7 @@ module Contracts
     end
 
     def to_s
-      "an array of #{@contract}"
+      (@length ? "a #{@length} element" : "an") + " array of #{@contract}"
     end
 
     def testable?
