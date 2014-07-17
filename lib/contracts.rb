@@ -157,7 +157,7 @@ class Contract < Decorator
       # e.g. [Num, String]
       # TODO account for these errors too
       lambda { |arg|
-        return false unless arg.is_a?(Array)
+        return false unless arg.is_a?(Array) && arg.length == contract.length
         arg.zip(contract).all? do |_arg, _contract|
           Contract.valid?(_arg, _contract)
         end
