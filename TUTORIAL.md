@@ -19,8 +19,8 @@ A simple example:
 ```ruby
 Contract Num, Num => Num
 def add(a, b)
-   a + b
- end
+  a + b
+end
 ```
 
 Here, the contract is `Contract Num, Num => Num`. This says that the `add` function takes two numbers and returns a number.
@@ -33,7 +33,7 @@ include Contracts
 
 Contract Num, Num => Num
 def add(a, b)
-   a + b
+  a + b
 end
 
 puts add(1, "foo")
