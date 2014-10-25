@@ -61,7 +61,7 @@ Using contracts.ruby results in very little slowdown. Check out [this blog post]
 
 **Q.** What Rubies can I use this with?
 
-**A.** It's been tested with `1.8.7`, `1.9.2`, `1.9.3`, `2.0.0`, `2.1.0`, and `jruby` (both 1.8 and 1.9 modes).
+**A.** It's been tested with `1.8.7`, `1.9.2`, `1.9.3`, `2.0.0`, `2.1`, and `jruby` (both 1.8 and 1.9 modes).
 
 If you're using the library, please [let me know](https://github.com/egonSchiele) what project you're using it on :)
 
