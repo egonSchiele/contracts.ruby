@@ -200,6 +200,18 @@ class Contract < Decorator
   end
 
   def call_with(this, *args, &blk)
+
+    # Don't check contracts at all if NO_CONTRACTS is specified.
+    if ENV["NO_CONTRACTS"]
+      if @method.respond_to? :bind
+        # instance method
+        return @method.bind(this).call(*args, &blk)
+      else
+        # class method
+        return @method.call(*args, &blk)
+      end
+    end
+
     _args = blk ? args + [blk] : args
 
     # check contracts on arguments
