@@ -65,6 +65,15 @@ Using contracts.ruby results in very little slowdown. Check out [this blog post]
 
 If you're using the library, please [let me know](https://github.com/egonSchiele) what project you're using it on :)
 
+If you want 0 performance impact in production, you can just add the following 
+
+```ruby
+ENV["NO_CONTRACTS"] = true
+```
+
+In one of your initializers, notice that method overloading(with same amount of parameters) is not supported when not using the contracts.
+
+
 ## Credits
 
 Inspired by [contracts.coffee](http://disnetdev.com/contracts.coffee/).
