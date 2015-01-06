@@ -46,7 +46,7 @@ You'll see a detailed error message like so:
         Actual: "foo"
         Value guarded in: Object::add
         With Contract: Contracts::Num, Contracts::Num
-        At: foo.rb:6 
+        At: foo.rb:6
 
 That tells you that your contract was violated! `add` expected a `Num`, and got a string (`"foo"`) instead.
 By default, an exception is thrown when a contract fails. This can be changed to do whatever you want. More on this later.
@@ -155,7 +155,7 @@ end
 
 This function uses varargs (`*args`) instead of an array. To make a contract on varargs, use the `Args` contract. It takes one contract as an argument and uses it to validate every element passed in through `*args`. So for example,
 
-`Args[Num]` means they should all be numbers. 
+`Args[Num]` means they should all be numbers.
 
 `Args[Or[Num, String]]` means they should all be numbers or strings.
 
@@ -399,6 +399,10 @@ end
     }
 
 If `failure_callback` returns `false`, the method that the contract is guarding will not be called (the default behaviour).
+
+## Disabling contracts
+
+If you want to disable contracts, set the `NO_CONTRACTS` environment variable. This will disable contracts completely.
 
 ## Method overloading
 
