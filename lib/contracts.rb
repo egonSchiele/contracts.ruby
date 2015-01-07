@@ -2,6 +2,15 @@ require 'decorators'
 require 'builtin_contracts'
 
 class ContractError < ArgumentError
+  def to_contract_error
+    self
+  end
+end
+
+class PatternMatchingError < ArgumentError
+  def to_contract_error
+    ContractError.new(to_s)
+  end
 end
 
 module Contracts
@@ -129,7 +138,7 @@ class Contract < Decorator
   #     exit
   #   end
   def self.failure_callback(data)
-    raise ContractError, failure_msg(data)
+    raise data[:contracts].failure_exception, failure_msg(data)
   end
 
   # Used to verify if an argument satisfies a contract.
@@ -248,5 +257,25 @@ class Contract < Decorator
       Contract.failure_callback({:arg => result, :contract => @ret_contract, :class => @klass, :method => @method, :contracts => self, :return_value => true})
     end    
     result
+  end
+
+  def failure_exception
+    pattern_match_exception || regular_exception
+  end
+
+  def pattern_match_exception
+    pattern_match? && PatternMatchingError
+  end
+
+  def regular_exception
+    !pattern_match? && ContractError
+  end
+
+  def pattern_match!
+    @pattern_match = true
+  end
+
+  def pattern_match?
+    !!@pattern_match
   end
 end

@@ -20,6 +20,29 @@ describe "Contracts:" do
     end
   end
 
+  describe "pattern matching" do
+    let(:string_with_hello) { "Hello, world" }
+    let(:string_without_hello) { "Hi, world" }
+    let(:expected_decorated_string) { "Hello, world!" }
+    subject { PatternMatchingExample.new }
+
+    it "should work as expected when there is no contract violation" do
+      expect(
+        subject.process_request(PatternMatchingExample::Success[string_with_hello])
+      ).to eq(PatternMatchingExample::Success[expected_decorated_string])
+
+      expect(
+        subject.process_request(PatternMatchingExample::Failure.new)
+      ).to be_a(PatternMatchingExample::Failure)
+    end
+
+    it "should not fall through to next pattern when there is a deep contract violation" do
+      expect {
+        subject.process_request(PatternMatchingExample::Success[string_without_hello])
+      }.to raise_error(ContractError)
+    end
+  end
+
   describe "instance methods" do
     it "should allow two classes to have the same method with different contracts" do
       a = A.new
