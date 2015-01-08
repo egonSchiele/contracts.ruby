@@ -119,7 +119,7 @@ Here's why: Suppose you have this code:
         success = false
         i = 0
         result = nil
-        expected_error = methods[0].pattern_match? ? PatternMatchingError : ContractError
+        expected_error = methods[0].failure_exception
         while !success
           method = methods[i]
           i += 1
