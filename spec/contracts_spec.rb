@@ -148,13 +148,13 @@ RSpec.describe "Contracts:" do
 
   describe "blocks" do
     it "should pass for correct input" do
-      expect { @o.call {
+      expect { @o.do_call {
         2 + 2
       }}.to_not raise_error
     end
 
     it "should fail for incorrect input" do
-      expect { @o.call(nil) }.to raise_error(ContractError)
+      expect { @o.do_call(nil) }.to raise_error(ContractError)
     end
   end
 
@@ -211,7 +211,7 @@ RSpec.describe "Contracts:" do
 
     after :each do
       def (::Contract).failure_callback(data)
-        raise failure_msg(data)
+        ::Contract::DEFAULT_FAILURE_CALLBACK.call(data)
       end
     end
   end

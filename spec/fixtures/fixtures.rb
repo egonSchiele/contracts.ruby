@@ -86,7 +86,7 @@ def person(data)
 end
 
 Contract Proc => Any
-def call(&blk)
+def do_call(&blk)
   blk.call
 end
 

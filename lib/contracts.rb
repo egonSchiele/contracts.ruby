@@ -60,6 +60,13 @@ end
 #
 # This class also provides useful callbacks and a validation method.
 class Contract < Decorator
+  # Default implementation of failure_callback. Provided as a block to be able
+  # to monkey patch #failure_callback only temporary and then switch it back.
+  # First important usage - for specs.
+  DEFAULT_FAILURE_CALLBACK = Proc.new do |data|
+    raise data[:contracts].failure_exception, failure_msg(data)
+  end
+
   attr_reader :args_contracts, :ret_contract, :klass, :method
   # decorator_name :contract
   def initialize(klass, method, *contracts)
@@ -140,7 +147,7 @@ class Contract < Decorator
   #     exit
   #   end
   def self.failure_callback(data)
-    raise data[:contracts].failure_exception, failure_msg(data)
+    DEFAULT_FAILURE_CALLBACK.call(data)
   end
 
   # Used to verify if an argument satisfies a contract.

@@ -76,7 +76,7 @@ RSpec.configure do |config|
   # the seed, which is printed after each run.
   #     --seed 1234
   # Unable to use it now
-  #config.order = :random
+  config.order = :random
 
   # Seed global randomization in this process using the `--seed` CLI option.
   # Setting this allows you to use `--seed` to deterministically reproduce
