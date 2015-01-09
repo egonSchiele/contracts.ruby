@@ -1,5 +1,7 @@
 module MethodDecorators
   def self.extended(klass)
+    return if klass.respond_to?(:decorated_methods=)
+
     class << klass
       attr_accessor :decorated_methods
     end
@@ -26,9 +28,6 @@ module MethodDecorators
     decorators = @decorators.dup
     @decorators = nil
     @decorated_methods ||= {:class_methods => {}, :instance_methods => {}}
-
-    # attr_accessor on the class variable decorated_methods
-    class << self; attr_accessor :decorated_methods; end
 
     if is_class_method
       method_reference = method(name)

@@ -23,6 +23,8 @@ module Contracts
   end
 
   def self.common base
+    return if base.respond_to?(:Contract)
+
     base.extend MethodDecorators
     base.instance_eval do
       def functype(funcname)
