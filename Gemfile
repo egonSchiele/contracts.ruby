@@ -2,4 +2,11 @@ source "http://rubygems.org"
 
 gemspec
 
-gem "rspec"
+group :test do
+  gem "rspec"
+end
+
+group :development do
+  gem "method_profiler"
+  gem "ruby-prof"
+end

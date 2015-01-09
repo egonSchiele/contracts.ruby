@@ -10,3 +10,4 @@ rvm:
   - jruby-19mode # JRuby in 1.9 mode
 
 script: bundle exec rspec
+bundler_args: --without development
