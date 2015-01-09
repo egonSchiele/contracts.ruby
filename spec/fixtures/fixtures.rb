@@ -206,3 +206,35 @@ end
 Contract Exactly[Parent] => nil
 def exactly_test(x)
 end
+
+# pattern matching example with possible deep contract violation
+class PatternMatchingExample
+  class Success < Struct.new(:request)
+  end
+
+  class Failure
+  end
+
+  Response = Or[Success, Failure]
+
+  class StringWithHello
+    def self.valid?(string)
+      String === string && !!string.match(/hello/i)
+    end
+  end
+
+  Contract Success => Response
+  def process_request(status)
+    Success[decorated_request(status.request)]
+  end
+
+  Contract Any => Response
+  def process_request(status)
+    Failure.new
+  end
+
+  Contract StringWithHello => String
+  def decorated_request(request)
+    request + "!"
+  end
+end
