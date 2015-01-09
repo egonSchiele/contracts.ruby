@@ -3,7 +3,7 @@ require_relative "fixtures/fixtures"
 
 include Contracts
 
-describe "Contracts:" do
+RSpec.describe "Contracts:" do
   before :all do
     @o = Object.new
   end
@@ -206,7 +206,7 @@ describe "Contracts:" do
 
     it "should not call a function for which the contract fails when failure_callback returns false" do
       res = @o.double("bad")
-      res.should == nil
+      expect(res).to eq(nil)
     end
 
     after :each do
@@ -218,11 +218,11 @@ describe "Contracts:" do
 
   describe "functype" do
     it "should correctly print out a instance method's type" do
-      @o.functype(:double).should_not == ""
+      expect(@o.functype(:double)).not_to eq("")
     end
 
     it "should correctly print out a class method's type" do
-      A.functype(:a_class_method).should_not == ""
+      expect(A.functype(:a_class_method)).not_to eq("")
     end
   end
 

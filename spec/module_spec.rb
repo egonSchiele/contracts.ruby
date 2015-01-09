@@ -8,7 +8,7 @@ module Mod
   end
 end
 
-describe "module methods" do
+RSpec.describe "module methods" do
   it "should pass for correct input" do
     expect { Mod.a_module_method(2) }.to_not raise_error
   end
