@@ -1,4 +1,4 @@
-require File.join(File.dirname(__FILE__), "../../lib/contracts")
+require_relative "../../lib/contracts"
 
 include Contracts
 

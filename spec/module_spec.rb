@@ -1,6 +1,4 @@
-#require 'lib/contracts'
-require File.join(File.dirname(__FILE__), "../lib/contracts")
-require 'rubygems'
+require_relative "../lib/contracts"
 
 module Mod
   include Contracts
