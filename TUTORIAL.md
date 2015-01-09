@@ -79,7 +79,7 @@ def hello(name)
 end
 ```
 
-You always need to specify a contract for the return value. In this example, `hello` doesn't return anything, so the contract is `nil`. Now you know that you can use a constant like `nil` as the of a contract. Valid values for a contract are:
+You always need to specify a contract for the return value. In this example, `hello` doesn't return anything, so the contract is `nil`. Now you know that you can use a constant like `nil` as the end of a contract. Valid values for a contract are:
 
 - the name of a class (like `String` or `Fixnum`)
 - a constant (like `nil` or `1`)
