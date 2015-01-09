@@ -26,7 +26,7 @@ class A
   Contract String => String
   def self.instance_and_class_method x
     x * 2
-  end  
+  end
 end
 
 class B
@@ -37,7 +37,7 @@ class B
   Contract String => String
   def triple x
     x * 3
-  end  
+  end
 end
 
 class C
@@ -228,7 +228,7 @@ class PatternMatchingExample
     Success[decorated_request(status.request)]
   end
 
-  Contract Any => Response
+  Contract Failure => Response
   def process_request(status)
     Failure.new
   end

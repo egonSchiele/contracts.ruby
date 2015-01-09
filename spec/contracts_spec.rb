@@ -41,6 +41,12 @@ describe "Contracts:" do
         subject.process_request(PatternMatchingExample::Success[string_without_hello])
       }.to raise_error(ContractError)
     end
+
+    it "should fail when the pattern-matched method's contract fails" do
+      expect {
+        subject.process_request("bad input")
+      }.to raise_error(ContractError)
+    end
   end
 
   describe "instance methods" do
@@ -105,7 +111,7 @@ describe "Contracts:" do
 
     it "should fail for incorrect input" do
       expect { @o.square("bad") }.to raise_error(ContractError)
-    end  
+    end
   end
 
   describe "Arrays" do
@@ -136,8 +142,8 @@ describe "Contracts:" do
     end
 
     it "should fail for incorrect input" do
-      expect { @o.person({:name => 50, :age => 10}) }.to raise_error(ContractError)    
-    end    
+      expect { @o.person({:name => 50, :age => 10}) }.to raise_error(ContractError)
+    end
   end
 
   describe "blocks" do
@@ -159,7 +165,7 @@ describe "Contracts:" do
 
     it "should fail for incorrect input" do
       expect { @o.sum(1, 2, "bad") }.to raise_error(ContractError)
-    end  
+    end
   end
 
   describe "contracts on functions" do
@@ -169,7 +175,7 @@ describe "Contracts:" do
 
     it "should fail for a function that doesn't pass the contract" do
       expect { @o.map([1, 2, 3], lambda { |x| "bad return value" }) }.to raise_error(ContractError)
-    end    
+    end
   end
 
   describe "default args to functions" do
@@ -205,7 +211,7 @@ describe "Contracts:" do
 
     after :each do
       def (::Contract).failure_callback(data)
-        raise failure_msg(data)        
+        raise failure_msg(data)
       end
     end
   end
@@ -217,12 +223,12 @@ describe "Contracts:" do
 
     it "should correctly print out a class method's type" do
       A.functype(:a_class_method).should_not == ""
-    end    
+    end
   end
 
   describe "private methods" do
     it "should raise an error if you try to access a private method" do
-      expect { @o.a_private_method }.to raise_error      
+      expect { @o.a_private_method }.to raise_error
     end
   end
 

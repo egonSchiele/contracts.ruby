@@ -48,7 +48,7 @@ module Contracts
         end
       end
     end
-  end    
+  end
 end
 
 # This is the main Contract class. When you write a new contract, you'll
@@ -195,10 +195,10 @@ class Contract < Decorator
       elsif klass == Class
         lambda { |arg| arg.is_a?(contract) }
       else
-        lambda { |arg| contract == arg }        
+        lambda { |arg| contract == arg }
       end
     end
-  end  
+  end
 
   def [](*args, &blk)
     call(*args, &blk)
@@ -255,7 +255,7 @@ class Contract < Decorator
     end
     unless @ret_validator[result]
       Contract.failure_callback({:arg => result, :contract => @ret_contract, :class => @klass, :method => @method, :contracts => self, :return_value => true})
-    end    
+    end
     result
   end
 
