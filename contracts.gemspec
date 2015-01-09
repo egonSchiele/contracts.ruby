@@ -1,4 +1,4 @@
-require_relative 'lib/contracts/version'
+require File.expand_path(File.join(__FILE__, '../lib/contracts/version'))
 
 Gem::Specification.new do |s|
   s.name        = "contracts"

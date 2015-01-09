@@ -1,5 +1,3 @@
-require_relative "fixtures/fixtures"
-
 include Contracts
 
 RSpec.describe "Contracts:" do
