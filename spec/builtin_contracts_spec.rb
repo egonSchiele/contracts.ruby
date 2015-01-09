@@ -1,4 +1,3 @@
-require_relative "../lib/contracts"
 require_relative "fixtures/fixtures"
 
 include Contracts

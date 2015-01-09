@@ -1,5 +1,5 @@
-require 'decorators'
-require 'builtin_contracts'
+require 'contracts/decorators'
+require 'contracts/builtin_contracts'
 
 class ContractError < ArgumentError
   def to_contract_error
@@ -59,7 +59,7 @@ end
 #   Contract [contract names] => return_value
 #
 # This class also provides useful callbacks and a validation method.
-class Contract < Decorator
+class Contract < Contracts::Decorator
   # Default implementation of failure_callback. Provided as a block to be able
   # to monkey patch #failure_callback only temporary and then switch it back.
   # First important usage - for specs.

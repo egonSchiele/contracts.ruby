@@ -1,5 +1,3 @@
-require_relative "../lib/contracts"
-
 module Mod
   include Contracts
   Contract Num => Num

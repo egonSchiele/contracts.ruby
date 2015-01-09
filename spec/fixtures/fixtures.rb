@@ -1,5 +1,3 @@
-require_relative "../../lib/contracts"
-
 include Contracts
 
 class A
