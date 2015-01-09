@@ -1,3 +1,8 @@
+PATH
+  remote: .
+  specs:
+    contracts (0.4)
+
 GEM
   remote: http://rubygems.org/
   specs:
@@ -19,4 +24,5 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  contracts!
   rspec
