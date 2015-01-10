@@ -439,17 +439,19 @@ For an argument, each function will be tried in order. The first function that d
 
 Invariants are conditions on objects that should always hold. If after any method call on given object, any of the Invariants fails, then Invariant violation error will be generated.
 
+**NOTE**: Only methods with contracts will be affected.
+
 A simple example:
 
 ```ruby
 class MyBirthday < Struct.new(:day, :month)
   include Contracts
-  include Contracts::Invariants
+  include Contracts:Invariants
 
-  Invariant { 1 <= day && day <= 31 }
-  Invariant { 1 <= month && month <= 12 }
+  Invariant(:day) { 1 <= day && day <= 31 }
+  Invariant(:month) { 1 <= month && month <= 12 }
 
-  Contract None => nil
+  Contract None => Fixnum
   def silly_next_day!
     self.day += 1
   end
@@ -463,9 +465,9 @@ If you run it, last line will generate invariant violation:
 
 ```ruby
 ./invariant.rb:38:in `failure_callback': Invariant violation: (RuntimeError)
-   Expected: { 1 <= day && day <= 31 },
-   Actual: 32
-   Value guarded in: #<MyBirthday:0x000001021a40f8>
+   Expected: day condition to be true
+   Actual: false
+   Value guarded in: MyBirthday::silly_next_day!
    At: main.rb:9
 ```
 

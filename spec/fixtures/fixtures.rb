@@ -236,3 +236,41 @@ class PatternMatchingExample
     request + "!"
   end
 end
+
+# invariant example (silliest implementation ever)
+class MyBirthday < Struct.new(:day, :month)
+  include Contracts
+  include Contracts::Invariants
+
+  Invariant(:day) { 1 <= day && day <= 31 }
+  Invariant(:month) { 1 <= month && month <= 12 }
+
+  Contract None => Fixnum
+  def silly_next_day!
+    self.day += 1
+  end
+
+  Contract None => Fixnum
+  def silly_next_month!
+    self.month += 1
+  end
+
+  Contract None => Fixnum
+  def clever_next_day!
+    return clever_next_month! if day == 31
+    self.day += 1
+  end
+
+  Contract None => Fixnum
+  def clever_next_month!
+    return next_year! if month == 12
+    self.month += 1
+    self.day = 1
+  end
+
+  Contract None => Fixnum
+  def next_year!
+    self.month = 1
+    self.day = 1
+  end
+end

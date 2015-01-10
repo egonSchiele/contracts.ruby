@@ -1,5 +1,7 @@
+require 'contracts/support'
 require 'contracts/decorators'
 require 'contracts/builtin_contracts'
+require 'contracts/invariants'
 
 class ContractError < ArgumentError
   def to_contract_error
@@ -107,17 +109,8 @@ class Contract < Contracts::Decorator
                 data[:contract].to_s
               end
 
-    if RUBY_VERSION =~ /^1\.8/
-      if data[:method].respond_to?(:__file__)
-        position = data[:method].__file__ + ":" + data[:method].__line__.to_s
-      else
-        position = data[:method].inspect
-      end
-    else
-      file, line = data[:method].source_location
-      position = file + ":" + line.to_s
-    end
-   method_name = data[:method].is_a?(Proc) ? "Proc" : data[:method].name
+   position = Support.method_position(data[:method])
+   method_name = Support.method_name(data[:method])
 
    header = if data[:return_value]
      "Contract violation for return value:"
@@ -265,6 +258,9 @@ class Contract < Contracts::Decorator
     unless @ret_validator[result]
       Contract.failure_callback({:arg => result, :contract => @ret_contract, :class => @klass, :method => @method, :contracts => self, :return_value => true})
     end
+
+    this.verify_invariants!(@method) if this.respond_to?(:verify_invariants!)
+
     result
   end
 
