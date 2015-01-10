@@ -265,22 +265,14 @@ class Contract < Contracts::Decorator
   end
 
   def failure_exception
-    pattern_match_exception || regular_exception
-  end
-
-  def pattern_match_exception
-    pattern_match? && PatternMatchingError
-  end
-
-  def regular_exception
-    !pattern_match? && ContractError
+    if @pattern_match
+      PatternMatchingError
+    else
+      ContractError
+    end
   end
 
   def pattern_match!
     @pattern_match = true
-  end
-
-  def pattern_match?
-    !!@pattern_match
   end
 end

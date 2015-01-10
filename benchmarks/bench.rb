@@ -42,8 +42,9 @@ def profile
   profilers = []
   profilers << MethodProfiler.observe(Contract)
   profilers << MethodProfiler.observe(Object)
-  profilers << MethodProfiler.observe(MethodDecorators)
-  profilers << MethodProfiler.observe(Decorator)
+  profilers << MethodProfiler.observe(Contracts::MethodDecorators)
+  profilers << MethodProfiler.observe(Contracts::Decorator)
+  profilers << MethodProfiler.observe(Contracts::Support)
   profilers << MethodProfiler.observe(UnboundMethod)
   10000.times do |_|
     contracts_add(rand(1000), rand(1000))
@@ -62,3 +63,5 @@ printer.print(STDOUT)
 end
 
 benchmark
+profile
+ruby_prof if ENV["FULL_BENCH"] # takes some time
