@@ -471,7 +471,7 @@ If you run it, last line will generate invariant violation:
    At: main.rb:9
 ```
 
-Which means, that after `#silly_next_day!` all checks specified in `Invariant` statement will be checks, and if at least one fail, then it raises an Invariant violation error.
+Which means, that after `#silly_next_day!` all checks specified in `Invariant` statement will be verified, and if at least one fail, then Invariant violation error will be raised.
 
 ## Misc
 
