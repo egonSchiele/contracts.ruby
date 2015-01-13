@@ -3,6 +3,10 @@ require 'contracts/decorators'
 require 'contracts/builtin_contracts'
 require 'contracts/invariants'
 
+# @private
+# Base class for Contract errors
+#
+# If default failure callback is used it stores failure data
 class ContractBaseError < ArgumentError
   attr_reader :data
 
@@ -11,15 +15,22 @@ class ContractBaseError < ArgumentError
     @data = data
   end
 
+  # Used to convert to simple ContractError from other contract errors
   def to_contract_error
     self
   end
 end
 
+# Default contract error
+#
+# If default failure callback is used, users normally see only these contract errors
 class ContractError < ContractBaseError
 end
 
+# @private
+# Special contract error used internally to detect pattern failure during pattern matching
 class PatternMatchingError < ContractBaseError
+  # Used to convert to ContractError from PatternMatchingError
   def to_contract_error
     ContractError.new(to_s, data)
   end
@@ -292,6 +303,7 @@ class Contract < Contracts::Decorator
     result
   end
 
+  # Used to determine type of failure exception this contract should raise in case of failure
   def failure_exception
     if @pattern_match
       PatternMatchingError
@@ -300,10 +312,13 @@ class Contract < Contracts::Decorator
     end
   end
 
+  # @private
+  # Used internally to mark contract as pattern matching contract
   def pattern_match!
     @pattern_match = true
   end
 
+  # Used to determine if contract is a pattern matching contract
   def pattern_match?
     @pattern_match
   end
