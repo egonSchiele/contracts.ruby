@@ -3,15 +3,25 @@ require 'contracts/decorators'
 require 'contracts/builtin_contracts'
 require 'contracts/invariants'
 
-class ContractError < ArgumentError
+class ContractBaseError < ArgumentError
+  attr_reader :data
+
+  def initialize(message, data)
+    super(message)
+    @data = data
+  end
+
   def to_contract_error
     self
   end
 end
 
-class PatternMatchingError < ArgumentError
+class ContractError < ContractBaseError
+end
+
+class PatternMatchingError < ContractBaseError
   def to_contract_error
-    ContractError.new(to_s)
+    ContractError.new(to_s, data)
   end
 end
 
@@ -67,7 +77,7 @@ class Contract < Contracts::Decorator
   # to monkey patch #failure_callback only temporary and then switch it back.
   # First important usage - for specs.
   DEFAULT_FAILURE_CALLBACK = Proc.new do |data|
-    raise data[:contracts].failure_exception, failure_msg(data)
+    raise data[:contracts].failure_exception.new(failure_msg(data), data)
   end
 
   attr_reader :args_contracts, :ret_contract, :klass, :method
@@ -140,7 +150,11 @@ class Contract < Contracts::Decorator
   #     puts failure_msg(data)
   #     exit
   #   end
-  def self.failure_callback(data)
+  def self.failure_callback(data, use_pattern_matching=true)
+    if data[:contracts].pattern_match? && use_pattern_matching
+      return DEFAULT_FAILURE_CALLBACK.call(data) 
+    end
+
     fetch_failure_callback.call(data)
   end
 
@@ -288,5 +302,9 @@ class Contract < Contracts::Decorator
 
   def pattern_match!
     @pattern_match = true
+  end
+
+  def pattern_match?
+    @pattern_match
   end
 end

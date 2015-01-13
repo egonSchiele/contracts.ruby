@@ -126,9 +126,15 @@ Here's why: Suppose you have this code:
             begin
               success = true
               result = method.call_with(self, *args, &blk)
-            rescue expected_error => e
+            rescue expected_error => error
               success = false
-              raise e.to_contract_error unless methods[i]
+              unless methods[i]
+                begin
+                  ::Contract.failure_callback(error.data, false)
+                rescue expected_error => final_error
+                  raise final_error.to_contract_error
+                end
+              end
             end
           end
           result

@@ -45,6 +45,32 @@ RSpec.describe "Contracts:" do
         subject.process_request("bad input")
       }.to raise_error(ContractError)
     end
+
+    context "when failure_callback was overriden" do
+      before do
+        ::Contract.override_failure_callback do |_data|
+          raise RuntimeError, "contract violation"
+        end
+      end
+
+      it "calls a method when first pattern matches" do
+        expect(
+          subject.process_request(PatternMatchingExample::Success[string_with_hello])
+        ).to eq(PatternMatchingExample::Success[expected_decorated_string])
+      end
+
+      it "falls through to 2nd pattern when first pattern does not match" do
+        expect(
+          subject.process_request(PatternMatchingExample::Failure.new)
+        ).to be_a(PatternMatchingExample::Failure)
+      end
+
+      it "uses overriden failure_callback when pattern matching fails" do
+        expect {
+          subject.process_request("hello")
+        }.to raise_error(RuntimeError, /contract violation/)
+      end
+    end
   end
 
   describe "instance methods" do
