@@ -3,15 +3,36 @@ require 'contracts/decorators'
 require 'contracts/builtin_contracts'
 require 'contracts/invariants'
 
-class ContractError < ArgumentError
+# @private
+# Base class for Contract errors
+#
+# If default failure callback is used it stores failure data
+class ContractBaseError < ArgumentError
+  attr_reader :data
+
+  def initialize(message, data)
+    super(message)
+    @data = data
+  end
+
+  # Used to convert to simple ContractError from other contract errors
   def to_contract_error
     self
   end
 end
 
-class PatternMatchingError < ArgumentError
+# Default contract error
+#
+# If default failure callback is used, users normally see only these contract errors
+class ContractError < ContractBaseError
+end
+
+# @private
+# Special contract error used internally to detect pattern failure during pattern matching
+class PatternMatchingError < ContractBaseError
+  # Used to convert to ContractError from PatternMatchingError
   def to_contract_error
-    ContractError.new(to_s)
+    ContractError.new(to_s, data)
   end
 end
 
@@ -67,7 +88,7 @@ class Contract < Contracts::Decorator
   # to monkey patch #failure_callback only temporary and then switch it back.
   # First important usage - for specs.
   DEFAULT_FAILURE_CALLBACK = Proc.new do |data|
-    raise data[:contracts].failure_exception, failure_msg(data)
+    raise data[:contracts].failure_exception.new(failure_msg(data), data)
   end
 
   attr_reader :args_contracts, :ret_contract, :klass, :method
@@ -135,13 +156,41 @@ class Contract < Contracts::Decorator
   #
   # Example of monkeypatching:
   #
-  #   Contract.failure_callback(data)
+  #   def Contract.failure_callback(data)
   #     puts "You had an error!"
   #     puts failure_msg(data)
   #     exit
   #   end
-  def self.failure_callback(data)
-    DEFAULT_FAILURE_CALLBACK.call(data)
+  def self.failure_callback(data, use_pattern_matching=true)
+    if data[:contracts].pattern_match? && use_pattern_matching
+      return DEFAULT_FAILURE_CALLBACK.call(data) 
+    end
+
+    fetch_failure_callback.call(data)
+  end
+
+  # Used to override failure_callback without monkeypatching.
+  #
+  # Takes: block parameter, that should accept one argument - data.
+  #
+  # Example usage:
+  #
+  #   Contract.override_failure_callback do |data|
+  #     puts "You had an error"
+  #     puts failure_msg(data)
+  #     exit
+  #   end
+  def self.override_failure_callback(&blk)
+    @failure_callback = blk
+  end
+
+  # Used to restore default failure callback
+  def self.restore_failure_callback
+    @failure_callback = DEFAULT_FAILURE_CALLBACK
+  end
+
+  def self.fetch_failure_callback
+    @failure_callback ||= DEFAULT_FAILURE_CALLBACK
   end
 
   # Used to verify if an argument satisfies a contract.
@@ -254,6 +303,7 @@ class Contract < Contracts::Decorator
     result
   end
 
+  # Used to determine type of failure exception this contract should raise in case of failure
   def failure_exception
     if @pattern_match
       PatternMatchingError
@@ -262,7 +312,14 @@ class Contract < Contracts::Decorator
     end
   end
 
+  # @private
+  # Used internally to mark contract as pattern matching contract
   def pattern_match!
     @pattern_match = true
+  end
+
+  # Used to determine if contract is a pattern matching contract
+  def pattern_match?
+    @pattern_match
   end
 end

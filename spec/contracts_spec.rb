@@ -45,6 +45,32 @@ RSpec.describe "Contracts:" do
         subject.process_request("bad input")
       }.to raise_error(ContractError)
     end
+
+    context "when failure_callback was overriden" do
+      before do
+        ::Contract.override_failure_callback do |_data|
+          raise RuntimeError, "contract violation"
+        end
+      end
+
+      it "calls a method when first pattern matches" do
+        expect(
+          subject.process_request(PatternMatchingExample::Success[string_with_hello])
+        ).to eq(PatternMatchingExample::Success[expected_decorated_string])
+      end
+
+      it "falls through to 2nd pattern when first pattern does not match" do
+        expect(
+          subject.process_request(PatternMatchingExample::Failure.new)
+        ).to be_a(PatternMatchingExample::Failure)
+      end
+
+      it "uses overriden failure_callback when pattern matching fails" do
+        expect {
+          subject.process_request("hello")
+        }.to raise_error(RuntimeError, /contract violation/)
+      end
+    end
   end
 
   describe "instance methods" do
@@ -197,19 +223,26 @@ RSpec.describe "Contracts:" do
 
   describe "failure callbacks" do
     before :each do
-      def (::Contract).failure_callback(data)
-        false
+      ::Contract.override_failure_callback do |_data|
+        should_call
       end
     end
 
-    it "should not call a function for which the contract fails when failure_callback returns false" do
-      res = @o.double("bad")
-      expect(res).to eq(nil)
+    context "when failure_callback returns false" do
+      let(:should_call) { false }
+
+      it "does not call a function for which the contract fails" do
+        res = @o.double("bad")
+        expect(res).to eq(nil)
+      end
     end
 
-    after :each do
-      def (::Contract).failure_callback(data)
-        ::Contract::DEFAULT_FAILURE_CALLBACK.call(data)
+    context "when failure_callback returns true" do
+      let(:should_call) { true }
+
+      it "calls a function for which the contract fails" do
+        res = @o.double("bad")
+        expect(res).to eq("badbad")
       end
     end
   end
