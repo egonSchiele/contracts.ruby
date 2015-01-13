@@ -1,9 +1,6 @@
-require File.join(File.dirname(__FILE__), "../lib/contracts")
-require File.join(File.dirname(__FILE__), "fixtures/fixtures")
-
 include Contracts
 
-describe "Contracts:" do
+RSpec.describe "Contracts:" do
   before :all do
     @o = Object.new
   end
@@ -185,11 +182,11 @@ describe "Contracts:" do
 
   describe "Maybe:" do
     it "should pass for nums" do
-      @o.maybe_double(1).should == 2
+      expect(@o.maybe_double(1)).to eq(2)
     end
 
     it "should pass for nils" do
-      @o.maybe_double(nil).should == nil
+      expect(@o.maybe_double(nil)).to eq(nil)
     end
 
     it "should fail for strings" do

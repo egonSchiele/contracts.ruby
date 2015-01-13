@@ -1,2 +1,12 @@
-source 'http://rubygems.org'
-gem "rspec", "~> 2.14.1"
+source "http://rubygems.org"
+
+gemspec
+
+group :test do
+  gem "rspec"
+end
+
+group :development do
+  gem "method_profiler"
+  gem "ruby-prof"
+end

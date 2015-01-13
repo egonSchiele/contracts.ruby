@@ -1,5 +1,7 @@
-require 'decorators'
-require 'builtin_contracts'
+require 'contracts/support'
+require 'contracts/decorators'
+require 'contracts/builtin_contracts'
+require 'contracts/invariants'
 
 class ContractError < ArgumentError
   def to_contract_error
@@ -23,6 +25,8 @@ module Contracts
   end
 
   def self.common base
+    return if base.respond_to?(:Contract)
+
     base.extend MethodDecorators
     base.instance_eval do
       def functype(funcname)
@@ -57,7 +61,14 @@ end
 #   Contract [contract names] => return_value
 #
 # This class also provides useful callbacks and a validation method.
-class Contract < Decorator
+class Contract < Contracts::Decorator
+  # Default implementation of failure_callback. Provided as a block to be able
+  # to monkey patch #failure_callback only temporary and then switch it back.
+  # First important usage - for specs.
+  DEFAULT_FAILURE_CALLBACK = Proc.new do |data|
+    raise data[:contracts].failure_exception, failure_msg(data)
+  end
+
   attr_reader :args_contracts, :ret_contract, :klass, :method
   # decorator_name :contract
   def initialize(klass, method, *contracts)
@@ -98,17 +109,8 @@ class Contract < Decorator
                 data[:contract].to_s
               end
 
-    if RUBY_VERSION =~ /^1\.8/
-      if data[:method].respond_to?(:__file__)
-        position = data[:method].__file__ + ":" + data[:method].__line__.to_s
-      else
-        position = data[:method].inspect
-      end
-    else
-      file, line = data[:method].source_location
-      position = file + ":" + line.to_s
-    end
-   method_name = data[:method].is_a?(Proc) ? "Proc" : data[:method].name
+   position = Support.method_position(data[:method])
+   method_name = Support.method_name(data[:method])
 
    header = if data[:return_value]
      "Contract violation for return value:"
@@ -138,7 +140,7 @@ class Contract < Decorator
   #     exit
   #   end
   def self.failure_callback(data)
-    raise data[:contracts].failure_exception, failure_msg(data)
+    DEFAULT_FAILURE_CALLBACK.call(data)
   end
 
   # Used to verify if an argument satisfies a contract.
@@ -256,26 +258,21 @@ class Contract < Decorator
     unless @ret_validator[result]
       Contract.failure_callback({:arg => result, :contract => @ret_contract, :class => @klass, :method => @method, :contracts => self, :return_value => true})
     end
+
+    this.verify_invariants!(@method) if this.respond_to?(:verify_invariants!)
+
     result
   end
 
   def failure_exception
-    pattern_match_exception || regular_exception
-  end
-
-  def pattern_match_exception
-    pattern_match? && PatternMatchingError
-  end
-
-  def regular_exception
-    !pattern_match? && ContractError
+    if @pattern_match
+      PatternMatchingError
+    else
+      ContractError
+    end
   end
 
   def pattern_match!
     @pattern_match = true
-  end
-
-  def pattern_match?
-    !!@pattern_match
   end
 end

@@ -435,6 +435,44 @@ end
 
 For an argument, each function will be tried in order. The first function that doesn't raise a `ContractError` will be used. So in this case, if x == 1, the first function will be used. For all other values, the second function will be used.
 
+## Invariants
+
+Invariants are conditions on objects that should always hold. If after any method call on given object, any of the Invariants fails, then Invariant violation error will be generated.
+
+**NOTE**: Only methods with contracts will be affected.
+
+A simple example:
+
+```ruby
+class MyBirthday < Struct.new(:day, :month)
+  include Contracts
+  include Contracts:Invariants
+
+  Invariant(:day) { 1 <= day && day <= 31 }
+  Invariant(:month) { 1 <= month && month <= 12 }
+
+  Contract None => Fixnum
+  def silly_next_day!
+    self.day += 1
+  end
+end
+
+birthday = MyBirthday.new(31, 12)
+birthday.silly_next_day!
+```
+
+If you run it, last line will generate invariant violation:
+
+```ruby
+./invariant.rb:38:in `failure_callback': Invariant violation: (RuntimeError)
+   Expected: day condition to be true
+   Actual: false
+   Value guarded in: MyBirthday::silly_next_day!
+   At: main.rb:9
+```
+
+Which means, that after `#silly_next_day!` all checks specified in `Invariant` statement will be verified, and if at least one fail, then Invariant violation error will be raised.
+
 ## Misc
 
 Please submit any bugs [here](https://github.com/egonSchiele/contracts.ruby/issues) and I'll try to get them resolved ASAP!

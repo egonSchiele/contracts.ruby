@@ -1,7 +1,3 @@
-#require 'lib/contracts'
-require File.join(File.dirname(__FILE__), "../lib/contracts")
-require 'rubygems'
-
 module Mod
   include Contracts
   Contract Num => Num
@@ -10,7 +6,7 @@ module Mod
   end
 end
 
-describe "module methods" do
+RSpec.describe "module methods" do
   it "should pass for correct input" do
     expect { Mod.a_module_method(2) }.to_not raise_error
   end
