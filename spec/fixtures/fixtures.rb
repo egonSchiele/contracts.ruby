@@ -274,3 +274,12 @@ class MyBirthday < Struct.new(:day, :month)
     self.day = 1
   end
 end
+
+class SingletonClassExample
+  class << self
+    Contract String => String
+    def hoge(str)
+      "super#{str}"
+    end
+  end
+end
