@@ -110,8 +110,8 @@ class Contract < Contracts::Decorator
                 data[:contract].to_s
               end
 
-   position = Support.method_position(data[:method])
-   method_name = Support.method_name(data[:method])
+   position = Contracts::Support.method_position(data[:method])
+   method_name = Contracts::Support.method_name(data[:method])
 
    header = if data[:return_value]
      "Contract violation for return value:"
