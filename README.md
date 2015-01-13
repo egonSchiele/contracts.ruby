@@ -42,7 +42,7 @@ Save this in a file and run it. Notice we are calling `double` with `"oops"`, wh
         Actual: "oops"
         Value guarded in: Object::double
         With Contract: Contracts::Num, Contracts::Num
-        At: main.rb:6 
+        At: main.rb:6
         ...stack trace...
 
 Instead of throwing an exception, you could log it, print a clean error message for your user...whatever you want. contracts.ruby is here to help you handle bugs better, not to get in your way.
@@ -70,5 +70,6 @@ If you're using the library, please [let me know](https://github.com/egonSchiele
 Inspired by [contracts.coffee](http://disnetdev.com/contracts.coffee/).
 
 Copyright 2012 [Aditya Bhargava](http://adit.io).
+Major improvements by [Alexey Fedorov](https://github.com/waterlink).
 
 BSD Licensed.
