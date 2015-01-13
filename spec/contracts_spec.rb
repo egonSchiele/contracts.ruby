@@ -37,6 +37,7 @@ describe "Contracts:" do
     end
 
     it "should not fall through to next pattern when there is a deep contract violation" do
+      expect(PatternMatchingExample::Failure).not_to receive(:is_a?)
       expect {
         subject.process_request(PatternMatchingExample::Success[string_without_hello])
       }.to raise_error(ContractError)
@@ -148,13 +149,13 @@ describe "Contracts:" do
 
   describe "blocks" do
     it "should pass for correct input" do
-      expect { @o.call {
+      expect { @o.do_call {
         2 + 2
       }}.to_not raise_error
     end
 
     it "should fail for incorrect input" do
-      expect { @o.call(nil) }.to raise_error(ContractError)
+      expect { @o.do_call(nil) }.to raise_error(ContractError)
     end
   end
 
