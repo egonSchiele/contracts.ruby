@@ -135,13 +135,37 @@ class Contract < Contracts::Decorator
   #
   # Example of monkeypatching:
   #
-  #   Contract.failure_callback(data)
+  #   def Contract.failure_callback(data)
   #     puts "You had an error!"
   #     puts failure_msg(data)
   #     exit
   #   end
   def self.failure_callback(data)
-    DEFAULT_FAILURE_CALLBACK.call(data)
+    fetch_failure_callback.call(data)
+  end
+
+  # Used to override failure_callback without monkeypatching.
+  #
+  # Takes: block parameter, that should accept one argument - data.
+  #
+  # Example usage:
+  #
+  #   Contract.override_failure_callback do |data|
+  #     puts "You had an error"
+  #     puts failure_msg(data)
+  #     exit
+  #   end
+  def self.override_failure_callback(&blk)
+    @failure_callback = blk
+  end
+
+  # Used to restore default failure callback
+  def self.restore_failure_callback
+    @failure_callback = DEFAULT_FAILURE_CALLBACK
+  end
+
+  def self.fetch_failure_callback
+    @failure_callback ||= DEFAULT_FAILURE_CALLBACK
   end
 
   # Used to verify if an argument satisfies a contract.
