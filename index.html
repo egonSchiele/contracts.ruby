@@ -444,6 +444,41 @@ Expected: a number please,
 <p>For an argument, each function will be tried in order. The first function that doesn't raise a <code>ContractError</code> will be used. So in this case, if x == 1, the first function will be used. For all other values, the second function will be used.</p>
 
 <h2>
+<a id="invariants" class="anchor" href="#invariants" aria-hidden="true"><span class="octicon octicon-link"></span></a>Invariants</h2>
+
+<p>Invariants are conditions on objects that should always hold. If after any method call on given object, any of the Invariants fails, then Invariant violation error will be generated.</p>
+
+<p><strong>NOTE</strong>: Only methods with contracts will be affected.</p>
+
+<p>A simple example:</p>
+
+<div class="highlight highlight-ruby"><pre><span class="pl-k">class</span> <span class="pl-en">MyBirthday<span class="pl-e"> &lt; Struct.new</span></span>(<span class="pl-c1">:day</span>, <span class="pl-c1">:month</span>)
+  <span class="pl-k">include</span> <span class="pl-vo">Contracts</span>
+  <span class="pl-k">include</span> <span class="pl-c1">Contracts:</span><span class="pl-vo">Invariants</span>
+
+  <span class="pl-vo">Invariant</span>(<span class="pl-c1">:day</span>) { <span class="pl-c1">1</span> <span class="pl-k">&lt;=</span> day <span class="pl-k">&amp;&amp;</span> day <span class="pl-k">&lt;=</span> <span class="pl-c1">31</span> }
+  <span class="pl-vo">Invariant</span>(<span class="pl-c1">:month</span>) { <span class="pl-c1">1</span> <span class="pl-k">&lt;=</span> month <span class="pl-k">&amp;&amp;</span> month <span class="pl-k">&lt;=</span> <span class="pl-c1">12</span> }
+
+  <span class="pl-vo">Contract</span> <span class="pl-vo">None</span> =&gt; <span class="pl-vo">Fixnum</span>
+  <span class="pl-k">def</span> <span class="pl-en">silly_next_day!</span>
+    <span class="pl-v">self</span>.day <span class="pl-k">+=</span> <span class="pl-c1">1</span>
+  <span class="pl-k">end</span>
+<span class="pl-k">end</span>
+
+birthday <span class="pl-k">=</span> <span class="pl-s3">MyBirthday</span>.<span class="pl-k">new</span>(<span class="pl-c1">31</span>, <span class="pl-c1">12</span>)
+birthday.silly_next_day!</pre></div>
+
+<p>If you run it, last line will generate invariant violation:</p>
+
+<div class="highlight highlight-ruby"><pre>.<span class="pl-k">/</span>invariant.<span class="pl-c1">rb:</span><span class="pl-c1">38</span><span class="pl-c1">:in</span> <span class="pl-s1"><span class="pl-pds">`</span>failure_callback': Invariant violation: (RuntimeError)</span>
+<span class="pl-s1">   Expected: day condition to be true</span>
+<span class="pl-s1">   Actual: false</span>
+<span class="pl-s1">   Value guarded in: MyBirthday::silly_next_day!</span>
+<span class="pl-s1">   At: main.rb:9</span></pre></div>
+
+<p>Which means, that after <code>#silly_next_day!</code> all checks specified in <code>Invariant</code> statement will be verified, and if at least one fail, then Invariant violation error will be raised.</p>
+
+<h2>
 <a id="misc" class="anchor" href="#misc" aria-hidden="true"><span class="octicon octicon-link"></span></a>Misc</h2>
 
 <p>Please submit any bugs <a href="https://github.com/egonSchiele/contracts.ruby/issues">here</a> and I'll try to get them resolved ASAP!</p>
