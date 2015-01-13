@@ -18,13 +18,20 @@ end
 module Contracts
   def self.included(base)
     common base
+    singleton_class_common base
   end
 
   def self.extended(base)
     common base
+    singleton_class_common base
   end
 
-  def self.common base
+  def self.singleton_class_common(base)
+    return if base < Object.singleton_class
+    common(base.singleton_class)
+  end
+
+  def self.common(base)
     return if base.respond_to?(:Contract)
 
     base.extend MethodDecorators
