@@ -5,6 +5,12 @@ module Contracts
 
       class << klass
         attr_accessor :decorated_methods
+
+        def self.owner_class
+          ObjectSpace.each_object(self).find do |klass|
+            klass.singleton_class == self
+          end
+        end
       end
     end
 
@@ -140,6 +146,10 @@ Here's why: Suppose you have this code:
     end
 
     def decorate(klass, *args)
+      if self < Object.singleton_class
+        return self.owner_class.decorate(klass, *args)
+      end
+
       @decorators ||= []
       @decorators << [klass, args]
     end

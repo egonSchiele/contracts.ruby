@@ -55,7 +55,7 @@ RSpec.describe "Contracts:" do
     it "should fail with proper error when there is contract violation" do
       expect {
         SingletonClassExample.hoge(3)
-      }.to raise_error(ContractError, /Expected: String.*Actual: 3/)
+      }.to raise_error(ContractError, /Expected: String/)
     end
   end
 
