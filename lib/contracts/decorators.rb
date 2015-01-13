@@ -99,7 +99,7 @@ Here's why: Suppose you have this code:
     Foo's to_s or Bar's to_s. So you would keep getting Bar's decorated_methods, which
     means you would always call Bar's to_s...infinite recursion! Instead, you want to
     call Foo's version of decorated_methods. So the line needs to be `current = #{self}`.
-=end   
+=end
       method_def = %{
         def #{is_class_method ? "self." : ""}#{name}(*args, &blk)
           current = #{self}
@@ -137,7 +137,7 @@ Here's why: Suppose you have this code:
           }
 
       class_eval method_def, __FILE__, __LINE__ + 1
-    end    
+    end
 
     def decorate(klass, *args)
       @decorators ||= []
@@ -160,6 +160,7 @@ Here's why: Suppose you have this code:
       # inside, `decorate` is called with those params.
       MethodDecorators.module_eval <<-ruby_eval, __FILE__, __LINE__ + 1
         def #{klass}(*args, &blk)
+          return if ENV["NO_CONTRACTS"]
           decorate(#{klass}, *args, &blk)
         end
       ruby_eval
