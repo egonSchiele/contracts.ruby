@@ -8,6 +8,6 @@ Gem::Specification.new do |s|
   s.description = "This library provides contracts for Ruby. Contracts let you clearly express how your code behaves, and free you from writing tons of boilerplate, defensive code."
   s.author      = "Aditya Bhargava"
   s.email       = "bluemangroupie@gmail.com"
-  s.files       = Dir["lib/*"]
+  s.files       = `git ls-files`.split("\n")
   s.homepage    = "http://github.com/egonSchiele/contracts.ruby"
 end

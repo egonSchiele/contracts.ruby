@@ -163,7 +163,7 @@ class Contract < Contracts::Decorator
   #   end
   def self.failure_callback(data, use_pattern_matching=true)
     if data[:contracts].pattern_match? && use_pattern_matching
-      return DEFAULT_FAILURE_CALLBACK.call(data) 
+      return DEFAULT_FAILURE_CALLBACK.call(data)
     end
 
     fetch_failure_callback.call(data)
