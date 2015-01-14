@@ -276,6 +276,11 @@ class MyBirthday < Struct.new(:day, :month)
 end
 
 class SingletonClassExample
+  # This turned out to be required line here to make singleton classes
+  # work properly under all platforms. Not sure if it worth trying to
+  # do something with it.
+  include Contracts
+
   class << self
     Contract String => String
     def hoge(str)

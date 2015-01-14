@@ -1,4 +1,6 @@
+require 'contracts/core_ext'
 require 'contracts/support'
+require 'contracts/eigenclass'
 require 'contracts/decorators'
 require 'contracts/builtin_contracts'
 require 'contracts/invariants'
@@ -18,17 +20,20 @@ end
 module Contracts
   def self.included(base)
     common base
-    singleton_class_common base
+    eigenclass_common base
   end
 
   def self.extended(base)
     common base
-    singleton_class_common base
+    eigenclass_common base
   end
 
-  def self.singleton_class_common(base)
-    return if base < Object.singleton_class
-    common(base.singleton_class)
+  def self.eigenclass_common(base)
+    return if base.singleton_class?
+    eigenclass = base.singleton_class
+    common(eigenclass)
+    eigenclass.extend(Eigenclass)
+    eigenclass.owner_class = base
   end
 
   def self.common(base)
