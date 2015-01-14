@@ -378,17 +378,16 @@ Now the error says:
 
 Supposing you don't want contract failures to become exceptions. You run a popular website, and when there's a contract exception you would rather log it and continue than throw an exception and break your site.
 
-contracts.ruby provides a `failure_callback` that gets called when a contract fails. By monkeypatching `failure_callback`, you can customize the behavior of contracts.ruby. For example, here we log every failure instead of raising an error:
+contracts.ruby provides a failure callback that gets called when a contract fails. For example, here we log every failure instead of raising an error:
 
 ```ruby
-class Contract
-  def self.failure_callback(data)
-    info failure_msg(data)
-  end
+Contract.override_failure_callback do |data|
+  puts "You had an error"
+  puts failure_msg(data)
 end
 ```
 
-`failure_msg` is a function that prints out information about the failure. `failure_callback` takes a hash with the following values:
+`failure_msg` is a function that prints out information about the failure. Your failure callback gets a hash with the following values:
 
     {
       :arg => the argument to the method,
@@ -398,11 +397,11 @@ end
       :contracts => the contract object
     }
 
-If `failure_callback` returns `false`, the method that the contract is guarding will not be called (the default behaviour).
+If your failure callback returns `false`, the method that the contract is guarding will not be called (the default behaviour).
 
 ## Disabling contracts
 
-If you want to disable contracts, set the `NO_CONTRACTS` environment variable. This will disable contracts completely.
+If you want to disable contracts, set the `NO_CONTRACTS` environment variable. This will disable contracts completely and you won't have a performance hit.
 
 ## Method overloading
 
