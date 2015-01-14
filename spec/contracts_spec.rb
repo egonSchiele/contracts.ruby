@@ -73,6 +73,18 @@ RSpec.describe "Contracts:" do
     end
   end
 
+  describe "usage in singleton class" do
+    it "should work normally when there is no contract violation" do
+      expect(SingletonClassExample.hoge("hoge")).to eq("superhoge")
+    end
+
+    it "should fail with proper error when there is contract violation" do
+      expect {
+        SingletonClassExample.hoge(3)
+      }.to raise_error(ContractError, /Expected: String/)
+    end
+  end
+
   describe "instance methods" do
     it "should allow two classes to have the same method with different contracts" do
       a = A.new

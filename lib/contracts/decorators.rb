@@ -146,6 +146,10 @@ Here's why: Suppose you have this code:
     end
 
     def decorate(klass, *args)
+      if self.singleton_class?
+        return self.owner_class.decorate(klass, *args)
+      end
+
       @decorators ||= []
       @decorators << [klass, args]
     end

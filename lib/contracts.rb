@@ -1,4 +1,6 @@
+require 'contracts/core_ext'
 require 'contracts/support'
+require 'contracts/eigenclass'
 require 'contracts/decorators'
 require 'contracts/builtin_contracts'
 require 'contracts/invariants'
@@ -39,13 +41,23 @@ end
 module Contracts
   def self.included(base)
     common base
+    eigenclass_common base
   end
 
   def self.extended(base)
     common base
+    eigenclass_common base
   end
 
-  def self.common base
+  def self.eigenclass_common(base)
+    return if base.singleton_class?
+    eigenclass = base.singleton_class
+    common(eigenclass)
+    eigenclass.extend(Eigenclass)
+    eigenclass.owner_class = base
+  end
+
+  def self.common(base)
     return if base.respond_to?(:Contract)
 
     base.extend MethodDecorators
@@ -131,8 +143,8 @@ class Contract < Contracts::Decorator
                 data[:contract].to_s
               end
 
-   position = Support.method_position(data[:method])
-   method_name = Support.method_name(data[:method])
+   position = Contracts::Support.method_position(data[:method])
+   method_name = Contracts::Support.method_name(data[:method])
 
    header = if data[:return_value]
      "Contract violation for return value:"
