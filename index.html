@@ -389,15 +389,14 @@ Expected: a number please,
 
 <p>Supposing you don't want contract failures to become exceptions. You run a popular website, and when there's a contract exception you would rather log it and continue than throw an exception and break your site.</p>
 
-<p>contracts.ruby provides a <code>failure_callback</code> that gets called when a contract fails. By monkeypatching <code>failure_callback</code>, you can customize the behavior of contracts.ruby. For example, here we log every failure instead of raising an error:</p>
+<p>contracts.ruby provides a failure callback that gets called when a contract fails. For example, here we log every failure instead of raising an error:</p>
 
-<div class="highlight highlight-ruby"><pre><span class="pl-k">class</span> <span class="pl-en">Contract</span>
-  <span class="pl-k">def</span> <span class="pl-en">self.failure_callback</span>(<span class="pl-vpf">data</span>)
-    info failure_msg(data)
-  <span class="pl-k">end</span>
+<div class="highlight highlight-ruby"><pre><span class="pl-s3">Contract</span>.override_failure_callback <span class="pl-k">do </span>|<span class="pl-vo">data</span>|
+  puts <span class="pl-s1"><span class="pl-pds">"</span>You had an error<span class="pl-pds">"</span></span>
+  puts failure_msg(data)
 <span class="pl-k">end</span></pre></div>
 
-<p><code>failure_msg</code> is a function that prints out information about the failure. <code>failure_callback</code> takes a hash with the following values:</p>
+<p><code>failure_msg</code> is a function that prints out information about the failure. Your failure callback gets a hash with the following values:</p>
 
 <pre><code>{
   :arg =&gt; the argument to the method,
@@ -408,12 +407,12 @@ Expected: a number please,
 }
 </code></pre>
 
-<p>If <code>failure_callback</code> returns <code>false</code>, the method that the contract is guarding will not be called (the default behaviour).</p>
+<p>If your failure callback returns <code>false</code>, the method that the contract is guarding will not be called (the default behaviour).</p>
 
 <h2>
 <a id="disabling-contracts" class="anchor" href="#disabling-contracts" aria-hidden="true"><span class="octicon octicon-link"></span></a>Disabling contracts</h2>
 
-<p>If you want to disable contracts, set the <code>NO_CONTRACTS</code> environment variable. This will disable contracts completely.</p>
+<p>If you want to disable contracts, set the <code>NO_CONTRACTS</code> environment variable. This will disable contracts completely and you won't have a performance hit.</p>
 
 <h2>
 <a id="method-overloading" class="anchor" href="#method-overloading" aria-hidden="true"><span class="octicon octicon-link"></span></a>Method overloading</h2>
