@@ -8,6 +8,22 @@ module Contracts
       end
     end
 
+    module EigenclassWithOwner
+      def self.lift(eigenclass)
+        unless with_owner?(eigenclass)
+          raise Contracts::ContractsNotIncluded
+        end
+
+        eigenclass
+      end
+
+      private
+
+      def self.with_owner?(eigenclass)
+        eigenclass.respond_to?(:owner_class) && eigenclass.owner_class
+      end
+    end
+
     # first, when you write a contract, the decorate method gets called which
     # sets the @decorators variable. Then when the next method after the contract
     # is defined, method_added is called and we look at the @decorators variable
@@ -147,8 +163,7 @@ Here's why: Suppose you have this code:
 
     def decorate(klass, *args)
       if self.singleton_class?
-        raise Contracts::ContractsNotIncluded unless self.respond_to?(:owner_class) && self.owner_class
-        return self.owner_class.decorate(klass, *args)
+        return EigenclassWithOwner.lift(self).owner_class.decorate(klass, *args)
       end
 
       @decorators ||= []
