@@ -1,42 +1,10 @@
 require 'contracts/core_ext'
 require 'contracts/support'
+require 'contracts/errors'
 require 'contracts/eigenclass'
 require 'contracts/decorators'
 require 'contracts/builtin_contracts'
 require 'contracts/invariants'
-
-# @private
-# Base class for Contract errors
-#
-# If default failure callback is used it stores failure data
-class ContractBaseError < ArgumentError
-  attr_reader :data
-
-  def initialize(message, data)
-    super(message)
-    @data = data
-  end
-
-  # Used to convert to simple ContractError from other contract errors
-  def to_contract_error
-    self
-  end
-end
-
-# Default contract error
-#
-# If default failure callback is used, users normally see only these contract errors
-class ContractError < ContractBaseError
-end
-
-# @private
-# Special contract error used internally to detect pattern failure during pattern matching
-class PatternMatchingError < ContractBaseError
-  # Used to convert to ContractError from PatternMatchingError
-  def to_contract_error
-    ContractError.new(to_s, data)
-  end
-end
 
 module Contracts
   def self.included(base)

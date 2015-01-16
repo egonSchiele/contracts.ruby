@@ -1,9 +1,3 @@
-class InvariantError < StandardError
-  def to_contract_error
-    self
-  end
-end
-
 module Contracts
   module Invariants
     def self.included(base)
