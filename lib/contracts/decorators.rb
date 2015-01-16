@@ -147,6 +147,7 @@ Here's why: Suppose you have this code:
 
     def decorate(klass, *args)
       if self.singleton_class?
+        raise Contracts::ContractsNotIncluded unless self.respond_to?(:owner_class) && self.owner_class
         return self.owner_class.decorate(klass, *args)
       end
 

@@ -83,6 +83,21 @@ RSpec.describe "Contracts:" do
         SingletonClassExample.hoge(3)
       }.to raise_error(ContractError, /Expected: String/)
     end
+
+    context "when owner class does not include Contracts" do
+      it "fails with descriptive error" do
+        expect {
+          Class.new do
+            class << self
+              Contract String => String
+              def hoge(name)
+                "super#{name}"
+              end
+            end
+          end
+        }.to raise_error(Contracts::ContractsNotIncluded, ContractsNotIncluded::DEFAULT_MESSAGE)
+      end
+    end
   end
 
   describe "instance methods" do

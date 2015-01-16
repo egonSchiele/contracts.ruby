@@ -39,6 +39,27 @@ class PatternMatchingError < ContractBaseError
 end
 
 module Contracts
+  class ContractsNotIncluded < TypeError
+    DEFAULT_MESSAGE = %{In order to use contracts in singleton class, please include Contracts module in original class
+    Example:
+
+    ```ruby
+    class Example
+      include Contracts  # this line is required
+      class << self
+        # you can use `Contract` definition here now
+      end
+    end
+    ```}
+
+    attr_reader :message
+    alias_method :to_s, :message
+
+    def initialize(message=DEFAULT_MESSAGE)
+      @message = message
+    end
+  end
+
   def self.included(base)
     common base
     eigenclass_common base
