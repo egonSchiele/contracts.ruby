@@ -270,8 +270,11 @@ class Contract < Contracts::Decorator
     result = if @method.respond_to? :bind
       # instance method
       @method.bind(this).call(*args, &blk)
-    else
+    elsif @method.respond_to?(:unbind)
       # class method
+      @method.unbind.bind(this).call(*args, &blk)
+    else
+      # Proc, lambda, block
       @method.call(*args, &blk)
     end
     unless @ret_validator[result]
