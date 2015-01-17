@@ -267,6 +267,7 @@ class Contract < Contracts::Decorator
       end
     end
 
+    # NOTE: each respond_to? check takes some time, actually.. Why not precalculate type of @method?
     result = if @method.respond_to? :bind
       # instance method
       @method.bind(this).call(*args, &blk)
