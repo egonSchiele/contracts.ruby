@@ -100,6 +100,24 @@ RSpec.describe "Contracts:" do
     end
   end
 
+  describe "singleton methods self in inherited methods" do
+    context "when ran on ruby 1.8" do
+      if RUBY_VERSION.to_f < 1.9
+        it "should be parent class, which has a method definition" do
+          expect(SingletonInheritanceExampleSubclass.a_contracted_self).to eq(SingletonInheritanceExample)
+        end
+      end
+    end
+
+    context "when ran on ruby 1.9+" do
+      if RUBY_VERSION.to_f > 1.8
+        it "should be a proper self" do
+          expect(SingletonInheritanceExampleSubclass.a_contracted_self).to eq(SingletonInheritanceExampleSubclass)
+        end
+      end
+    end
+  end
+
   describe "instance methods" do
     it "should allow two classes to have the same method with different contracts" do
       a = A.new

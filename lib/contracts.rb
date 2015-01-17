@@ -267,11 +267,16 @@ class Contract < Contracts::Decorator
       end
     end
 
+    # NOTE: each respond_to? check takes some time, actually.. Why not precalculate type of @method?
     result = if @method.respond_to? :bind
       # instance method
       @method.bind(this).call(*args, &blk)
+    elsif @method.respond_to?(:unbind) && RUBY_VERSION.to_f > 1.8
+      # class method for ruby 1.9+
+      @method.unbind.bind(this).call(*args, &blk)
     else
-      # class method
+      # Proc, lambda, block
+      # or class method for ruby 1.8
       @method.call(*args, &blk)
     end
     unless @ret_validator[result]
