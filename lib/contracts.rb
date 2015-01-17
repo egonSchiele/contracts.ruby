@@ -247,10 +247,14 @@ class Contract < Contracts::Decorator
     # check contracts on arguments
     # fun fact! This is significantly faster than .zip (3.7 secs vs 4.7 secs). Why??
     last_index = @args_validators.size - 1
+    proc_present = [Proc, Method].include?(@args_contracts[last_index])
+    last_index -= 1 if proc_present
     # times is faster than (0..args.size).each
-    _args.size.times do |i|
+    size = _args.size
+    size.times do |i|
       # this is done to account for extra args (for *args)
       j = i < last_index ? i : last_index
+      j = last_index + 1 if i == size - 1 && proc_present
       #unless true #@args_contracts[i].valid?(args[i])
       unless @args_validators[j][_args[i]]
         call_function = Contract.failure_callback({:arg => _args[i], :contract => @args_contracts[j], :class => @klass, :method => @method, :contracts => self, :arg_pos => i+1, :total_args => _args.size})

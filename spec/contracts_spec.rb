@@ -221,12 +221,12 @@ RSpec.describe "Contracts:" do
 
   describe "varargs with block" do
     it "should pass for correct input" do
-      expect { @o.with_partial_sums(1, 2, 3) { |partial_sum| :do_something } }.not_to raise_error
+      expect { @o.with_partial_sums(1, 2, 3) { |partial_sum| 2 * partial_sum + 1 } }.not_to raise_error
     end
 
     it "should fail for incorrect input" do
       expect {
-        @o.with_partial_sums(1, 2, "bad") { |partial_sum| :do_something }
+        @o.with_partial_sums(1, 2, "bad") { |partial_sum| 2 * partial_sum + 1 }
       }.to raise_error(ContractError)
 
       expect {
