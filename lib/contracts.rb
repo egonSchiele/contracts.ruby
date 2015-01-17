@@ -262,7 +262,7 @@ class Contract < Contracts::Decorator
       # contracts on methods
       @args_contracts.each_with_index do |contract, i|
         if contract.is_a? Contracts::Func
-        args[i] = Contract.new(@klass, args[i], *contract.contracts)
+          args[i] = Contract.new(@klass, args[i], *contract.contracts)
         end
       end
     end
