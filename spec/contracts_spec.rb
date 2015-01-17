@@ -100,6 +100,12 @@ RSpec.describe "Contracts:" do
     end
   end
 
+  describe "singleton methods self in inherited methods" do
+    it "should be a proper self" do
+      expect(SingletonInheritanceExampleSubclass.a_contracted_self).to eq(SingletonInheritanceExampleSubclass)
+    end
+  end
+
   describe "instance methods" do
     it "should allow two classes to have the same method with different contracts" do
       a = A.new

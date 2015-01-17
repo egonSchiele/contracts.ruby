@@ -288,3 +288,13 @@ class SingletonClassExample
     end
   end
 end
+
+class SingletonInheritanceExample
+  Contract Any => Any
+  def self.a_contracted_self
+    self
+  end
+end
+
+class SingletonInheritanceExampleSubclass < SingletonInheritanceExample
+end
