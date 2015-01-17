@@ -271,11 +271,12 @@ class Contract < Contracts::Decorator
     result = if @method.respond_to? :bind
       # instance method
       @method.bind(this).call(*args, &blk)
-    elsif @method.respond_to?(:unbind)
-      # class method
+    elsif @method.respond_to?(:unbind) && RUBY_VERSION.to_f > 1.8
+      # class method for ruby 1.9+
       @method.unbind.bind(this).call(*args, &blk)
     else
       # Proc, lambda, block
+      # or class method for ruby 1.8
       @method.call(*args, &blk)
     end
     unless @ret_validator[result]
