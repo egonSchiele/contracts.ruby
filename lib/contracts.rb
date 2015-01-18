@@ -10,19 +10,15 @@ require 'contracts/invariants'
 module Contracts
   def self.included(base)
     common(base)
-    eigenclass_common(base)
   end
 
   def self.extended(base)
     common(base)
-    eigenclass_common(base)
-  end
-
-  def self.eigenclass_common(base)
-    Eigenclass.lift(base)
   end
 
   def self.common(base)
+    Eigenclass.lift(base)
+
     return if base.respond_to?(:Contract)
 
     base.extend(MethodDecorators)
