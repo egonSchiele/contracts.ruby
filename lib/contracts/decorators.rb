@@ -39,7 +39,15 @@ module Contracts
       super
     end
 
+    def handle_eigenclass_decorators
+      eigenclass_decorators = singleton_class.instance_variable_get(:@decorators)
+      singleton_class.instance_variable_set(:@decorators, nil)
+      @decorators = Array(@decorators) + Array(eigenclass_decorators)
+      @decorators = nil if @decorators.empty?
+    end
+
     def common_method_added name, is_class_method
+      handle_eigenclass_decorators
       return unless @decorators
 
       decorators = @decorators.dup

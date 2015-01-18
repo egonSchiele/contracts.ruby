@@ -121,6 +121,26 @@ RSpec.describe "Contracts:" do
     end
   end
 
+  describe "module usage" do
+    context "with instance methods" do
+      it "should check contract" do
+        expect { KlassWithModuleExample.new.plus(3, nil) }.to raise_error(ContractError)
+      end
+    end
+
+    context "with singleton methods" do
+      it "should check contract" do
+        expect { ModuleExample.hoge(nil) }.to raise_error(ContractError)
+      end
+    end
+
+    context "with singleton class methods" do
+      it "should check contract" do
+        expect { ModuleExample.eat(:food) }.to raise_error(ContractError)
+      end
+    end
+  end
+
   describe "instance methods" do
     it "should allow two classes to have the same method with different contracts" do
       a = A.new

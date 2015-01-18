@@ -1,34 +1,32 @@
 require 'contracts/core_ext'
 require 'contracts/support'
 require 'contracts/errors'
-require 'contracts/eigenclass'
 require 'contracts/decorators'
+require 'contracts/eigenclass'
 require 'contracts/builtin_contracts'
+require 'contracts/modules'
 require 'contracts/invariants'
 
 module Contracts
   def self.included(base)
-    common base
-    eigenclass_common base
+    common(base)
+    eigenclass_common(base)
   end
 
   def self.extended(base)
-    common base
-    eigenclass_common base
+    common(base)
+    eigenclass_common(base)
   end
 
   def self.eigenclass_common(base)
-    return if base.singleton_class?
-    eigenclass = base.singleton_class
-    common(eigenclass)
-    eigenclass.extend(Eigenclass)
-    eigenclass.owner_class = base
+    Eigenclass.lift(base)
   end
 
   def self.common(base)
     return if base.respond_to?(:Contract)
 
-    base.extend MethodDecorators
+    base.extend(MethodDecorators)
+
     base.instance_eval do
       def functype(funcname)
         contracts = self.decorated_methods[:class_methods][funcname]
@@ -39,10 +37,13 @@ module Contracts
         end
       end
     end
+
     base.class_eval do
-      def Contract(*args)
-        return if ENV["NO_CONTRACTS"]
-        self.class.Contract(*args)
+      unless base.instance_of?(Module)
+        def Contract(*args)
+          return if ENV["NO_CONTRACTS"]
+          self.class.Contract(*args)
+        end
       end
 
       def functype(funcname)
