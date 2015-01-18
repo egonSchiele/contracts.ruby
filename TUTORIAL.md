@@ -434,6 +434,21 @@ end
 
 For an argument, each function will be tried in order. The first function that doesn't raise a `ContractError` will be used. So in this case, if x == 1, the first function will be used. For all other values, the second function will be used.
 
+## Contracts in modules
+
+To use contracts on module you need to include both `Contracts` and `Contracts::Modules` into it:
+
+```ruby
+module M
+  include Contracts
+  include Contracts::Modules
+
+  Contract String => String
+  def self.parse
+    # do some hard parsing
+  end
+```
+
 ## Invariants
 
 Invariants are conditions on objects that should always hold. If after any method call on given object, any of the Invariants fails, then Invariant violation error will be generated.
