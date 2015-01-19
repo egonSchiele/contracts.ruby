@@ -47,7 +47,7 @@ module Contracts
       @decorated_methods ||= {:class_methods => {}, :instance_methods => {}}
 
       if is_class_method
-        method_reference = MethodReference.new(name, method(name), true)
+        method_reference = SingletonMethodReference.new(name, method(name))
         method_type = :class_methods
         # private_methods is an array of strings on 1.8 and an array of symbols on 1.9
         is_private = self.private_methods.include?(name) || self.private_methods.include?(name.to_s)

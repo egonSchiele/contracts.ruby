@@ -1,18 +1,25 @@
 module Contracts
+  # MethodReference represents original method reference that was
+  # decorated by contracts.ruby. Used for instance methods.
   class MethodReference
 
     attr_reader :name
 
-    def initialize(name, method, singleton=false)
+    # name - name of the method
+    # method - method object
+    def initialize(name, method)
       @name = name
       @method = method
-      @singleton = singleton
     end
 
+    # Returns method_position, delegates to Support.method_position
     def method_position
       Support.method_position(@method)
     end
 
+    # Aliases original method to a special unique name, which is known
+    # only to this class. Usually done right before re-defining the
+    # method.
     def make_alias(this)
       _aliased_name = aliased_name
       original_name = name
@@ -22,14 +29,18 @@ module Contracts
       end
     end
 
+    # Calls original method on specified `this` argument with
+    # specified arguments `args` and block `&blk`.
     def send_to(this, *args, &blk)
       this.send(aliased_name, *args, &blk)
     end
 
     private
 
+    # Returns alias target for instance methods, subject to be
+    # overriden in subclasses.
     def alias_target(this)
-      @singleton ? this.singleton_class : this
+      this
     end
 
     def aliased_name
@@ -40,5 +51,15 @@ module Contracts
       :"__contracts_ruby_original_#{name}_#{Support.unique_id}"
     end
 
+  end
+
+  # The same as MethodReference, but used for singleton methods.
+  class SingletonMethodReference < MethodReference
+    private
+
+    # Return alias target for singleton methods.
+    def alias_target(this)
+      this.singleton_class
+    end
   end
 end
