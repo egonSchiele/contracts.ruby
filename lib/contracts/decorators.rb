@@ -34,7 +34,7 @@ module Contracts
       super
     end
 
-    def singleton_method_added name
+    def singleton_method_added(name)
       common_method_added name, true
       super
     end
@@ -54,12 +54,12 @@ module Contracts
       @decorated_methods ||= {:class_methods => {}, :instance_methods => {}}
 
       if is_class_method
-        method_reference = method(name)
+        method_reference = SingletonMethodReference.new(name, method(name))
         method_type = :class_methods
         # private_methods is an array of strings on 1.8 and an array of symbols on 1.9
         is_private = self.private_methods.include?(name) || self.private_methods.include?(name.to_s)
       else
-        method_reference = instance_method(name)
+        method_reference = MethodReference.new(name, instance_method(name))
         method_type = :instance_methods
         # private_instance_methods is an array of strings on 1.8 and an array of symbols on 1.9
         is_private = self.private_instance_methods.include?(name) || self.private_instance_methods.include?(name.to_s)
@@ -85,6 +85,8 @@ module Contracts
 
         pattern_matching = true
       end
+
+      method_reference.make_alias(self)
 
       return if ENV["NO_CONTRACTS"] && !pattern_matching
 
