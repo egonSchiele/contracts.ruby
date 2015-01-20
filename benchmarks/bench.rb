@@ -34,7 +34,7 @@ def benchmark
       1000000.times do |_|
         contracts_add(rand(1000), rand(1000))
       end
-    end  
+    end
   end
 end
 
@@ -48,12 +48,12 @@ def profile
   profilers << MethodProfiler.observe(UnboundMethod)
   10000.times do |_|
     contracts_add(rand(1000), rand(1000))
-  end  
+  end
   profilers.each { |p| puts p.report }
 end
 
 def ruby_prof
-RubyProf.start  
+RubyProf.start
     100000.times do |_|
       contracts_add(rand(1000), rand(1000))
     end

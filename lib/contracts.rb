@@ -1,5 +1,6 @@
 require 'contracts/core_ext'
 require 'contracts/support'
+require 'contracts/method_reference'
 require 'contracts/errors'
 require 'contracts/decorators'
 require 'contracts/eigenclass'
@@ -268,13 +269,14 @@ class Contract < Contracts::Decorator
       end
     end
 
-    result = if @method.respond_to? :bind
-      # instance method
-      @method.bind(this).call(*args, &blk)
-    else
-      # class method
+    result = if @method.respond_to?(:call)
+      # proc, block, lambda, etc
       @method.call(*args, &blk)
+    else
+      # original method name referrence
+      @method.send_to(this, *args, &blk)
     end
+
     unless @ret_validator[result]
       Contract.failure_callback({:arg => result, :contract => @ret_contract, :class => @klass, :method => @method, :contracts => self, :return_value => true})
     end
