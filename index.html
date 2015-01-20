@@ -443,6 +443,20 @@ Expected: a number please,
 <p>For an argument, each function will be tried in order. The first function that doesn't raise a <code>ContractError</code> will be used. So in this case, if x == 1, the first function will be used. For all other values, the second function will be used.</p>
 
 <h2>
+<a id="contracts-in-modules" class="anchor" href="#contracts-in-modules" aria-hidden="true"><span class="octicon octicon-link"></span></a>Contracts in modules</h2>
+
+<p>To use contracts on module you need to include both <code>Contracts</code> and <code>Contracts::Modules</code> into it:</p>
+
+<div class="highlight highlight-ruby"><pre><span class="pl-k">module</span> <span class="pl-en">M</span>
+  <span class="pl-k">include</span> <span class="pl-vo">Contracts</span>
+  <span class="pl-k">include</span> <span class="pl-s3">Contracts</span>::<span class="pl-vo">Modules</span>
+
+  <span class="pl-vo">Contract</span> <span class="pl-vo">String</span> =&gt; <span class="pl-vo">String</span>
+  <span class="pl-k">def</span> <span class="pl-en">self.parse</span>
+    <span class="pl-c"># do some hard parsing</span>
+  <span class="pl-k">end</span></pre></div>
+
+<h2>
 <a id="invariants" class="anchor" href="#invariants" aria-hidden="true"><span class="octicon octicon-link"></span></a>Invariants</h2>
 
 <p>Invariants are conditions on objects that should always hold. If after any method call on given object, any of the Invariants fails, then Invariant violation error will be generated.</p>
