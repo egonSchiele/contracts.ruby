@@ -331,3 +331,31 @@ with_enabled_no_contracts do
     end
   end
 end
+
+module ModuleExample
+  # This inclusion is required to actually override `method_added`
+  # hooks for module.
+  include Contracts::Modules
+
+  Contract Num, Num => Num
+  def plus(a, b)
+    a + b
+  end
+
+  Contract String => String
+  def self.hoge(str)
+    "super#{str}"
+  end
+
+  class << self
+    Contract String => nil
+    def eat(food)
+      # yummy
+      nil
+    end
+  end
+end
+
+class KlassWithModuleExample
+  include ModuleExample
+end

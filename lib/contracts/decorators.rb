@@ -39,11 +39,18 @@ module Contracts
       super
     end
 
-    def common_method_added name, is_class_method
-      return unless @decorators
+    def pop_decorators
+      Array(@decorators).tap { @decorators = nil }
+    end
 
-      decorators = @decorators.dup
-      @decorators = nil
+    def fetch_decorators
+      pop_decorators + Eigenclass.lift(self).pop_decorators
+    end
+
+    def common_method_added(name, is_class_method)
+      decorators = fetch_decorators
+      return if decorators.empty?
+
       @decorated_methods ||= {:class_methods => {}, :instance_methods => {}}
 
       if is_class_method
