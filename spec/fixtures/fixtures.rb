@@ -95,6 +95,15 @@ def sum(*vals)
   end
 end
 
+Contract Args[Num], Proc => Num
+def with_partial_sums(*vals, &blk)
+  sum = vals.inject(0) do |acc, val|
+    blk[acc]
+    acc + val
+  end
+  blk[sum]
+end
+
 Contract Pos => nil
 def pos_test(x)
 end
