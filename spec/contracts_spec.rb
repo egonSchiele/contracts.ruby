@@ -100,6 +100,27 @@ RSpec.describe "Contracts:" do
     end
   end
 
+  describe "no contracts feature" do
+    it "disables normal contract checks" do
+      object = NoContractsSimpleExample.new
+      expect { object.some_method(3) }.not_to raise_error
+    end
+
+    it "disables invariants" do
+      object = NoContractsInvariantsExample.new
+      object.day = 7
+      expect { object.next_day }.not_to raise_error
+    end
+
+    it "does not disable pattern matching" do
+      object = NoContractsPatternMatchingExample.new
+
+      expect(object.on_response(200, "hello")).to eq("hello!")
+      expect(object.on_response(404, "Not found")).to eq("error 404: Not found")
+      expect { object.on_response(nil, "junk response") }.to raise_error(ContractError)
+    end
+  end
+
   describe "instance methods" do
     it "should allow two classes to have the same method with different contracts" do
       a = A.new

@@ -60,6 +60,7 @@ module Contracts
 
       @decorated_methods[method_type][name] ||= []
 
+      pattern_matching = false
       decorators.each do |klass, args|
         # a reference to the method gets passed into the contract here. This is good because
         # we are going to redefine this method with a new name below...so this reference is
@@ -67,13 +68,18 @@ module Contracts
         # We assume here that the decorator (klass) responds to .new
         decorator = klass.new(self, method_reference, *args)
         @decorated_methods[method_type][name] << decorator
+        pattern_matching ||= decorator.pattern_match?
       end
 
       if @decorated_methods[method_type][name].any? { |x| x.method != method_reference }
         @decorated_methods[method_type][name].each do |decorator|
           decorator.pattern_match!
         end
+
+        pattern_matching = true
       end
+
+      return if ENV["NO_CONTRACTS"] && !pattern_matching
 
       # in place of this method, we are going to define our own method. This method
       # just calls the decorator passing in all args that were to be passed into the method.
@@ -186,7 +192,6 @@ Here's why: Suppose you have this code:
       # inside, `decorate` is called with those params.
       MethodDecorators.module_eval <<-ruby_eval, __FILE__, __LINE__ + 1
         def #{klass}(*args, &blk)
-          return if ENV["NO_CONTRACTS"]
           decorate(#{klass}, *args, &blk)
         end
       ruby_eval
