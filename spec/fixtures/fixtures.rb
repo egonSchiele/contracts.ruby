@@ -288,3 +288,37 @@ class SingletonClassExample
     end
   end
 end
+
+with_enabled_no_contracts do
+  class NoContractsSimpleExample
+    Contract String => nil
+    def some_method(x)
+      nil
+    end
+  end
+
+  class NoContractsInvariantsExample
+    include Contracts::Invariants
+
+    attr_accessor :day
+
+    Invariant(:day_rule) { 1 <= day && day <= 7 }
+
+    Contract None => nil
+    def next_day
+      self.day += 1
+    end
+  end
+
+  class NoContractsPatternMatchingExample
+    Contract 200, String => String
+    def on_response(status, body)
+      body + "!"
+    end
+
+    Contract Fixnum, String => String
+    def on_response(status, body)
+      "error #{status}: #{body}"
+    end
+  end
+end
