@@ -254,6 +254,10 @@ RSpec.describe "Contracts:" do
     it "should fail for incorrect input" do
       expect { @o.do_call(nil) }.to raise_error(ContractError)
     end
+
+    it "should handle properly lack of block when there are other arguments" do
+      expect { @o.double_with_proc(4) }.to raise_error(ContractError, /Actual: nil/)
+    end
   end
 
   describe "varargs" do
@@ -269,16 +273,33 @@ RSpec.describe "Contracts:" do
   describe "varargs with block" do
     it "should pass for correct input" do
       expect { @o.with_partial_sums(1, 2, 3) { |partial_sum| 2 * partial_sum + 1 } }.not_to raise_error
+      expect { @o.with_partial_sums_contracted(1, 2, 3) { |partial_sum| 2 * partial_sum + 1 } }.not_to raise_error
     end
 
     it "should fail for incorrect input" do
       expect {
         @o.with_partial_sums(1, 2, "bad") { |partial_sum| 2 * partial_sum + 1 }
-      }.to raise_error(ContractError)
+      }.to raise_error(ContractError, /Actual: "bad"/)
 
       expect {
         @o.with_partial_sums(1, 2, 3)
-      }.to raise_error(ContractError)
+      }.to raise_error(ContractError, /Actual: nil/)
+
+      expect {
+        @o.with_partial_sums(1, 2, 3, lambda { |x| x })
+      }.to raise_error(ContractError, /Actual: #<Proc/)
+    end
+
+    context "when block has Func contract" do
+      it "should fail for incorrect input" do
+        expect {
+          @o.with_partial_sums_contracted(1, 2, "bad") { |partial_sum| 2 * partial_sum + 1 }
+        }.to raise_error(ContractError, /Actual: "bad"/)
+
+        expect {
+          @o.with_partial_sums_contracted(1, 2, 3)
+        }.to raise_error(ContractError, /Actual: nil/)
+      end
     end
   end
 

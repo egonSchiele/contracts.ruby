@@ -239,33 +239,61 @@ class Contract < Contracts::Decorator
   end
 
   def call_with(this, *args, &blk)
-
     _args = blk ? args + [blk] : args
+
+    size = @args_contracts.size
+
+    last_contract = @args_contracts.last
+    proc_present = (Func === last_contract ||
+      (Class === last_contract && (last_contract <= Proc || last_contract <= Method)))
+
+    _splat_index = proc_present ? -2 : -1
+    splat_present = Args === @args_contracts[_splat_index]
+    splat_index = size + _splat_index
+    splat_index += 1 unless splat_present
+
+    # Explicitly append blk=nil if nil != Proc contract violation
+    # anticipated
+    if proc_present && !blk && (splat_present || _args.size < size)
+      _args << nil
+    end
+
+    # Size of our iteration is either count of arguments or count of
+    # contracts. Without splat - count of arguments, with splat -
+    # min(count of contracts, count of arguments)
+    _size = _args.size
+    iteration_size = _size
+    iteration_size = size if !splat_present && size < _size
 
     # check contracts on arguments
     # fun fact! This is significantly faster than .zip (3.7 secs vs 4.7 secs). Why??
-    last_index = @args_validators.size - 1
-    proc_present = [Proc, Method].include?(@args_contracts[last_index])
-    last_index -= 1 if proc_present
+
     # times is faster than (0..args.size).each
-    size = _args.size
-    size.times do |i|
+    iteration_size.times do |i|
       # this is done to account for extra args (for *args)
-      j = i < last_index ? i : last_index
-      j = last_index + 1 if i == size - 1 && proc_present
+      j = i > splat_index ? splat_index : i
+      j = size - 1 if i == _size - 1 && proc_present
       #unless true #@args_contracts[i].valid?(args[i])
       unless @args_validators[j][_args[i]]
-        call_function = Contract.failure_callback({:arg => _args[i], :contract => @args_contracts[j], :class => @klass, :method => @method, :contracts => self, :arg_pos => i+1, :total_args => _args.size})
+        call_function = Contract.failure_callback({:arg => _args[i], :contract => @args_contracts[j], :class => @klass, :method => @method, :contracts => self, :arg_pos => i+1, :total_args => _size})
         return unless call_function
       end
     end
 
     if @has_func_contracts
       # contracts on methods
+      contracts_size = @args_contracts.size
       @args_contracts.each_with_index do |contract, i|
-        if contract.is_a? Contracts::Func
+        next if contracts_size - 1 == i && proc_present && blk
+
+        if contract.is_a?(Contracts::Func)
           args[i] = Contract.new(@klass, args[i], *contract.contracts)
         end
+      end
+
+      if proc_present && blk && last_contract.is_a?(Contracts::Func)
+        blk_contract = Contract.new(@klass, blk, *last_contract.contracts)
+        blk = Proc.new { |*args, &blk| blk_contract.call(*args, &blk) }
       end
     end
 
