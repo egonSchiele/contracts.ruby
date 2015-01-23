@@ -147,6 +147,74 @@ RSpec.describe "Contracts:" do
     end
   end
 
+  describe "anonymous classes" do
+    let(:klass) do
+      Class.new do
+        include Contracts
+
+        Contract String => String
+        def greeting(name)
+          "hello, #{name}"
+        end
+      end
+    end
+
+    let(:obj) { klass.new }
+
+    it "does not fail when contract is satisfied" do
+      expect(obj.greeting("world")).to eq("hello, world")
+    end
+
+    it "fails with error when contract is violated" do
+      expect { obj.greeting(3) }.to raise_error(ContractError, /Actual: 3/)
+    end
+  end
+
+  describe "anonymous modules" do
+    let(:mod) do
+      Module.new do
+        include Contracts
+        include Contracts::Modules
+
+        Contract String => String
+        def greeting(name)
+          "hello, #{name}"
+        end
+
+        Contract String => String
+        def self.greeting(name)
+          "hello, #{name}"
+        end
+      end
+    end
+
+    let(:klass) do
+      Class.new.tap { |klass| klass.include mod }
+    end
+
+    let(:obj) { klass.new }
+
+    it "does not fail when contract is satisfied" do
+      expect(obj.greeting("world")).to eq("hello, world")
+    end
+
+    it "fails with error when contract is violated" do
+      expect { obj.greeting(3) }.to raise_error(ContractError, /Actual: 3/)
+    end
+
+    context "when called on module itself" do
+      let(:obj) { mod }
+
+      it "does not fail when contract is satisfied" do
+        expect(obj.greeting("world")).to eq("hello, world")
+      end
+
+      it "fails with error when contract is violated" do
+        expect { obj.greeting(3) }.to raise_error(ContractError, /Actual: 3/)
+      end
+    end
+  end
+
   describe "instance methods" do
     it "should allow two classes to have the same method with different contracts" do
       a = A.new
