@@ -189,7 +189,7 @@ RSpec.describe "Contracts:" do
     end
 
     let(:klass) do
-      Class.new.tap { |klass| klass.include mod }
+      Class.new.tap { |klass| klass.send(:include, mod) }
     end
 
     let(:obj) { klass.new }
