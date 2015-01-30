@@ -131,49 +131,47 @@ Here's why: Suppose you have this code:
     means you would always call Bar's to_s...infinite recursion! Instead, you want to
     call Foo's version of decorated_methods. So the line needs to be `current = #{self}`.
 =end
-      method_def = %{
-        def #{is_class_method ? "self." : ""}#{name}(*args, &blk)
-          current = #{self}
-          ancestors = current.ancestors
-          ancestors.shift # first one is just the class itself
-          while current && !current.respond_to?(:decorated_methods) || current.decorated_methods.nil?
-            current = ancestors.shift
-          end
-          if !current.respond_to?(:decorated_methods) || current.decorated_methods.nil?
-            raise "Couldn't find decorator for method " + self.class.name + ":#{name}.\nDoes this method look correct to you? If you are using contracts from rspec, rspec wraps classes in it's own class.\nLook at the specs for contracts.ruby as an example of how to write contracts in this case."
-          end
-          methods = current.decorated_methods[#{is_class_method ? ":class_methods" : ":instance_methods"}][#{name.inspect}]
 
-          # this adds support for overloading methods. Here we go through each method and call it with the arguments.
-          # If we get a ContractError, we move to the next function. Otherwise we return the result.
-          # If we run out of functions, we raise the last ContractError.
-          success = false
-          i = 0
-          result = nil
-          expected_error = methods[0].failure_exception
-          while !success
-            method = methods[i]
-            i += 1
-            begin
-              success = true
-              result = method.call_with(self, *args, &blk)
-            rescue expected_error => error
-              success = false
-              unless methods[i]
-                begin
-                  ::Contract.failure_callback(error.data, false)
-                rescue expected_error => final_error
-                  raise final_error.to_contract_error
-                end
+      current = self
+      method_reference.make_definition(self) do |*args, &blk|
+        ancestors = current.ancestors
+        ancestors.shift # first one is just the class itself
+        while current && !current.respond_to?(:decorated_methods) || current.decorated_methods.nil?
+          current = ancestors.shift
+        end
+        if !current.respond_to?(:decorated_methods) || current.decorated_methods.nil?
+          raise "Couldn't find decorator for method " + self.class.name + ":#{name}.\nDoes this method look correct to you? If you are using contracts from rspec, rspec wraps classes in it's own class.\nLook at the specs for contracts.ruby as an example of how to write contracts in this case."
+        end
+        methods = current.decorated_methods[method_type][name]
+
+        # this adds support for overloading methods. Here we go through each method and call it with the arguments.
+        # If we get a ContractError, we move to the next function. Otherwise we return the result.
+        # If we run out of functions, we raise the last ContractError.
+        success = false
+        i = 0
+        result = nil
+        expected_error = methods[0].failure_exception
+        while !success
+          method = methods[i]
+          i += 1
+          begin
+            success = true
+            result = method.call_with(self, *args, &blk)
+          rescue expected_error => error
+            success = false
+            unless methods[i]
+              begin
+                ::Contract.failure_callback(error.data, false)
+              rescue expected_error => final_error
+                raise final_error.to_contract_error
               end
             end
           end
-          result
         end
-        #{is_private ? "private #{name.inspect}" : ""}
-          }
+        result
+      end
 
-      class_eval method_def, __FILE__, __LINE__ + 1
+      method_reference.make_private(self) if is_private
     end
 
     def decorate(klass, *args)

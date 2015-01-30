@@ -447,6 +447,7 @@ module M
   def self.parse
     # do some hard parsing
   end
+end
 ```
 
 ## Invariants

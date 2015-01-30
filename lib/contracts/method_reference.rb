@@ -17,6 +17,16 @@ module Contracts
       Support.method_position(@method)
     end
 
+    # Makes a method re-definition in proper way
+    def make_definition(this, &blk)
+      alias_target(this).send(:define_method, name, &blk)
+    end
+
+    # Makes a method private
+    def make_private(this)
+      alias_target(this).class_eval { private name }
+    end
+
     # Aliases original method to a special unique name, which is known
     # only to this class. Usually done right before re-defining the
     # method.
