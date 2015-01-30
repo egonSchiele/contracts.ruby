@@ -104,6 +104,21 @@ def with_partial_sums(*vals, &blk)
   blk[sum]
 end
 
+Contract Args[Num], Func[Num => Num] => Num
+def with_partial_sums_contracted(*vals, &blk)
+  sum = vals.inject(0) do |acc, val|
+    blk[acc]
+    acc + val
+  end
+  blk[sum]
+end
+
+Contract Num, Proc => nil
+def double_with_proc(x, &blk)
+  blk.call(x * 2)
+  nil
+end
+
 Contract Pos => nil
 def pos_test(x)
 end
