@@ -83,11 +83,19 @@ RSpec.describe "Contracts:" do
     end
 
     context "when owner class does not include Contracts" do
-      it "fails with descriptive error" do
-        class_with_contracts = Class.new { include Contracts }
+      let(:error) {
+        # NOTE Unable to support this user-friendly error for 1.8.7
+        # it has much less support for singleton inheritance hierarchy
+        if RUBY_VERSION.to_f < 1.9
+          [NoMethodError, /undefined method `Contract'/]
+        else
+          [Contracts::ContractsNotIncluded, Contracts::ContractsNotIncluded::DEFAULT_MESSAGE]
+        end
+      }
 
+      it "fails with descriptive error" do
         expect {
-          Class.new(class_with_contracts) do
+          Class.new(GenericExample) do
             class << self
               Contract String => String
               def hoge(name)
@@ -95,7 +103,7 @@ RSpec.describe "Contracts:" do
               end
             end
           end
-        }.to raise_error(Contracts::ContractsNotIncluded, Contracts::ContractsNotIncluded::DEFAULT_MESSAGE)
+        }.to raise_error(*error)
       end
     end
   end
