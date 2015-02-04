@@ -1,5 +1,6 @@
 module Mod
   include Contracts
+
   Contract Num => Num
   def self.a_module_method a
      a + 1
@@ -12,6 +13,6 @@ RSpec.describe "module methods" do
   end
 
   it "should fail for incorrect input" do
-    expect { Mod.a_module_method("bad") }.to raise_error
+    expect { Mod.a_module_method("bad") }.to raise_error(ContractError)
   end
 end  

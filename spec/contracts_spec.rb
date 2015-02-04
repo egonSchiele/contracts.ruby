@@ -1,8 +1,6 @@
-include Contracts
-
 RSpec.describe "Contracts:" do
   before :all do
-    @o = Object.new
+    @o = GenericExample.new
   end
 
   describe "basic" do
