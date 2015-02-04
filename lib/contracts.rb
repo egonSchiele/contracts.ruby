@@ -244,11 +244,11 @@ class Contract < Contracts::Decorator
     size = @args_contracts.size
 
     last_contract = @args_contracts.last
-    proc_present = (Func === last_contract ||
+    proc_present = (Contracts::Func === last_contract ||
       (Class === last_contract && (last_contract <= Proc || last_contract <= Method)))
 
     _splat_index = proc_present ? -2 : -1
-    splat_present = Args === @args_contracts[_splat_index]
+    splat_present = Contracts::Args === @args_contracts[_splat_index]
     splat_index = size + _splat_index
     splat_index += 1 unless splat_present
 

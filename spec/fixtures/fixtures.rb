@@ -54,7 +54,7 @@ class GenericExample
   include Contracts
 
   Contract Num => Num
-  def Object.a_class_method x
+  def GenericExample.a_class_method x
     x + 1
   end
 

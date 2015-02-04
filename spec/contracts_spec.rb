@@ -84,8 +84,10 @@ RSpec.describe "Contracts:" do
 
     context "when owner class does not include Contracts" do
       it "fails with descriptive error" do
+        class_with_contracts = Class.new { include Contracts }
+
         expect {
-          Class.new do
+          Class.new(class_with_contracts) do
             class << self
               Contract String => String
               def hoge(name)
@@ -93,7 +95,7 @@ RSpec.describe "Contracts:" do
               end
             end
           end
-        }.to raise_error(Contracts::ContractsNotIncluded, ContractsNotIncluded::DEFAULT_MESSAGE)
+        }.to raise_error(Contracts::ContractsNotIncluded, Contracts::ContractsNotIncluded::DEFAULT_MESSAGE)
       end
     end
   end
@@ -236,11 +238,11 @@ RSpec.describe "Contracts:" do
 
   describe "class methods" do
     it "should pass for correct input" do
-      expect { Object.a_class_method(2) }.to_not raise_error
+      expect { GenericExample.a_class_method(2) }.to_not raise_error
     end
 
     it "should fail for incorrect input" do
-      expect { Object.a_class_method("bad") }.to raise_error(ContractError)
+      expect { GenericExample.a_class_method("bad") }.to raise_error(ContractError)
     end
   end
 
