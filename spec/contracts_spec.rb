@@ -84,12 +84,13 @@ RSpec.describe "Contracts:" do
 
     context "when owner class does not include Contracts" do
       let(:error) {
-        # NOTE Unable to support this user-friendly error for 1.8.7
-        # it has much less support for singleton inheritance hierarchy
-        if RUBY_VERSION.to_f < 1.9
-          [NoMethodError, /undefined method `Contract'/]
-        else
+        # NOTE Unable to support this user-friendly error for ruby
+        # 1.8.7 and jruby 1.8, 1.9 it has much less support for
+        # singleton inheritance hierarchy
+        if Contracts::Support.eigenclass_hierarchy_supported?
           [Contracts::ContractsNotIncluded, Contracts::ContractsNotIncluded::DEFAULT_MESSAGE]
+        else
+          [NoMethodError, /undefined method `Contract'/]
         end
       }
 
