@@ -1,6 +1,5 @@
-include Contracts
-
 class A
+  include Contracts
 
   Contract Num => Num
   def self.a_class_method x
@@ -28,6 +27,8 @@ class A
 end
 
 class B
+  include Contracts
+
   def bad
     false
   end
@@ -39,6 +40,8 @@ class B
 end
 
 class C
+  include Contracts
+
   def good
     false
   end
@@ -47,170 +50,176 @@ class C
   end
 end
 
-public # we need this otherwise all these methods will automatically be marked private
-Contract Num => Num
-def Object.a_class_method x
-  x + 1
-end
+class GenericExample
+  include Contracts
 
-Contract Num => nil
-def bad_double(x)
-  x * 2
-end
-
-Contract Num => Num
-def double(x)
-  x * 2
-end
-
-Contract String => nil
-def hello(name)
-end
-
-Contract lambda { |x| x.is_a? Numeric } => Num
-def square(x)
-  x ** 2
-end
-
-Contract [Num, Num, Num] => Num
-def sum_three(vals)
-  vals.inject(0) do |acc, x|
-    acc + x
+  Contract Num => Num
+  def GenericExample.a_class_method x
+    x + 1
   end
-end
 
-Contract ({:name => String, :age => Fixnum}) => nil
-def person(data)
-end
-
-Contract Proc => Any
-def do_call(&blk)
-  blk.call
-end
-
-Contract Args[Num] => Num
-def sum(*vals)
-  vals.inject(0) do |acc, val|
-    acc + val
-  end
-end
-
-Contract Args[Num], Proc => Num
-def with_partial_sums(*vals, &blk)
-  sum = vals.inject(0) do |acc, val|
-    blk[acc]
-    acc + val
-  end
-  blk[sum]
-end
-
-Contract Args[Num], Func[Num => Num] => Num
-def with_partial_sums_contracted(*vals, &blk)
-  sum = vals.inject(0) do |acc, val|
-    blk[acc]
-    acc + val
-  end
-  blk[sum]
-end
-
-Contract Num, Proc => nil
-def double_with_proc(x, &blk)
-  blk.call(x * 2)
-  nil
-end
-
-Contract Pos => nil
-def pos_test(x)
-end
-
-Contract Neg => nil
-def neg_test(x)
-end
-
-Contract Any => nil
-def show(x)
-end
-
-Contract None => nil
-def fail_all(x)
-end
-
-Contract Or[Num, String] => nil
-def num_or_string(x)
-end
-
-Contract Xor[RespondTo[:good], RespondTo[:bad]] => nil
-def xor_test(x)
-end
-
-Contract And[A, RespondTo[:good]] => nil
-def and_test(x)
-end
-
-Contract RespondTo[:good] => nil
-def responds_test(x)
-end
-
-Contract Send[:good] => nil
-def send_test(x)
-end
-
-Contract Not[nil] => nil
-def not_nil(x)
-end
-
-Contract ArrayOf[Num] => Num
-def product(vals)
-  vals.inject(1) do |acc, x|
-    acc * x
-  end
-end
-
-Contract Bool => nil
-def bool_test(x)
-end
-
-Contract nil => Num
-def no_args
-  1
-end
-
-Contract ArrayOf[Num], Func[Num => Num] => ArrayOf[Num]
-def map(arr, func)
-  ret = []
-  arr.each do |x|
-    ret << func[x]
-  end
-  ret
-end
-
-Contract Num => Num
-def default_args(x = 1)
-  2
-end
-
-Contract Maybe[Num] => Maybe[Num]
-def maybe_double x
-  if x.nil?
-    nil
-  else
+  Contract Num => nil
+  def bad_double(x)
     x * 2
   end
-end
 
-Contract HashOf[Symbol, Num] => Num
-def gives_max_value(hash)
-  hash.values.max
-end
+  Contract Num => Num
+  def double(x)
+    x * 2
+  end
 
-Contract nil => String
-def a_private_method
-  "works"
+  Contract String => nil
+  def hello(name)
+  end
+
+  Contract lambda { |x| x.is_a? Numeric } => Num
+  def square(x)
+    x ** 2
+  end
+
+  Contract [Num, Num, Num] => Num
+  def sum_three(vals)
+    vals.inject(0) do |acc, x|
+      acc + x
+    end
+  end
+
+  Contract ({:name => String, :age => Fixnum}) => nil
+  def person(data)
+  end
+
+  Contract Proc => Any
+  def do_call(&blk)
+    blk.call
+  end
+
+  Contract Args[Num] => Num
+  def sum(*vals)
+    vals.inject(0) do |acc, val|
+      acc + val
+    end
+  end
+
+  Contract Args[Num], Proc => Num
+  def with_partial_sums(*vals, &blk)
+    sum = vals.inject(0) do |acc, val|
+      blk[acc]
+      acc + val
+    end
+    blk[sum]
+  end
+
+  Contract Args[Num], Func[Num => Num] => Num
+  def with_partial_sums_contracted(*vals, &blk)
+    sum = vals.inject(0) do |acc, val|
+      blk[acc]
+      acc + val
+    end
+    blk[sum]
+  end
+
+  Contract Num, Proc => nil
+  def double_with_proc(x, &blk)
+    blk.call(x * 2)
+    nil
+  end
+
+  Contract Pos => nil
+  def pos_test(x)
+  end
+
+  Contract Neg => nil
+  def neg_test(x)
+  end
+
+  Contract Any => nil
+  def show(x)
+  end
+
+  Contract None => nil
+  def fail_all(x)
+  end
+
+  Contract Or[Num, String] => nil
+  def num_or_string(x)
+  end
+
+  Contract Xor[RespondTo[:good], RespondTo[:bad]] => nil
+  def xor_test(x)
+  end
+
+  Contract And[A, RespondTo[:good]] => nil
+  def and_test(x)
+  end
+
+  Contract RespondTo[:good] => nil
+  def responds_test(x)
+  end
+
+  Contract Send[:good] => nil
+  def send_test(x)
+  end
+
+  Contract Not[nil] => nil
+  def not_nil(x)
+  end
+
+  Contract ArrayOf[Num] => Num
+  def product(vals)
+    vals.inject(1) do |acc, x|
+      acc * x
+    end
+  end
+
+  Contract Bool => nil
+  def bool_test(x)
+  end
+
+  Contract nil => Num
+  def no_args
+    1
+  end
+
+  Contract ArrayOf[Num], Func[Num => Num] => ArrayOf[Num]
+  def map(arr, func)
+    ret = []
+    arr.each do |x|
+      ret << func[x]
+    end
+    ret
+  end
+
+  Contract Num => Num
+  def default_args(x = 1)
+    2
+  end
+
+  Contract Maybe[Num] => Maybe[Num]
+  def maybe_double x
+    if x.nil?
+      nil
+    else
+      x * 2
+    end
+  end
+
+  Contract HashOf[Symbol, Num] => Num
+  def gives_max_value(hash)
+    hash.values.max
+  end
+
+  Contract nil => String
+  def a_private_method
+    "works"
+  end
+  private :a_private_method
+
 end
-private :a_private_method
 
 # for testing inheritance
 class Parent
+  include Contracts
+
   Contract Num => Num
   def double x
     x * 2
@@ -220,17 +229,21 @@ end
 class Child < Parent
 end
 
-Contract Parent => Parent
-def id_ a
-  a
-end
+class GenericExample
+  Contract Parent => Parent
+  def id_ a
+    a
+  end
 
-Contract Exactly[Parent] => nil
-def exactly_test(x)
+  Contract Exactly[Parent] => nil
+  def exactly_test(x)
+  end
 end
 
 # pattern matching example with possible deep contract violation
 class PatternMatchingExample
+  include Contracts
+
   class Success < Struct.new(:request)
   end
 
@@ -315,6 +328,8 @@ end
 
 with_enabled_no_contracts do
   class NoContractsSimpleExample
+    include Contracts
+
     Contract String => nil
     def some_method(x)
       nil
@@ -322,6 +337,7 @@ with_enabled_no_contracts do
   end
 
   class NoContractsInvariantsExample
+    include Contracts
     include Contracts::Invariants
 
     attr_accessor :day
@@ -335,6 +351,8 @@ with_enabled_no_contracts do
   end
 
   class NoContractsPatternMatchingExample
+    include Contracts
+
     Contract 200, String => String
     def on_response(status, body)
       body + "!"
@@ -350,6 +368,7 @@ end
 module ModuleExample
   # This inclusion is required to actually override `method_added`
   # hooks for module.
+  include Contracts
   include Contracts::Modules
 
   Contract Num, Num => Num
@@ -376,6 +395,8 @@ class KlassWithModuleExample
 end
 
 class SingletonInheritanceExample
+  include Contracts
+
   Contract Any => Any
   def self.a_contracted_self
     self

@@ -1,8 +1,6 @@
-include Contracts
-
 RSpec.describe "Contracts:" do
   before :all do
-    @o = Object.new
+    @o = GenericExample.new
   end
 
   describe "basic" do
@@ -85,9 +83,20 @@ RSpec.describe "Contracts:" do
     end
 
     context "when owner class does not include Contracts" do
+      let(:error) {
+        # NOTE Unable to support this user-friendly error for ruby
+        # 1.8.7 and jruby 1.8, 1.9 it has much less support for
+        # singleton inheritance hierarchy
+        if Contracts::Support.eigenclass_hierarchy_supported?
+          [Contracts::ContractsNotIncluded, Contracts::ContractsNotIncluded::DEFAULT_MESSAGE]
+        else
+          [NoMethodError, /undefined method `Contract'/]
+        end
+      }
+
       it "fails with descriptive error" do
         expect {
-          Class.new do
+          Class.new(GenericExample) do
             class << self
               Contract String => String
               def hoge(name)
@@ -95,7 +104,7 @@ RSpec.describe "Contracts:" do
               end
             end
           end
-        }.to raise_error(Contracts::ContractsNotIncluded, ContractsNotIncluded::DEFAULT_MESSAGE)
+        }.to raise_error(*error)
       end
     end
   end
@@ -238,11 +247,11 @@ RSpec.describe "Contracts:" do
 
   describe "class methods" do
     it "should pass for correct input" do
-      expect { Object.a_class_method(2) }.to_not raise_error
+      expect { GenericExample.a_class_method(2) }.to_not raise_error
     end
 
     it "should fail for incorrect input" do
-      expect { Object.a_class_method("bad") }.to raise_error(ContractError)
+      expect { GenericExample.a_class_method("bad") }.to raise_error(ContractError)
     end
   end
 

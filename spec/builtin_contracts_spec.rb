@@ -1,8 +1,6 @@
-include Contracts
-
 RSpec.describe "Contracts:" do
   before :all do
-    @o = Object.new
+    @o = GenericExample.new
   end
 
   describe "Num:" do
@@ -205,11 +203,11 @@ RSpec.describe "Contracts:" do
 
     describe '#to_s' do
       context 'given Symbol => String' do
-        it { expect(HashOf[Symbol, String].to_s).to eq('Hash<Symbol, String>') }
+        it { expect(Contracts::HashOf[Symbol, String].to_s).to eq('Hash<Symbol, String>') }
       end
 
       context 'given String => Num' do
-        it { expect(HashOf[String, Num].to_s).to eq('Hash<String, Contracts::Num>') }
+        it { expect(Contracts::HashOf[String, Contracts::Num].to_s).to eq('Hash<String, Contracts::Num>') }
       end
     end
   end
