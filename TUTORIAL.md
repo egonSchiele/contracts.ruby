@@ -404,7 +404,7 @@ If your failure callback returns `false`, the method that the contract is guardi
 
 ## Disabling contracts
 
-If you want to disable contracts, set the `NO_CONTRACTS` environment variable. This will disable contracts completely and you won't have a performance hit.
+If you want to disable contracts, set the `NO_CONTRACTS` environment variable. This will disable contracts and you won't have a performance hit. Pattern matching will still work if you disable contracts in this way! With NO_CONTRACTS only pattern-matching contracts are defined.
 
 ## Method overloading
 
