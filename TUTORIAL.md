@@ -405,7 +405,9 @@ If you want to disable contracts, set the `NO_CONTRACTS` environment variable. T
 
 ## Method overloading
 
-You can use contracts for method overloading! For example, here's a factorial function without method overloading:
+You can use contracts for method overloading! This is commonly called "pattern matching" in functional programming languages.
+
+For example, here's a factorial function without method overloading:
 
 ```ruby
 Contract Num => Num
@@ -433,6 +435,29 @@ end
 ```
 
 For an argument, each function will be tried in order. The first function that doesn't raise a `ContractError` will be used. So in this case, if x == 1, the first function will be used. For all other values, the second function will be used.
+
+This allows you write methods more declaratively, rather than using conditional branching. This feature is not only useful for recursion; you can use it to keep parallel use cases separate:
+
+```ruby
+Contract And[Num, lambda{|n| n < 12 }] => Ticket
+def get_ticket(age)
+  ChildTicket.new(age: age)
+end
+
+Contract And[Num, lambda{|n| n >= 12 }] => Ticket
+def get_ticket(age)
+  AdultTicket.new(age: age)
+end
+
+```
+
+Note that the second `get_ticket` contract above could have been simplified to:
+
+```ruby
+Contract Num => Ticket
+```
+
+This is because the first contract eliminated the possibility of `age` being less than 12. However, the simpler contract is less explicit; you may want to "spell out" the age condition for clarity, especially if the method is overloaded with many contracts.
 
 ## Contracts in modules
 
