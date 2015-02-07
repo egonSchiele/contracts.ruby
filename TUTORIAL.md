@@ -29,14 +29,17 @@ Copy this code into a file and run it:
 
 ```ruby
 require 'contracts'
-include Contracts
 
-Contract Num, Num => Num
-def add(a, b)
-  a + b
+class Math
+  include Contracts
+
+  Contract Num, Num => Num
+  def self.add(a, b)
+    a + b
+  end
 end
 
-puts add(1, "foo")
+puts Math.add(1, "foo")
 ```
 
 You'll see a detailed error message like so:
@@ -60,7 +63,7 @@ This can be useful if you're in a repl and want to figure out how a function sho
 
 ## Builtin Contracts
 
-`Num` is one of the builtin contracts that contracts.ruby comes with. The builtin contracts are in the `Contracts` namespace. The easiest way to use them is to put `include Contracts` at the top of your file, but beware that they will pollute your namespace with new class names.
+`Num` is one of the builtin contracts that contracts.ruby comes with. The builtin contracts are in the `Contracts` namespace. The easiest way to use them is to include the `Contracts` module in your class/module.
 
 contracts.ruby comes with a lot of builtin contracts, including:
 
@@ -439,12 +442,12 @@ For an argument, each function will be tried in order. The first function that d
 This allows you write methods more declaratively, rather than using conditional branching. This feature is not only useful for recursion; you can use it to keep parallel use cases separate:
 
 ```ruby
-Contract And[Num, lambda{|n| n < 12 }] => Ticket
+Contract lambda{|n| n < 12 } => Ticket
 def get_ticket(age)
   ChildTicket.new(age: age)
 end
 
-Contract And[Num, lambda{|n| n >= 12 }] => Ticket
+Contract lambda{|n| n >= 12 } => Ticket
 def get_ticket(age)
   AdultTicket.new(age: age)
 end
@@ -486,7 +489,7 @@ A simple example:
 ```ruby
 class MyBirthday < Struct.new(:day, :month)
   include Contracts
-  include Contracts:Invariants
+  include Contracts::Invariants
 
   Invariant(:day) { 1 <= day && day <= 31 }
   Invariant(:month) { 1 <= month && month <= 12 }
