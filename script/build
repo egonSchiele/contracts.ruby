@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
 
-bundle exec rspec && bundle exec cucumber
+bundle exec rspec && \
+    CONTRACTS_TOP_LEVEL_INCLUSION=true bundle exec rspec && \
+    bundle exec cucumber
 
