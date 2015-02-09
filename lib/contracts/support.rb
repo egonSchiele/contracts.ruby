@@ -37,9 +37,11 @@ module Contracts
       end
 
       def handle_top_level_inclusion(base)
+        return if repl?
         return unless Object == base
-        puts TOP_LEVEL_INCLUSION_DEPRECATION
-        puts caller
+
+        STDERR.puts TOP_LEVEL_INCLUSION_DEPRECATION
+        STDERR.puts caller
       end
 
       def repl?

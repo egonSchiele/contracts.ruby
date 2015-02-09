@@ -37,7 +37,7 @@ Feature: Deprecated top level inclusion
 
   Scenario: Intended Contracts inclusion in user class
     When I run `bundle exec ruby normal_usage.rb`
-    Then the output should not contain:
+    Then the stderr should not contain:
       """
       [WARN] Top level inclusion is deprecated, backtrace:
       """
@@ -45,23 +45,62 @@ Feature: Deprecated top level inclusion
 
   Scenario: Top level inclusion outside of repl
     When I run `bundle exec ruby top_level_inclusion.rb`
-    Then the output should contain:
+    Then the stderr should contain:
       """
       [WARN] Top level inclusion is deprecated, backtrace:
       """
-     And the output should contain:
+     And the stderr should contain:
       """
       top_level_inclusion.rb:3
       """
 
   Scenario: Object inclusion outside of repl
     When I run `bundle exec ruby object_inclusion.rb`
-    Then the output should contain:
+    Then the stderr should contain:
       """
       [WARN] Top level inclusion is deprecated, backtrace:
       """
-     And the output should contain:
+     And the stderr should contain:
       """
       object_inclusion.rb:4
       """
  
+  Scenario: Top level inclusion from irb
+    When I run `bundle exec irb` interactively
+     And I type "require 'contracts'"
+     And I type "include Contracts"
+     And I type "exit"
+    Then the stderr should not contain:
+      """
+      [WARN] Top level inclusion is deprecated, backtrace:
+      """
+
+  Scenario: Top level inclusion from pry
+    When I run `bundle exec pry` interactively
+     And I type "require 'contracts'"
+     And I type "include Contracts"
+     And I type "exit"
+    Then the stderr should not contain:
+      """
+      [WARN] Top level inclusion is deprecated, backtrace:
+      """
+
+  Scenario: Object inclusion from irb
+    When I run `bundle exec irb` interactively
+     And I type "require 'contracts'"
+     And I type "class Object; include Contracts; end"
+     And I type "exit"
+    Then the stderr should not contain:
+      """
+      [WARN] Top level inclusion is deprecated, backtrace:
+      """
+
+  Scenario: Object inclusion from pry
+    When I run `bundle exec pry` interactively
+     And I type "require 'contracts'"
+     And I type "class Object; include Contracts; end"
+     And I type "exit"
+    Then the stderr should not contain:
+      """
+      [WARN] Top level inclusion is deprecated, backtrace:
+      """
