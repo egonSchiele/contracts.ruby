@@ -330,6 +330,11 @@ class SingletonClassExample
     def hoge(str)
       "super#{str}"
     end
+
+    Contract Num, Num => Num
+    def add(a, b)
+      a + b
+    end
   end
 end
 

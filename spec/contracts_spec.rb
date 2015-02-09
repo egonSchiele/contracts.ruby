@@ -107,6 +107,14 @@ RSpec.describe "Contracts:" do
         }.to raise_error(*error)
       end
     end
+
+    describe "builtin contracts usage" do
+      it "allows to use builtin contracts without namespacing and redundant Contracts inclusion" do
+        expect {
+          SingletonClassExample.add("55", 5.6)
+        }.to raise_error(ContractError, /Expected: Contracts::Num/)
+      end
+    end
   end
 
   describe "no contracts feature" do
