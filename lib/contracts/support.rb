@@ -1,7 +1,7 @@
 module Contracts
   module Support
     class << self
-      TOP_LEVEL_INCLUSION_DEPRECATION = "[WARN] Top level inclusion is deprecated, backtrace:"
+      TOP_LEVEL_INCLUSION_DEPRECATION = "[WARN] Top level inclusion is deprecated, consider including Contracts in target classes, backtrace:"
 
       def method_position(method)
         return method.method_position if MethodReference === method

@@ -39,7 +39,7 @@ Feature: Deprecated top level inclusion
     When I run `bundle exec ruby normal_usage.rb`
     Then the stderr should not contain:
       """
-      [WARN] Top level inclusion is deprecated, backtrace:
+      [WARN] Top level inclusion is deprecated, consider including Contracts in target classes, backtrace:
       """
     
 
@@ -47,7 +47,7 @@ Feature: Deprecated top level inclusion
     When I run `bundle exec ruby top_level_inclusion.rb`
     Then the stderr should contain:
       """
-      [WARN] Top level inclusion is deprecated, backtrace:
+      [WARN] Top level inclusion is deprecated, consider including Contracts in target classes, backtrace:
       """
      And the stderr should contain:
       """
@@ -58,7 +58,7 @@ Feature: Deprecated top level inclusion
     When I run `bundle exec ruby object_inclusion.rb`
     Then the stderr should contain:
       """
-      [WARN] Top level inclusion is deprecated, backtrace:
+      [WARN] Top level inclusion is deprecated, consider including Contracts in target classes, backtrace:
       """
      And the stderr should contain:
       """
@@ -72,7 +72,7 @@ Feature: Deprecated top level inclusion
      And I type "exit"
     Then the stderr should not contain:
       """
-      [WARN] Top level inclusion is deprecated, backtrace:
+      [WARN] Top level inclusion is deprecated, consider including Contracts in target classes, backtrace:
       """
 
   Scenario: Top level inclusion from pry
@@ -82,7 +82,7 @@ Feature: Deprecated top level inclusion
      And I type "exit"
     Then the stderr should not contain:
       """
-      [WARN] Top level inclusion is deprecated, backtrace:
+      [WARN] Top level inclusion is deprecated, consider including Contracts in target classes, backtrace:
       """
 
   Scenario: Object inclusion from irb
@@ -92,7 +92,7 @@ Feature: Deprecated top level inclusion
      And I type "exit"
     Then the stderr should not contain:
       """
-      [WARN] Top level inclusion is deprecated, backtrace:
+      [WARN] Top level inclusion is deprecated, consider including Contracts in target classes, backtrace:
       """
 
   Scenario: Object inclusion from pry
@@ -102,5 +102,5 @@ Feature: Deprecated top level inclusion
      And I type "exit"
     Then the stderr should not contain:
       """
-      [WARN] Top level inclusion is deprecated, backtrace:
+      [WARN] Top level inclusion is deprecated, consider including Contracts in target classes, backtrace:
       """
