@@ -24,7 +24,8 @@ module Contracts
 
     # Makes a method private
     def make_private(this)
-      alias_target(this).class_eval { private name }
+      original_name = name
+      alias_target(this).class_eval { private original_name }
     end
 
     # Aliases original method to a special unique name, which is known

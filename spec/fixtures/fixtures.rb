@@ -214,6 +214,13 @@ class GenericExample
   end
   private :a_private_method
 
+  private
+
+  Contract nil => String
+  def a_really_private_method
+    "works for sure"
+  end
+
 end
 
 # for testing inheritance

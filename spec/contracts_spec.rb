@@ -449,6 +449,10 @@ RSpec.describe "Contracts:" do
     it "should raise an error if you try to access a private method" do
       expect { @o.a_private_method }.to raise_error
     end
+
+    it "should raise an error if you try to access a private method" do
+      expect { @o.a_really_private_method }.to raise_error
+    end
   end
 
   describe "inherited methods" do
