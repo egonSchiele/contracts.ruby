@@ -1,5 +1,6 @@
 module Mod
   include Contracts
+  include Contracts::Modules
 
   Contract Num => Num
   def self.a_module_method a
