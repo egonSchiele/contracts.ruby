@@ -20,6 +20,7 @@ module Contracts
 
       unless eigenclass.respond_to?(:pop_decorators)
         eigenclass.extend(MethodDecorators)
+        eigenclass.send(:include, Contracts)
       end
 
       eigenclass.owner_class = base

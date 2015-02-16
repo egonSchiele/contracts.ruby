@@ -214,6 +214,13 @@ class GenericExample
   end
   private :a_private_method
 
+  private
+
+  Contract nil => String
+  def a_really_private_method
+    "works for sure"
+  end
+
 end
 
 # for testing inheritance
@@ -322,6 +329,11 @@ class SingletonClassExample
     Contract String => String
     def hoge(str)
       "super#{str}"
+    end
+
+    Contract Num, Num => Num
+    def add(a, b)
+      a + b
     end
   end
 end
