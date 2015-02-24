@@ -18,6 +18,8 @@ module Contracts
   end
 
   def self.common(base)
+    Support.handle_top_level_inclusion(base)
+
     Eigenclass.lift(base)
 
     return if base.respond_to?(:Contract)

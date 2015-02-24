@@ -87,7 +87,8 @@ RSpec.describe "Contracts:" do
         # NOTE Unable to support this user-friendly error for ruby
         # 1.8.7 and jruby 1.8, 1.9 it has much less support for
         # singleton inheritance hierarchy
-        if Contracts::Support.eigenclass_hierarchy_supported?
+        # When CONTRACTS_TOP_LEVEL_INCLUSION=true this works naturally
+        if Contracts::Support.eigenclass_hierarchy_supported? || Object < Contracts
           [Contracts::ContractsNotIncluded, Contracts::ContractsNotIncluded::DEFAULT_MESSAGE]
         else
           [NoMethodError, /undefined method `Contract'/]
