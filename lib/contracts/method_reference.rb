@@ -28,6 +28,12 @@ module Contracts
       alias_target(this).class_eval { private original_name }
     end
 
+    # Makes a method protected
+    def make_protected(this)
+      original_name = name
+      alias_target(this).class_eval { protected original_name }
+    end
+
     # Aliases original method to a special unique name, which is known
     # only to this class. Usually done right before re-defining the
     # method.
