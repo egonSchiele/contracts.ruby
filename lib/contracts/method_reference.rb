@@ -19,13 +19,11 @@ module Contracts
 
     # Makes a method re-definition in proper way
     def make_definition(this, &blk)
+      is_private = private?(this)
+      is_protected = protected?(this)
       alias_target(this).send(:define_method, name, &blk)
-    end
-
-    # Makes a method private
-    def make_private(this)
-      original_name = name
-      alias_target(this).class_eval { private original_name }
+      make_private(this) if is_private
+      make_protected(this) if is_protected
     end
 
     # Aliases original method to a special unique name, which is known
@@ -48,6 +46,26 @@ module Contracts
 
     private
 
+    # Makes a method private
+    def make_private(this)
+      original_name = name
+      alias_target(this).class_eval { private original_name }
+    end
+
+    def private?(this)
+      this.private_instance_methods.map(&:to_sym).include?(name)
+    end
+
+    def protected?(this)
+      this.protected_instance_methods.map(&:to_sym).include?(name)
+    end
+
+    # Makes a method protected
+    def make_protected(this)
+      original_name = name
+      alias_target(this).class_eval { protected original_name }
+    end
+
     # Returns alias target for instance methods, subject to be
     # overriden in subclasses.
     def alias_target(this)
@@ -67,6 +85,14 @@ module Contracts
   # The same as MethodReference, but used for singleton methods.
   class SingletonMethodReference < MethodReference
     private
+
+    def private?(this)
+      this.private_methods.map(&:to_sym).include?(name)
+    end
+
+    def protected?(this)
+      this.protected_methods.map(&:to_sym).include?(name)
+    end
 
     # Return alias target for singleton methods.
     def alias_target(this)

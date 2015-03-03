@@ -56,13 +56,9 @@ module Contracts
       if is_class_method
         method_reference = SingletonMethodReference.new(name, method(name))
         method_type = :class_methods
-        # private_methods is an array of strings on 1.8 and an array of symbols on 1.9
-        is_private = self.private_methods.include?(name) || self.private_methods.include?(name.to_s)
       else
         method_reference = MethodReference.new(name, instance_method(name))
         method_type = :instance_methods
-        # private_instance_methods is an array of strings on 1.8 and an array of symbols on 1.9
-        is_private = self.private_instance_methods.include?(name) || self.private_instance_methods.include?(name.to_s)
       end
 
       @decorated_methods[method_type][name] ||= []
@@ -170,8 +166,6 @@ Here's why: Suppose you have this code:
         end
         result
       end
-
-      method_reference.make_private(self) if is_private
     end
 
     def decorate(klass, *args)

@@ -455,11 +455,21 @@ RSpec.describe "Contracts:" do
 
   describe "private methods" do
     it "should raise an error if you try to access a private method" do
-      expect { @o.a_private_method }.to raise_error
+      expect { @o.a_private_method }.to raise_error(NoMethodError, /private/)
     end
 
     it "should raise an error if you try to access a private method" do
-      expect { @o.a_really_private_method }.to raise_error
+      expect { @o.a_really_private_method }.to raise_error(NoMethodError, /private/)
+    end
+  end
+
+  describe "protected methods" do
+    it "should raise an error if you try to access a protected method" do
+      expect { @o.a_protected_method }.to raise_error(NoMethodError, /protected/)
+    end
+
+    it "should raise an error if you try to access a protected method" do
+      expect { @o.a_really_protected_method }.to raise_error(NoMethodError, /protected/)
     end
   end
 

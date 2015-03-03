@@ -214,6 +214,12 @@ class GenericExample
   end
   private :a_private_method
 
+  Contract nil => String
+  def a_protected_method
+    "works"
+  end
+  protected :a_protected_method
+
   private
 
   Contract nil => String
@@ -221,6 +227,12 @@ class GenericExample
     "works for sure"
   end
 
+  protected
+
+  Contract nil => String
+  def a_really_protected_method
+    "works for sure"
+  end
 end
 
 # for testing inheritance

@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    contracts (0.6)
+    contracts (0.7)
 
 GEM
   remote: http://rubygems.org/
