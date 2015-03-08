@@ -69,7 +69,7 @@ If you're using the library, please [let me know](https://github.com/egonSchiele
 
 Inspired by [contracts.coffee](http://disnetdev.com/contracts.coffee/).
 
-Copyright 2012 [Aditya Bhargava](http://adit.io).
+Copyright 2012-2015 [Aditya Bhargava](http://adit.io).
 Major improvements by [Alexey Fedorov](https://github.com/waterlink).
 
 BSD Licensed.
