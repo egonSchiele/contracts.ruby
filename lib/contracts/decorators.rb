@@ -169,7 +169,7 @@ Here's why: Suppose you have this code:
     end
 
     def decorate(klass, *args)
-      if self.singleton_class?
+      if singleton_class?
         return EigenclassWithOwner.lift(self).owner_class.decorate(klass, *args)
       end
 
