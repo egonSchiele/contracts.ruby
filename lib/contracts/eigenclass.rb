@@ -10,7 +10,7 @@ module Contracts
     end
 
     def self.lift(base)
-      return NullEigenclass if base.singleton_class?
+      return NullEigenclass if base.send(:singleton_class?)
 
       eigenclass = base.singleton_class
 
