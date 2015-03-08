@@ -62,14 +62,17 @@
 <p>Copy this code into a file and run it:</p>
 
 <div class="highlight highlight-ruby"><pre><span class="pl-k">require</span> <span class="pl-s1"><span class="pl-pds">'</span>contracts<span class="pl-pds">'</span></span>
-<span class="pl-k">include</span> <span class="pl-vo">Contracts</span>
 
-<span class="pl-vo">Contract</span> <span class="pl-vo">Num</span>, <span class="pl-vo">Num</span> =&gt; <span class="pl-vo">Num</span>
-<span class="pl-k">def</span> <span class="pl-en">add</span>(<span class="pl-vpf">a</span>, <span class="pl-vpf">b</span>)
-  a <span class="pl-k">+</span> b
+<span class="pl-k">class</span> <span class="pl-en">Math</span>
+  <span class="pl-k">include</span> <span class="pl-vo">Contracts</span>
+
+  <span class="pl-vo">Contract</span> <span class="pl-vo">Num</span>, <span class="pl-vo">Num</span> =&gt; <span class="pl-vo">Num</span>
+  <span class="pl-k">def</span> <span class="pl-en">self.add</span>(<span class="pl-vpf">a</span>, <span class="pl-vpf">b</span>)
+    a <span class="pl-k">+</span> b
+  <span class="pl-k">end</span>
 <span class="pl-k">end</span>
 
-puts add(<span class="pl-c1">1</span>, <span class="pl-s1"><span class="pl-pds">"</span>foo<span class="pl-pds">"</span></span>)</pre></div>
+puts <span class="pl-s3">Math</span>.add(<span class="pl-c1">1</span>, <span class="pl-s1"><span class="pl-pds">"</span>foo<span class="pl-pds">"</span></span>)</pre></div>
 
 <p>You'll see a detailed error message like so:</p>
 
@@ -95,7 +98,7 @@ By default, an exception is thrown when a contract fails. This can be changed to
 <h2>
 <a id="builtin-contracts" class="anchor" href="#builtin-contracts" aria-hidden="true"><span class="octicon octicon-link"></span></a>Builtin Contracts</h2>
 
-<p><code>Num</code> is one of the builtin contracts that contracts.ruby comes with. The builtin contracts are in the <code>Contracts</code> namespace. The easiest way to use them is to put <code>include Contracts</code> at the top of your file, but beware that they will pollute your namespace with new class names.</p>
+<p><code>Num</code> is one of the builtin contracts that contracts.ruby comes with. The builtin contracts are in the <code>Contracts</code> namespace. The easiest way to use them is to include the <code>Contracts</code> module in your class/module.</p>
 
 <p>contracts.ruby comes with a lot of builtin contracts, including:</p>
 
@@ -241,8 +244,20 @@ give_largest_value(<span class="pl-s1"><span class="pl-pds">"</span>a<span class
 <h3>
 <a id="contracts-on-functions" class="anchor" href="#contracts-on-functions" aria-hidden="true"><span class="octicon octicon-link"></span></a>Contracts On Functions</h3>
 
-<p>If you're writing higher-order functions (functions that take functions as parameters) and want to write a contract for the passed-in function, you can!
-Use the <code>Func</code> contract. <code>Func</code> takes a contract as it's argument, and uses that contract on the function that you pass in.</p>
+<p>Lets say you are writing a simple map function:</p>
+
+<div class="highlight highlight-ruby"><pre><span class="pl-k">def</span> <span class="pl-en">map</span>(<span class="pl-vpf">arr</span>, <span class="pl-vpf">func</span>)</pre></div>
+
+<p><code>map</code> takes an array, and a function. Suppose you want to add a contract to this function. You could try this:</p>
+
+<div class="highlight highlight-ruby"><pre><span class="pl-vo">Contract</span> <span class="pl-s3">ArrayOf</span>[<span class="pl-vo">Any</span>], <span class="pl-vo">Proc</span> =&gt; <span class="pl-s3">ArrayOf</span>[<span class="pl-vo">Any</span>]
+<span class="pl-k">def</span> <span class="pl-en">map</span>(<span class="pl-vpf">arr</span>, <span class="pl-vpf">func</span>)</pre></div>
+
+<p>This says that the second argument should be a <code>Proc</code>. You can call the function like so:</p>
+
+<div class="highlight highlight-ruby"><pre>p map([<span class="pl-c1">1</span>, <span class="pl-c1">2</span>, <span class="pl-c1">3</span>], lambda { |<span class="pl-vo">x</span>| x <span class="pl-k">+</span> <span class="pl-c1">1</span> }) <span class="pl-c"># works</span></pre></div>
+
+<p>But suppose you want to have a contract on the Proc too! Suppose you want to make sure that the Proc returns a number. Use the <code>Func</code> contract. <code>Func</code> takes a contract as it's argument, and uses that contract on the function that you pass in.</p>
 
 <p>Here's a <code>map</code> function that requires an array of numbers, and a function that takes a number and returns a number:</p>
 
@@ -255,10 +270,19 @@ Use the <code>Func</code> contract. <code>Func</code> takes a contract as it's a
   ret
 <span class="pl-k">end</span></pre></div>
 
-<p>This will add the contract <code>Num =&gt; Num</code> on <code>func</code>. Try it with these two examples:</p>
+<p>Earlier, we used <code>Proc</code>, which just says "make sure the second variable is a Proc". Now we are using <code>Func[Num =&gt; Num]</code>, which says "make sure the second variable is a Proc that takes a number and returns a number". Better!</p>
+
+<p>Try this map function with these two examples:</p>
 
 <div class="highlight highlight-ruby"><pre>p map([<span class="pl-c1">1</span>, <span class="pl-c1">2</span>, <span class="pl-c1">3</span>], lambda { |<span class="pl-vo">x</span>| x <span class="pl-k">+</span> <span class="pl-c1">1</span> }) <span class="pl-c"># works</span>
 p map([<span class="pl-c1">1</span>, <span class="pl-c1">2</span>, <span class="pl-c1">3</span>], lambda { |<span class="pl-vo">x</span>| <span class="pl-s1"><span class="pl-pds">"</span>oops<span class="pl-pds">"</span></span> }) <span class="pl-c"># fails, the lambda returns a string.</span></pre></div>
+
+<p>NOTE: This is not valid:</p>
+
+<div class="highlight highlight-ruby"><pre><span class="pl-vo">Contract</span> <span class="pl-s3">ArrayOf</span>[<span class="pl-vo">Num</span>], <span class="pl-vo">Func</span> =&gt; <span class="pl-s3">ArrayOf</span>[<span class="pl-vo">Num</span>]
+<span class="pl-k">def</span> <span class="pl-en">map</span>(<span class="pl-vpf">arr</span>, <span class="pl-st">&amp;</span><span class="pl-vpf">func</span>)</pre></div>
+
+<p>Here I am using <code>Func</code> without specifying a contract, like <code>Func[Num =&gt; Num]</code>. That's not a legal contract. If you just want to validate that the second argument is a proc, use <code>Proc</code>.</p>
 
 <h3>
 <a id="returning-multiple-values" class="anchor" href="#returning-multiple-values" aria-hidden="true"><span class="octicon octicon-link"></span></a>Returning Multiple Values</h3>
@@ -412,12 +436,14 @@ Expected: a number please,
 <h2>
 <a id="disabling-contracts" class="anchor" href="#disabling-contracts" aria-hidden="true"><span class="octicon octicon-link"></span></a>Disabling contracts</h2>
 
-<p>If you want to disable contracts, set the <code>NO_CONTRACTS</code> environment variable. This will disable contracts completely and you won't have a performance hit.</p>
+<p>If you want to disable contracts, set the <code>NO_CONTRACTS</code> environment variable. This will disable contracts and you won't have a performance hit. Pattern matching will still work if you disable contracts in this way! With NO_CONTRACTS only pattern-matching contracts are defined.</p>
 
 <h2>
 <a id="method-overloading" class="anchor" href="#method-overloading" aria-hidden="true"><span class="octicon octicon-link"></span></a>Method overloading</h2>
 
-<p>You can use contracts for method overloading! For example, here's a factorial function without method overloading:</p>
+<p>You can use contracts for method overloading! This is commonly called "pattern matching" in functional programming languages.</p>
+
+<p>For example, here's a factorial function without method overloading:</p>
 
 <div class="highlight highlight-ruby"><pre><span class="pl-vo">Contract</span> <span class="pl-vo">Num</span> =&gt; <span class="pl-vo">Num</span>
 <span class="pl-k">def</span> <span class="pl-en">fact</span> <span class="pl-vpf">x</span>
@@ -442,6 +468,25 @@ Expected: a number please,
 
 <p>For an argument, each function will be tried in order. The first function that doesn't raise a <code>ContractError</code> will be used. So in this case, if x == 1, the first function will be used. For all other values, the second function will be used.</p>
 
+<p>This allows you write methods more declaratively, rather than using conditional branching. This feature is not only useful for recursion; you can use it to keep parallel use cases separate:</p>
+
+<div class="highlight highlight-ruby"><pre><span class="pl-vo">Contract</span> lambda{|<span class="pl-vo">n</span>| n <span class="pl-k">&lt;</span> <span class="pl-c1">12</span> } =&gt; <span class="pl-vo">Ticket</span>
+<span class="pl-k">def</span> <span class="pl-en">get_ticket</span>(<span class="pl-vpf">age</span>)
+  <span class="pl-s3">ChildTicket</span>.<span class="pl-k">new</span>(<span class="pl-c1">age:</span> age)
+<span class="pl-k">end</span>
+
+<span class="pl-vo">Contract</span> lambda{|<span class="pl-vo">n</span>| n <span class="pl-k">&gt;=</span> <span class="pl-c1">12</span> } =&gt; <span class="pl-vo">Ticket</span>
+<span class="pl-k">def</span> <span class="pl-en">get_ticket</span>(<span class="pl-vpf">age</span>)
+  <span class="pl-s3">AdultTicket</span>.<span class="pl-k">new</span>(<span class="pl-c1">age:</span> age)
+<span class="pl-k">end</span>
+</pre></div>
+
+<p>Note that the second <code>get_ticket</code> contract above could have been simplified to:</p>
+
+<div class="highlight highlight-ruby"><pre><span class="pl-vo">Contract</span> <span class="pl-vo">Num</span> =&gt; <span class="pl-vo">Ticket</span></pre></div>
+
+<p>This is because the first contract eliminated the possibility of <code>age</code> being less than 12. However, the simpler contract is less explicit; you may want to "spell out" the age condition for clarity, especially if the method is overloaded with many contracts.</p>
+
 <h2>
 <a id="contracts-in-modules" class="anchor" href="#contracts-in-modules" aria-hidden="true"><span class="octicon octicon-link"></span></a>Contracts in modules</h2>
 
@@ -454,7 +499,8 @@ Expected: a number please,
   <span class="pl-vo">Contract</span> <span class="pl-vo">String</span> =&gt; <span class="pl-vo">String</span>
   <span class="pl-k">def</span> <span class="pl-en">self.parse</span>
     <span class="pl-c"># do some hard parsing</span>
-  <span class="pl-k">end</span></pre></div>
+  <span class="pl-k">end</span>
+<span class="pl-k">end</span></pre></div>
 
 <h2>
 <a id="invariants" class="anchor" href="#invariants" aria-hidden="true"><span class="octicon octicon-link"></span></a>Invariants</h2>
@@ -467,7 +513,7 @@ Expected: a number please,
 
 <div class="highlight highlight-ruby"><pre><span class="pl-k">class</span> <span class="pl-en">MyBirthday<span class="pl-e"> &lt; Struct.new</span></span>(<span class="pl-c1">:day</span>, <span class="pl-c1">:month</span>)
   <span class="pl-k">include</span> <span class="pl-vo">Contracts</span>
-  <span class="pl-k">include</span> <span class="pl-c1">Contracts:</span><span class="pl-vo">Invariants</span>
+  <span class="pl-k">include</span> <span class="pl-s3">Contracts</span>::<span class="pl-vo">Invariants</span>
 
   <span class="pl-vo">Invariant</span>(<span class="pl-c1">:day</span>) { <span class="pl-c1">1</span> <span class="pl-k">&lt;=</span> day <span class="pl-k">&amp;&amp;</span> day <span class="pl-k">&lt;=</span> <span class="pl-c1">31</span> }
   <span class="pl-vo">Invariant</span>(<span class="pl-c1">:month</span>) { <span class="pl-c1">1</span> <span class="pl-k">&lt;=</span> month <span class="pl-k">&amp;&amp;</span> month <span class="pl-k">&lt;=</span> <span class="pl-c1">12</span> }
