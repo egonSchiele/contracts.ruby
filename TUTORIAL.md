@@ -224,8 +224,26 @@ give_largest_value("a" => 1, 2 => 2, c: 3)
 
 ### Contracts On Functions
 
-If you're writing higher-order functions (functions that take functions as parameters) and want to write a contract for the passed-in function, you can!
-Use the `Func` contract. `Func` takes a contract as it's argument, and uses that contract on the function that you pass in.
+Lets say you are writing a simple map function:
+
+```ruby
+def map(arr, func)
+```
+
+`map` takes an array, and a function. Suppose you want to add a contract to this function. You could try this:
+
+```ruby
+Contract ArrayOf[Any], Proc => ArrayOf[Any]
+def map(arr, func)
+```
+
+This says that the second argument should be a `Proc`. You can call the function like so:
+
+```ruby
+p map([1, 2, 3], lambda { |x| x + 1 }) # works
+```
+
+But suppose you want to have a contract on the Proc too! Suppose you want to make sure that the Proc returns a number. Use the `Func` contract. `Func` takes a contract as it's argument, and uses that contract on the function that you pass in.
 
 Here's a `map` function that requires an array of numbers, and a function that takes a number and returns a number:
 
@@ -240,12 +258,23 @@ def map(arr, func)
 end
 ```
 
-This will add the contract `Num => Num` on `func`. Try it with these two examples:
+Earlier, we used `Proc`, which just says "make sure the second variable is a Proc". Now we are using `Func[Num => Num]`, which says "make sure the second variable is a Proc that takes a number and returns a number". Better!
+
+Try this map function with these two examples:
 
 ```ruby
 p map([1, 2, 3], lambda { |x| x + 1 }) # works
 p map([1, 2, 3], lambda { |x| "oops" }) # fails, the lambda returns a string.
 ```
+
+NOTE: This is not valid:
+
+```ruby
+Contract ArrayOf[Num], Func => ArrayOf[Num]
+def map(arr, &func)
+```
+
+Here I am using `Func` without specifying a contract, like `Func[Num => Num]`. That's not a legal contract. If you just want to validate that the second argument is a proc, use `Proc`.
 
 ### Returning Multiple Values
 Treat the return value as an array. For example, here's a function that returns two numbers:
