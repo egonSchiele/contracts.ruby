@@ -93,19 +93,61 @@ By default, an exception is thrown when a contract fails. This can be changed to
 =&gt; "add :: Num, Num =&gt; Num"
 </code></pre>
 
-<p>This can be useful if you're in a repl and want to figure out how a function should be used.</p>
+<p>This can be useful if you're in a REPL and want to figure out how a function should be used.</p>
 
 <h2>
-<a id="builtin-contracts" class="anchor" href="#builtin-contracts" aria-hidden="true"><span class="octicon octicon-link"></span></a>Builtin Contracts</h2>
+<a id="built-in-contracts" class="anchor" href="#built-in-contracts" aria-hidden="true"><span class="octicon octicon-link"></span></a>Built-in Contracts</h2>
 
-<p><code>Num</code> is one of the builtin contracts that contracts.ruby comes with. The builtin contracts are in the <code>Contracts</code> namespace. The easiest way to use them is to include the <code>Contracts</code> module in your class/module.</p>
+<p><code>Num</code> is one of the built-in contracts that contracts.ruby comes with. The built-in contracts are in the <code>Contracts</code> namespace. The easiest way to use them is to include the <code>Contracts</code> module in your class/module.</p>
 
-<p>contracts.ruby comes with a lot of builtin contracts, including:</p>
+<p>contracts.ruby comes with a lot of built-in contracts, including the following:</p>
 
-<pre><code>Num, Pos, Neg, Any, None, Or, Xor, And, Not, RespondTo, Send, Exactly, ArrayOf, HashOf, Bool, Maybe
-</code></pre>
+<ul>
+<li>
+<a href="http://www.rubydoc.info/gems/contracts/Contracts/Num"><code>Num</code></a> – checks that the argument is <code>Numeric</code>
+</li>
+<li>
+<a href="http://www.rubydoc.info/gems/contracts/Contracts/Pos"><code>Pos</code></a> – checks that the argument is a positive number</li>
+<li>
+<a href="http://www.rubydoc.info/gems/contracts/Contracts/Neg"><code>Neg</code></a> – checks that the argument is a negative number</li>
+<li>
+<a href="http://www.rubydoc.info/gems/contracts/Contracts/Bool"><code>Bool</code></a> – checks that the argument is <code>true</code> or <code>false</code>
+</li>
+<li>
+<a href="http://www.rubydoc.info/gems/contracts/Contracts/Any"><code>Any</code></a> – Passes for any argument. Use when the argument has no constraints.</li>
+<li>
+<a href="http://www.rubydoc.info/gems/contracts/Contracts/None"><code>None</code></a> – Fails for any argument. Use when the method takes no arguments.</li>
+<li>
+<a href="http://www.rubydoc.info/gems/contracts/Contracts/Or"><code>Or</code></a> – passes if any of the given contracts pass, e.g. <code>Or[Fixnum, Float]</code>
+</li>
+<li>
+<a href="http://www.rubydoc.info/gems/contracts/Contracts/Xor"><code>Xor</code></a> – passes if exactly one of the given contracts pass, e.g. <code>Xor[Fixnum, Float]</code>
+</li>
+<li>
+<a href="http://www.rubydoc.info/gems/contracts/Contracts/And"><code>And</code></a> – passes if all contracts pass, e.g. <code>And[Fixnum, Float]</code>
+</li>
+<li>
+<a href="http://www.rubydoc.info/gems/contracts/Contracts/Not"><code>Not</code></a> – passes if all contracts fail for the given argument, e.g. <code>Not[nil]</code>
+</li>
+<li>
+<a href="http://www.rubydoc.info/gems/contracts/Contracts/ArrayOf"><code>ArrayOf</code></a> – checks that the argument is an array, and all elements pass the given contract, e.g. <code>ArrayOf[Num]</code>
+</li>
+<li>
+<a href="http://www.rubydoc.info/gems/contracts/Contracts/HashOf"><code>HashOf</code></a> – checks that the argument is a hash, and all keys and values pass the given contract, e.g. <code>HashOf[Symbol, String]</code>
+</li>
+<li>
+<a href="http://www.rubydoc.info/gems/contracts/Contracts/Maybe"><code>Maybe</code></a> – passes if the argument is <code>nil</code>, or if the given contract passes</li>
+<li>
+<a href="http://www.rubydoc.info/gems/contracts/Contracts/RespondTo"><code>RespondTo</code></a> – checks that the argument responds to all of the given methods, e.g. <code>RespondTo[:password, :credit_card]</code>
+</li>
+<li>
+<a href="http://www.rubydoc.info/gems/contracts/Contracts/Send"><code>Send</code></a> – checks that all named methods return true, e.g. <code>Send[:valid?]</code>
+</li>
+<li>
+<a href="http://www.rubydoc.info/gems/contracts/Contracts/Exactly"><code>Exactly</code></a> – checks that the argument has the given type, not accepting sub-classes, e.g. <code>Exactly[Numeric]</code>.</li>
+</ul>
 
-<p>To see all the builtin contracts and what they do, check out the <a href="http://rubydoc.info/gems/contracts/Contracts">rdoc</a>.</p>
+<p>To see all the built-in contracts and their full descriptions, check out the <a href="http://rubydoc.info/gems/contracts/Contracts">RDoc</a>.</p>
 
 <h2>
 <a id="more-examples" class="anchor" href="#more-examples" aria-hidden="true"><span class="octicon octicon-link"></span></a>More Examples</h2>
@@ -141,7 +183,7 @@ This introduces some new syntax. One of the valid values for a contract is an in
 
 <div class="highlight highlight-ruby"><pre><span class="pl-vo">Contract</span> <span class="pl-s3">Or</span>.<span class="pl-k">new</span>(<span class="pl-vo">Fixnum</span>, <span class="pl-vo">Float</span>) =&gt; <span class="pl-s3">Or</span>.<span class="pl-k">new</span>(<span class="pl-vo">Fixnum</span>, <span class="pl-vo">Float</span>)</pre></div>
 
-<p>All the builtin contracts have overridden the square brackets (<code>[]</code>) to give the same functionality. So you could write</p>
+<p>All the built-in contracts have overridden the square brackets (<code>[]</code>) to give the same functionality. So you could write</p>
 
 <div class="highlight highlight-ruby"><pre><span class="pl-vo">Contract</span> <span class="pl-s3">Or</span>[<span class="pl-vo">Fixnum</span>, <span class="pl-vo">Float</span>] =&gt; <span class="pl-s3">Or</span>[<span class="pl-vo">Fixnum</span>, <span class="pl-vo">Float</span>]</pre></div>
 
