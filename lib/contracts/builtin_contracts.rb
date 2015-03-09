@@ -12,8 +12,8 @@ A simple example:
 
   Contract Num, Num => Num
   def add(a, b)
-     a + b
-   end
+    a + b
+  end
 
 The contract is <tt>Contract Num, Num, Num</tt>. That says that the +add+ function takes two numbers and returns a number.
 =end
