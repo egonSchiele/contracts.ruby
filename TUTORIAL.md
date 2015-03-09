@@ -59,17 +59,32 @@ You can also see the contract for a function with the `functype` method:
     functype(:add)
     => "add :: Num, Num => Num"
 
-This can be useful if you're in a repl and want to figure out how a function should be used.
+This can be useful if you're in a REPL and want to figure out how a function should be used.
 
-## Builtin Contracts
+## Built-in Contracts
 
-`Num` is one of the builtin contracts that contracts.ruby comes with. The builtin contracts are in the `Contracts` namespace. The easiest way to use them is to include the `Contracts` module in your class/module.
+`Num` is one of the built-in contracts that contracts.ruby comes with. The built-in contracts are in the `Contracts` namespace. The easiest way to use them is to include the `Contracts` module in your class/module.
 
-contracts.ruby comes with a lot of builtin contracts, including:
+contracts.ruby comes with a lot of built-in contracts, including the following:
 
-    Num, Pos, Neg, Any, None, Or, Xor, And, Not, RespondTo, Send, Exactly, ArrayOf, HashOf, Bool, Maybe
+* [`Num`](http://www.rubydoc.info/gems/contracts/Contracts/Num) – checks that the argument is `Numeric`
+* [`Pos`](http://www.rubydoc.info/gems/contracts/Contracts/Pos) – checks that the argument is a positive number
+* [`Neg`](http://www.rubydoc.info/gems/contracts/Contracts/Neg) – checks that the argument is a negative number
+* [`Bool`](http://www.rubydoc.info/gems/contracts/Contracts/Bool) – checks that the argument is `true` or `false`
+* [`Any`](http://www.rubydoc.info/gems/contracts/Contracts/Any) – Passes for any argument. Use when the argument has no constraints.
+* [`None`](http://www.rubydoc.info/gems/contracts/Contracts/None) – Fails for any argument. Use when the method takes no arguments.
+* [`Or`](http://www.rubydoc.info/gems/contracts/Contracts/Or) – passes if any of the given contracts pass, e.g. `Or[Fixnum, Float]`
+* [`Xor`](http://www.rubydoc.info/gems/contracts/Contracts/Xor) – passes if exactly one of the given contracts pass, e.g. `Xor[Fixnum, Float]`
+* [`And`](http://www.rubydoc.info/gems/contracts/Contracts/And) – passes if all contracts pass, e.g. `And[Fixnum, Float]`
+* [`Not`](http://www.rubydoc.info/gems/contracts/Contracts/Not) – passes if all contracts fail for the given argument, e.g. `Not[nil]`
+* [`ArrayOf`](http://www.rubydoc.info/gems/contracts/Contracts/ArrayOf) – checks that the argument is an array, and all elements pass the given contract, e.g. `ArrayOf[Num]`
+* [`HashOf`](http://www.rubydoc.info/gems/contracts/Contracts/HashOf) – checks that the argument is a hash, and all keys and values pass the given contract, e.g. `HashOf[Symbol, String]`
+* [`Maybe`](http://www.rubydoc.info/gems/contracts/Contracts/Maybe) – passes if the argument is `nil`, or if the given contract passes
+* [`RespondTo`](http://www.rubydoc.info/gems/contracts/Contracts/RespondTo) – checks that the argument responds to all of the given methods, e.g. `RespondTo[:password, :credit_card]`
+* [`Send`](http://www.rubydoc.info/gems/contracts/Contracts/Send) – checks that all named methods return true, e.g. `Send[:valid?]`
+* [`Exactly`](http://www.rubydoc.info/gems/contracts/Contracts/Exactly) – checks that the argument has the given type, not accepting sub-classes, e.g. `Exactly[Numeric]`.
 
-To see all the builtin contracts and what they do, check out the [rdoc](http://rubydoc.info/gems/contracts/Contracts).
+To see all the built-in contracts and their full descriptions, check out the [RDoc](http://rubydoc.info/gems/contracts/Contracts).
 
 ## More Examples
 
@@ -106,7 +121,7 @@ This introduces some new syntax. One of the valid values for a contract is an in
 Contract Or.new(Fixnum, Float) => Or.new(Fixnum, Float)
 ```
 
-All the builtin contracts have overridden the square brackets (`[]`) to give the same functionality. So you could write
+All the built-in contracts have overridden the square brackets (`[]`) to give the same functionality. So you could write
 
 ```ruby
 Contract Or[Fixnum, Float] => Or[Fixnum, Float]
