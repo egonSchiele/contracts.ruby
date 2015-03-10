@@ -3,7 +3,7 @@ require 'contracts/testable'
 =begin rdoc
 This module contains all the builtin contracts.
 If you want to use them, first:
-  
+
   import Contracts
 
 And then use these or write your own!
@@ -114,7 +114,7 @@ module Contracts
     def testable?
       @vals.all? do |val|
         Testable.testable?(val)
-      end    
+      end
     end
 
     def test_data
@@ -147,19 +147,19 @@ module Contracts
     def testable?
       @vals.all? do |val|
         Testable.testable? val
-      end    
+      end
     end
 
     def test_data
       @vals.map { |val|
         Testable.test_data val
       }.flatten
-    end    
-  end  
+    end
+  end
 
   # Takes a variable number of contracts.
   # The contract passes if all contracts pass.
-  # Example: <tt>And[Fixnum, Float]</tt>  
+  # Example: <tt>And[Fixnum, Float]</tt>
   class And < CallableClass
     def initialize(*vals)
       @vals = vals
@@ -215,7 +215,7 @@ module Contracts
 
     def to_s
       "a value that returns true for all of #{@meths.inspect}"
-    end  
+    end
   end
 
   # Takes a class +A+. If argument is an object of type +A+, the contract passes.
@@ -234,7 +234,24 @@ module Contracts
       "exactly #{@cls.inspect}"
     end
   end
-  
+
+  # Takes a value +v+. If the argument is +.equal+ to +v+, the contract passes,
+  # otherwise the contract fails.
+  # Example: <tt>Eq[Class]</tt>
+  class Eq < CallableClass
+    def initialize(value)
+      @value = value
+    end
+
+    def valid?(val)
+      @value.equal?(val)
+    end
+
+    def to_s
+      "to be equal to #{@value.inspect}"
+    end
+  end
+
   # Takes a variable number of contracts. The contract
   # passes if all of those contracts fail for the given argument.
   # Example: <tt>Not[nil]</tt>
@@ -282,7 +299,7 @@ module Contracts
 
     def test_data
       [[], [Testable.test_data(@contract)], [Testable.test_data(@contract), Testable.test_data(@contract)]]
-    end    
+    end
   end
 
   # Used for <tt>*args</tt> (variadic functions). Takes a contract
@@ -305,7 +322,7 @@ module Contracts
 
     def test_data
       [[], [Testable.test_data(@contract)], [Testable.test_data(@contract), Testable.test_data(@contract)]]
-    end    
+    end
   end
 
   class Bool
@@ -388,7 +405,7 @@ module Contracts
   # Used to define contracts on functions passed in as arguments.
   # Example: <tt>Func[Num => Num] # the function should take a number and return a number</tt>
   class Func < CallableClass
-    attr_reader :contracts    
+    attr_reader :contracts
     def initialize(*contracts)
       @contracts = contracts
     end

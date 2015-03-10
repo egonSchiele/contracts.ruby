@@ -259,6 +259,27 @@ class GenericExample
   end
 end
 
+# for testing equality
+class Foo
+end
+module Bar
+end
+Baz = 1
+
+class GenericExample
+  Contract Eq[Foo] => Any
+  def eq_class_test(x)
+  end
+
+  Contract Eq[Bar] => Any
+  def eq_module_test(x)
+  end
+
+  Contract Eq[Baz] => Any
+  def eq_value_test(x)
+  end
+end
+
 # pattern matching example with possible deep contract violation
 class PatternMatchingExample
   include Contracts

@@ -143,6 +143,28 @@ RSpec.describe "Contracts:" do
     end
   end
 
+  describe "Eq:" do
+    it 'should pass for a class' do
+      expect { @o.eq_class_test(Foo) }
+    end
+
+    it 'should pass for a module' do
+      expect { @o.eq_module_test(Bar) }
+    end
+
+    it 'should pass for other values' do
+      expect { @o.eq_value_test(Baz) }
+    end
+
+    it 'should fail when not equal' do
+      expect { @o.eq_class_test(Bar) }.to raise_error(ContractError)
+    end
+
+    it 'should fail when given instance of class' do
+      expect { @o.eq_class_test(Foo.new) }.to raise_error(ContractError)
+    end
+  end
+
   describe "Not:" do
     it "should pass for an argument that isn't nil" do
       expect { @o.not_nil(1) }.to_not raise_error
