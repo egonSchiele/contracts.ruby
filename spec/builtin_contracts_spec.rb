@@ -22,6 +22,10 @@ RSpec.describe "Contracts:" do
       expect { @o.pos_test(1) }.to_not raise_error
     end
 
+    it "should fail for 0" do
+      expect { @o.pos_test(0) }.to raise_error(ContractError)
+    end
+
     it "should fail for negative numbers" do
       expect { @o.pos_test(-1) }.to raise_error(ContractError)
     end
@@ -30,6 +34,10 @@ RSpec.describe "Contracts:" do
   describe "Neg:" do
     it "should pass for negative numbers" do
       expect { @o.neg_test(-1) }.to_not raise_error
+    end
+
+    it "should fail for 0" do
+      expect { @o.neg_test(0) }.to raise_error(ContractError)
     end
 
     it "should fail for positive numbers" do
