@@ -63,6 +63,21 @@ module Contracts
     end
   end
 
+  # Check that an argument is a natural number.
+  class Nat
+    def self.valid? val
+      val >= 0
+    end
+
+    def testable?
+      true
+    end
+
+    def self.test_data
+      (0..5).map { |n| n * rand(999) }
+    end
+  end
+
   # Passes for any argument.
   class Any
     def self.valid? val

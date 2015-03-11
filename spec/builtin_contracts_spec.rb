@@ -45,6 +45,20 @@ RSpec.describe "Contracts:" do
     end
   end
 
+  describe "Nat:" do
+    it "should pass for 0" do
+      expect { @o.nat_test(0) }.to_not raise_error
+    end
+
+    it "should pass for positive numbers" do
+      expect { @o.nat_test(1) }.to_not raise_error
+    end
+
+    it "should fail for negative numbers" do
+      expect { @o.nat_test(-1) }.to raise_error(ContractError)
+    end
+  end
+
   describe "Any:" do
     it "should pass for numbers" do
       expect { @o.show(1) }.to_not raise_error
