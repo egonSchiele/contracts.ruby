@@ -66,7 +66,7 @@ module Contracts
   # Check that an argument is a natural number.
   class Nat
     def self.valid? val
-      val >= 0
+      val >= 0 && val.integer?
     end
 
     def testable?

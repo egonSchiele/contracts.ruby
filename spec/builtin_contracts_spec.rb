@@ -50,8 +50,12 @@ RSpec.describe "Contracts:" do
       expect { @o.nat_test(0) }.to_not raise_error
     end
 
-    it "should pass for positive numbers" do
+    it "should pass for positive whole numbers" do
       expect { @o.nat_test(1) }.to_not raise_error
+    end
+
+    it "should fail for positive non-whole numbers" do
+      expect { @o.nat_test(1.5) }.to raise_error(ContractError)
     end
 
     it "should fail for negative numbers" do
