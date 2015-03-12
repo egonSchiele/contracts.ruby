@@ -44,6 +44,16 @@ RSpec.describe "Contracts:" do
       }.to raise_error(ContractError)
     end
 
+    it "should work for differing arities" do
+      expect(
+        subject.do_stuff(1, "abc", 2)
+      ).to eq("bar")
+
+      expect(
+        subject.do_stuff(3, "def")
+      ).to eq("foo")
+    end
+
     context "when failure_callback was overriden" do
       before do
         ::Contract.override_failure_callback do |_data|
@@ -353,6 +363,10 @@ RSpec.describe "Contracts:" do
     it "should fail for incorrect input" do
       expect { @o.sum(1, 2, "bad") }.to raise_error(ContractError)
     end
+
+    it "should work with arg before splat" do
+      expect { @o.arg_then_splat(3, 'hello', 'world') }.to_not raise_error
+    end
   end
 
   describe "varargs with block" do
@@ -372,7 +386,7 @@ RSpec.describe "Contracts:" do
 
       expect {
         @o.with_partial_sums(1, 2, 3, lambda { |x| x })
-      }.to raise_error(ContractError, /Actual: #<Proc/)
+      }.to raise_error(ContractError, /Actual: nil/)
     end
 
     context "when block has Func contract" do
@@ -393,8 +407,20 @@ RSpec.describe "Contracts:" do
       expect { @o.map([1, 2, 3], lambda { |x| x + 1 }) }.to_not raise_error
     end
 
+    it "should pass for a function that passes the contract as in tutorial" do
+      expect { @o.tutorial_map([1, 2, 3], lambda { |x| x + 1 }) }.to_not raise_error
+    end
+
     it "should fail for a function that doesn't pass the contract" do
       expect { @o.map([1, 2, 3], lambda { |x| "bad return value" }) }.to raise_error(ContractError)
+    end
+
+    it "should pass for a function that passes the contract with weak other args" do
+      expect { @o.map_plain(['hello', 'joe'], lambda { |x| x.size }) }.to_not raise_error
+    end
+
+    it "should fail for a function that doesn't pass the contract with weak other args" do
+      expect { @o.map_plain(['hello', 'joe'], lambda { |x| nil }) }.to raise_error(ContractError)
     end
   end
 

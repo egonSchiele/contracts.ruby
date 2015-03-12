@@ -19,6 +19,13 @@ require File.expand_path(File.join(__FILE__, "../fixtures/fixtures"))
 #
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 RSpec.configure do |config|
+  config.pattern = '*.rb'
+
+  # Only load tests who's syntax is valid in the current Ruby
+  [1.9, 2.0, 2.1].each do |ver|
+    config.pattern << ",ruby_version_specific/*#{ver}.rb" if ruby_version >= ver
+  end
+
   # rspec-expectations config goes here. You can use an alternate
   # assertion/expectation library such as wrong or the stdlib/minitest
   # assertions if you prefer.

@@ -118,6 +118,12 @@ class GenericExample
     blk[sum]
   end
 
+  # Important to use different arg types or it falsely passes
+  Contract Num, Args[String] => ArrayOf[String]
+  def arg_then_splat(n, *vals)
+    vals.map{ |v| v * n }
+  end
+
   Contract Num, Proc => nil
   def double_with_proc(x, &blk)
     blk.call(x * 2)
@@ -187,6 +193,24 @@ class GenericExample
       ret << func[x]
     end
     ret
+  end
+
+  Contract ArrayOf[Any], Proc => ArrayOf[Any]
+  def tutorial_map(arr, func)
+    ret = []
+    arr.each do |x|
+      ret << func[x]
+    end
+    ret
+  end
+
+  # Need to test Func with weak contracts for other args
+  # and changing type from input to output otherwise it falsely passes!
+  Contract Array, Func[String => Num] => Array
+  def map_plain(arr, func)
+    arr.map do |x|
+      func[x]
+    end
   end
 
   Contract Num => Num
@@ -311,6 +335,16 @@ class PatternMatchingExample
   Contract StringWithHello => String
   def decorated_request(request)
     request + "!"
+  end
+
+  Contract Num, String => String
+  def do_stuff(number, string)
+    "foo"
+  end
+
+  Contract Num, String, Num => String
+  def do_stuff(number, string, other_number)
+    "bar"
   end
 end
 
