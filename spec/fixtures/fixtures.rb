@@ -132,6 +132,10 @@ class GenericExample
   def neg_test(x)
   end
 
+  Contract Nat => nil
+  def nat_test(x)
+  end
+
   Contract Any => nil
   def show(x)
   end
