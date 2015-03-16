@@ -68,6 +68,11 @@ class GenericExample
     x * 2
   end
 
+  Contract 123, nil => nil
+  def constanty(num, nul)
+    0
+  end
+
   Contract String => nil
   def hello(name)
   end
@@ -84,8 +89,27 @@ class GenericExample
     end
   end
 
-  Contract ({:name => String, :age => Fixnum}) => nil
+  Contract ({ :name => String, :age => Fixnum }) => nil
   def person(data)
+  end
+
+  Contract ({ :rigged => Or[TrueClass, FalseClass] }) => nil
+  def hash_complex_contracts(data)
+  end
+
+  Contract ({ :rigged => Bool,
+              :contents => { :kind => Or[String, Symbol],
+                             :total => Num }
+            }) => nil
+  def nested_hash_complex_contracts(data)
+  end
+
+  Contract [Or[TrueClass, FalseClass]] => nil
+  def array_complex_contracts(data)
+  end
+
+  Contract [Bool, [Or[String, Symbol]]] => nil
+  def nested_array_complex_contracts(data)
   end
 
   Contract Proc => Any

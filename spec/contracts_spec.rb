@@ -112,7 +112,7 @@ RSpec.describe "Contracts:" do
       it "allows to use builtin contracts without namespacing and redundant Contracts inclusion" do
         expect {
           SingletonClassExample.add("55", 5.6)
-        }.to raise_error(ContractError, /Expected: Contracts::Num/)
+        }.to raise_error(ContractError, /Expected: Num/)
       end
     end
   end
@@ -440,6 +440,58 @@ RSpec.describe "Contracts:" do
         res = @o.double("bad")
         expect(res).to eq("badbad")
       end
+    end
+  end
+
+  describe "Contracts to_s formatting in expected" do
+    def not_s(match)
+      Regexp.new "[^\"\']#{match}[^\"\']"
+    end
+
+    def delim(match)
+      "(#{match})"
+    end
+
+    it "should not stringify native types" do
+      expect {
+        @o.constanty('bad', nil)
+      }.to raise_error(ContractError, not_s(123))
+
+      expect {
+        @o.constanty(123, 'bad')
+      }.to raise_error(ContractError, not_s(nil))
+    end
+
+    it "should contain to_s representation within a Hash contract" do
+      expect {
+        @o.hash_complex_contracts({ :rigged => 'bad' })
+      }.to raise_error(ContractError, not_s(delim 'TrueClass or FalseClass'))
+    end
+
+    it "should contain to_s representation within a nested Hash contract" do
+      expect {
+        @o.nested_hash_complex_contracts({ :rigged => true,
+                                           :contents => {
+                                             :kind => 0, :total => 42 } })
+      }.to raise_error(ContractError, not_s(delim 'String or Symbol'))
+    end
+
+    it "should contain to_s representation within an Array contract" do
+      expect {
+        @o.array_complex_contracts(['bad'])
+      }.to raise_error(ContractError, not_s(delim 'TrueClass or FalseClass'))
+    end
+
+    it "should contain to_s representation within a nested Array contract" do
+      expect {
+        @o.nested_array_complex_contracts([true, [0]])
+      }.to raise_error(ContractError, not_s(delim 'String or Symbol'))
+    end
+
+    it "should not contain Contracts:: module prefix" do
+      expect {
+        @o.double('bad')
+      }.to raise_error(ContractError, /Expected: Num/)
     end
   end
 
