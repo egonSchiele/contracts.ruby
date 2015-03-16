@@ -1,12 +1,13 @@
+require 'contracts/builtin_contracts'
 require 'contracts/core_ext'
-require 'contracts/support'
-require 'contracts/method_reference'
-require 'contracts/errors'
 require 'contracts/decorators'
 require 'contracts/eigenclass'
-require 'contracts/builtin_contracts'
-require 'contracts/modules'
+require 'contracts/errors'
+require 'contracts/formatters'
 require 'contracts/invariants'
+require 'contracts/method_reference'
+require 'contracts/modules'
+require 'contracts/support'
 
 module Contracts
   def self.included(base)
@@ -103,12 +104,7 @@ class Contract < Contracts::Decorator
   # This function is used by the default #failure_callback method
   # and uses the hash passed into the failure_callback method.
   def self.failure_msg(data)
-   expected = if data[:contract].to_s == "" || data[:contract].is_a?(Hash)
-                data[:contract].inspect
-              else
-                data[:contract].to_s
-              end
-
+   expected = Contracts::Formatters::Expected.new(data[:contract]).contract
    position = Contracts::Support.method_position(data[:method])
    method_name = Contracts::Support.method_name(data[:method])
 
