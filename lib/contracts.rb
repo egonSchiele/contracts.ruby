@@ -84,10 +84,18 @@ class Contract < Contracts::Decorator
     else
       fail "It looks like your contract for #{method} doesn't have a return value. A contract should be written as `Contract arg1, arg2 => return_value`."
     end
-    @klass, @method= klass, method
-    @has_func_contracts = args_contracts.index do |contract|
-      contract.is_a? Contracts::Func
+    @klass, @method = klass, method
+    @splat_lower_index = @args_contracts.index do |contract|
+      contract.is_a? Contracts::Args
     end
+    last_contract = @args_contracts.last
+    @has_proc_contract = Contracts::Func === last_contract || (
+        Class === last_contract &&
+        (last_contract <= Proc || last_contract <= Method)
+      )
+    penultimate_contract = @args_contracts[-2]
+    @has_options_contract = @has_proc_contract ? Hash === penultimate_contract :
+                                                 Hash === last_contract
   end
 
   def pretty_contract c
@@ -237,61 +245,91 @@ class Contract < Contracts::Decorator
   def call_with(this, *args, &blk)
     _args = blk ? args + [blk] : args
 
-    size = @args_contracts.size
+    args_size = args.size
+    _args_size = _args.size
+    contracts_size = args_contracts.size
 
-    last_contract = @args_contracts.last
-    proc_present = (Contracts::Func === last_contract ||
-      (Class === last_contract && (last_contract <= Proc || last_contract <= Method)))
-
-    _splat_index = proc_present ? -2 : -1
-    splat_present = Contracts::Args === @args_contracts[_splat_index]
-    splat_index = size + _splat_index
-    splat_index += 1 unless splat_present
-
-    # Explicitly append blk=nil if nil != Proc contract violation
-    # anticipated
-    if proc_present && !blk && (splat_present || _args.size < size)
+    # Explicitly append blk=nil if nil != Proc contract violation anticipated
+    if @has_proc_contract && !blk &&
+      (@splat_lower_index || _args_size < contracts_size)
       _args << nil
+      _args_size += 1
     end
 
-    # Size of our iteration is either count of arguments or count of
-    # contracts. Without splat - count of arguments, with splat -
-    # min(count of contracts, count of arguments)
-    _size = _args.size
-    iteration_size = _size
-    iteration_size = size if !splat_present && size < _size
-
-    # check contracts on arguments
-    # fun fact! This is significantly faster than .zip (3.7 secs vs 4.7 secs). Why??
-
-    # times is faster than (0..args.size).each
-    iteration_size.times do |i|
-      # this is done to account for extra args (for *args)
-      j = i > splat_index ? splat_index : i
-      j = size - 1 if i == _size - 1 && proc_present
-      #unless true #@args_contracts[i].valid?(args[i])
-      unless @args_validators[j][_args[i]]
-        call_function = Contract.failure_callback({:arg => _args[i], :contract => @args_contracts[j], :class => @klass, :method => @method, :contracts => self, :arg_pos => i+1, :total_args => _size})
-        return unless call_function
+    # Explicitly append options={} if Hash contract is present
+    if @has_options_contract
+      if @has_proc_contract && Hash === @args_contracts[-2] && !_args[-2].is_a?(Hash)
+        _args.insert(-2, {})
+        _args_size += 1
+      elsif Hash === @args_contracts[-1] && !_args[-1].is_a?(Hash)
+        _args << {}
+        _args_size += 1
       end
     end
 
-    if @has_func_contracts
-      # contracts on methods
-      contracts_size = @args_contracts.size
-      @args_contracts.each_with_index do |contract, i|
-        next if contracts_size - 1 == i && proc_present && blk
+    # Loop forward validating the arguments up to the splat (if there is one)
+    (@splat_lower_index || _args_size).times do |i|
+      _arg = _args[i]
+      contract = @args_contracts[i]
+      validator = @args_validators[i]
+
+
+      unless validator && validator[_arg]
+        return unless Contract.failure_callback({
+          :arg => _arg,
+          :contract => contract,
+          :class => @klass,
+          :method => @method,
+          :contracts => self,
+          :arg_pos => i + 1,
+          :total_args => args_size
+        })
+      end
+
+      if contract.is_a?(Contracts::Func)
+        _args[i] = Contract.new(@klass, _arg, *contract.contracts)
+      end
+    end
+
+    # If there is a splat loop backwards to the lower index of the splat
+    # Once we hit the splat in this direction set its upper index
+    # Keep validating but use this upper index to get the splat validator.
+    if @splat_lower_index
+      splat_upper_index = @splat_lower_index
+      (_args_size - @splat_lower_index).times do |i|
+        _arg = _args[_args_size - 1 - i]
+
+        if Contracts::Args === @args_contracts[contracts_size - 1 - i]
+          splat_upper_index = i
+        end
+
+        # Each arg after the spat is found must use the splat validator
+        j = i < splat_upper_index ? i : splat_upper_index
+        contract = @args_contracts[contracts_size - 1 - j]
+        validator = @args_validators[contracts_size - 1 - j]
+
+        unless validator && validator[_arg]
+          return unless Contract.failure_callback({
+            :arg => _arg,
+            :contract => contract,
+            :class => @klass,
+            :method => @method,
+            :contracts => self,
+            :arg_pos => args_size - i,
+            :total_args => args_size
+          })
+        end
 
         if contract.is_a?(Contracts::Func)
-          args[i] = Contract.new(@klass, args[i], *contract.contracts)
+          _args[_args_size - 1 - i] =
+            Contract.new(@klass, _arg, *contract.contracts)
         end
       end
-
-      if proc_present && blk && last_contract.is_a?(Contracts::Func)
-        blk_contract = Contract.new(@klass, blk, *last_contract.contracts)
-        blk = Proc.new { |*args, &blk| blk_contract.call(*args, &blk) }
-      end
     end
+
+    # If we put the block into _args for validating, restore the args
+    args = _args[0..-2] if blk
+
 
     result = if @method.respond_to?(:call)
       # proc, block, lambda, etc
