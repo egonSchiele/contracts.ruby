@@ -8,6 +8,7 @@ require 'contracts/invariants'
 require 'contracts/method_reference'
 require 'contracts/modules'
 require 'contracts/support'
+require 'memoizable'
 
 module Contracts
   def self.included(base)
@@ -63,6 +64,7 @@ end
 #
 # This class also provides useful callbacks and a validation method.
 class Contract < Contracts::Decorator
+  include ::Memoizable
   # Default implementation of failure_callback. Provided as a block to be able
   # to monkey patch #failure_callback only temporary and then switch it back.
   # First important usage - for specs.
@@ -71,40 +73,63 @@ class Contract < Contracts::Decorator
   end
 
   attr_reader :args_contracts, :ret_contract, :klass, :method
-  # decorator_name :contract
   def initialize(klass, method, *contracts)
     if contracts[-1].is_a? Hash
       # internally we just convert that return value syntax back to an array
       @args_contracts = contracts[0, contracts.size - 1] + contracts[-1].keys
       @ret_contract = contracts[-1].values[0]
-      @args_validators = @args_contracts.map do |contract|
-        Contract.make_validator(contract)
-      end
-      @ret_validator = Contract.make_validator(@ret_contract)
     else
-      fail "It looks like your contract for #{method} doesn't have a return value. A contract should be written as `Contract arg1, arg2 => return_value`."
+      fail %{
+        It looks like your contract for #{method} doesn't have a return value.
+        A contract should be written as `Contract arg1, arg2 => return_value`.
+      }.strip
     end
     @klass, @method = klass, method
-    @splat_lower_index = @args_contracts.index do |contract|
+  end
+
+  def args_validators
+    args_contracts.map do |contract|
+      Contract.make_validator(contract)
+    end
+  end
+  memoize :args_validators
+
+  def ret_validator
+    Contract.make_validator(ret_contract)
+  end
+  memoize :ret_validator
+
+  # the index of the splat (aka Args) contract
+  def args_contract_index
+    args_contracts.index do |contract|
       contract.is_a? Contracts::Args
     end
-    last_contract = @args_contracts.last
-    @has_proc_contract = Contracts::Func === last_contract || (
+  end
+  memoize :args_contract_index
+
+  def has_proc_contract?
+    last_contract = args_contracts.last
+    Contracts::Func === last_contract || (
         Class === last_contract &&
         (last_contract <= Proc || last_contract <= Method)
       )
-    penultimate_contract = @args_contracts[-2]
-    @has_options_contract = @has_proc_contract ? Hash === penultimate_contract :
-                                                 Hash === last_contract
   end
+  memoize :has_proc_contract?
+
+  def has_options_contract?
+    last_contract = args_contracts.last
+    penultimate_contract = args_contracts[-2]
+    has_proc_contract? ? Hash === penultimate_contract : Hash === last_contract
+  end
+  memoize :has_options_contract?
 
   def pretty_contract c
     c.is_a?(Class) ? c.name : c.class.name
   end
 
   def to_s
-    args = @args_contracts.map { |c| pretty_contract(c) }.join(", ")
-    ret = pretty_contract(@ret_contract)
+    args = args_contracts.map { |c| pretty_contract(c) }.join(", ")
+    ret = pretty_contract(ret_contract)
     ("#{args} => #{ret}").gsub("Contracts::", "")
   end
 
@@ -250,29 +275,28 @@ class Contract < Contracts::Decorator
     contracts_size = args_contracts.size
 
     # Explicitly append blk=nil if nil != Proc contract violation anticipated
-    if @has_proc_contract && !blk &&
-      (@splat_lower_index || _args_size < contracts_size)
+    if has_proc_contract? && !blk &&
+      (args_contract_index || _args_size < contracts_size)
       _args << nil
       _args_size += 1
     end
 
     # Explicitly append options={} if Hash contract is present
-    if @has_options_contract
-      if @has_proc_contract && Hash === @args_contracts[-2] && !_args[-2].is_a?(Hash)
+    if has_options_contract?
+      if has_proc_contract? && Hash === args_contracts[-2] && !_args[-2].is_a?(Hash)
         _args.insert(-2, {})
         _args_size += 1
-      elsif Hash === @args_contracts[-1] && !_args[-1].is_a?(Hash)
+      elsif Hash === args_contracts[-1] && !_args[-1].is_a?(Hash)
         _args << {}
         _args_size += 1
       end
     end
 
     # Loop forward validating the arguments up to the splat (if there is one)
-    (@splat_lower_index || _args_size).times do |i|
+    (args_contract_index || _args_size).times do |i|
       _arg = _args[i]
-      contract = @args_contracts[i]
-      validator = @args_validators[i]
-
+      contract = args_contracts[i]
+      validator = args_validators[i]
 
       unless validator && validator[_arg]
         return unless Contract.failure_callback({
@@ -294,19 +318,19 @@ class Contract < Contracts::Decorator
     # If there is a splat loop backwards to the lower index of the splat
     # Once we hit the splat in this direction set its upper index
     # Keep validating but use this upper index to get the splat validator.
-    if @splat_lower_index
-      splat_upper_index = @splat_lower_index
-      (_args_size - @splat_lower_index).times do |i|
+    if args_contract_index
+      splat_upper_index = args_contract_index
+      (_args_size - args_contract_index).times do |i|
         _arg = _args[_args_size - 1 - i]
 
-        if Contracts::Args === @args_contracts[contracts_size - 1 - i]
+        if Contracts::Args === args_contracts[contracts_size - 1 - i]
           splat_upper_index = i
         end
 
         # Each arg after the spat is found must use the splat validator
         j = i < splat_upper_index ? i : splat_upper_index
-        contract = @args_contracts[contracts_size - 1 - j]
-        validator = @args_validators[contracts_size - 1 - j]
+        contract = args_contracts[contracts_size - 1 - j]
+        validator = args_validators[contracts_size - 1 - j]
 
         unless validator && validator[_arg]
           return unless Contract.failure_callback({
@@ -339,8 +363,8 @@ class Contract < Contracts::Decorator
       @method.send_to(this, *args, &blk)
     end
 
-    unless @ret_validator[result]
-      Contract.failure_callback({:arg => result, :contract => @ret_contract, :class => @klass, :method => @method, :contracts => self, :return_value => true})
+    unless ret_validator[result]
+      Contract.failure_callback({:arg => result, :contract => ret_contract, :class => @klass, :method => @method, :contracts => self, :return_value => true})
     end
 
     this.verify_invariants!(@method) if this.respond_to?(:verify_invariants!)
