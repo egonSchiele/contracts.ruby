@@ -364,7 +364,12 @@ class Contract < Contracts::Decorator
     end
 
     unless ret_validator[result]
-      Contract.failure_callback({:arg => result, :contract => ret_contract, :class => klass, :method => method, :contracts => self, :return_value => true})
+      Contract.failure_callback({:arg => result,
+                                 :contract => ret_contract,
+                                 :class => klass,
+                                 :method => method,
+                                 :contracts => self,
+                                 :return_value => true})
     end
 
     this.verify_invariants!(method) if this.respond_to?(:verify_invariants!)
