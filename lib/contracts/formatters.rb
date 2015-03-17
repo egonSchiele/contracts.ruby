@@ -14,26 +14,26 @@ module Contracts
         elsif contract.is_a?(Array)
           array_contract(contract)
         else
-          ContractInspectWrapper.new(contract)
+          InspectWrapper.new(contract)
         end
       end
 
       # Formats Hash contracts.
       def hash_contract(hash)
         hash.inject({}) { |repr, (k, v)|
-          repr.merge(k => ContractInspectWrapper.new(contract(v)))
+          repr.merge(k => InspectWrapper.new(contract(v)))
         }.inspect
       end
 
       # Formats Array contracts.
       def array_contract(array)
-        array.map{ |v| ContractInspectWrapper.new(contract(v)) }.inspect
+        array.map{ |v| InspectWrapper.new(contract(v)) }.inspect
       end
     end
 
     # A wrapper class to produce correct inspect behaviour for different
     # contract values - constants, Class contracts, instance contracts etc.
-    class ContractInspectWrapper
+    class InspectWrapper
       def initialize(value)
         @value = value
       end

@@ -1,4 +1,5 @@
 require 'contracts/testable'
+require 'contracts/formatters'
 
 =begin rdoc
 This module contains all the builtin contracts.
@@ -101,6 +102,7 @@ module Contracts
   #
   # Of course, <tt>.new</tt> still works.
   class CallableClass
+    include ::Contracts::Formatters
     def self.[](*vals)
       self.new(*vals)
     end
@@ -122,7 +124,7 @@ module Contracts
     end
 
     def to_s
-      @vals[0, @vals.size-1].join(", ") + " or " + @vals[-1].to_s
+      @vals[0, @vals.size-1].map { |x| InspectWrapper.new(x) }.join(", ") + " or " + InspectWrapper.new(@vals[-1]).to_s
     end
 
     # this can only be tested IF all the sub-contracts have a test_data method
@@ -156,7 +158,7 @@ module Contracts
     end
 
     def to_s
-      @vals[0, @vals.size-1].join(", ") + " xor " + @vals[-1].to_s
+      @vals[0, @vals.size-1].map { |x| InspectWrapper.new(x) }.join(", ") + " xor " + InspectWrapper.new(@vals[-1]).to_s
     end
 
     def testable?
@@ -188,7 +190,7 @@ module Contracts
     end
 
     def to_s
-      @vals[0, @vals.size-1].join(", ") + " and " + @vals[-1].to_s
+      @vals[0, @vals.size-1].map { |x| InspectWrapper.new(x) }.join(", ") + " and " + InspectWrapper.new(@vals[-1]).to_s
     end
   end
 
