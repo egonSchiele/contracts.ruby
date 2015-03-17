@@ -307,12 +307,10 @@ class Contract < Contracts::Decorator
   end
 
   def call_with(this, *args, &blk)
-
     args << blk if blk
 
     # Explicitly append blk=nil if nil != Proc contract violation anticipated
     maybe_append_block!(args, blk)
-
 
     # Explicitly append options={} if Hash contract is present
     maybe_append_options!(args, blk)
