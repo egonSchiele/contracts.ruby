@@ -44,6 +44,7 @@ module Contracts
       # from standard Strings.
       # Primitive values e.g. 42, true, nil will be left alone.
       def inspect
+        return @value.inspect if empty_val?
         return @value.to_s if plain?
         return "(#{@value.to_s})" if has_useful_to_s?
         @value.inspect.gsub(/^Contracts::/, '')
@@ -55,6 +56,10 @@ module Contracts
       end
 
       private
+      def empty_val?
+        @value.nil? || @value == ""
+      end
+
       def plain?
         # Not a type of contract that can have a custom to_s defined
         !@value.is_a?(CallableClass) && @value.class != Class
