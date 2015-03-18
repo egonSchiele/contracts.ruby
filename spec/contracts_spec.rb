@@ -529,7 +529,7 @@ RSpec.describe "Contracts:" do
     it 'should show empty quotes as ""' do
       expect {
         @o.no_args("")
-      }.to raise_error(ContractError, /Expected: ""/)
+      }.to raise_error(ContractError, /Actual: ""/)
     end
   end
 
