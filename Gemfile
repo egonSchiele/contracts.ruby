@@ -10,5 +10,3 @@ group :development do
   gem "method_profiler"
   gem "ruby-prof"
 end
-
-gem "memoizable"

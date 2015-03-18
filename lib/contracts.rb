@@ -8,7 +8,6 @@ require 'contracts/invariants'
 require 'contracts/method_reference'
 require 'contracts/modules'
 require 'contracts/support'
-require 'memoizable'
 
 module Contracts
   def self.included(base)
@@ -64,7 +63,6 @@ end
 #
 # This class also provides useful callbacks and a validation method.
 class Contract < Contracts::Decorator
-  include ::Memoizable
   # Default implementation of failure_callback. Provided as a block to be able
   # to monkey patch #failure_callback only temporary and then switch it back.
   # First important usage - for specs.
@@ -88,40 +86,45 @@ class Contract < Contracts::Decorator
   end
 
   def args_validators
-    args_contracts.map do |contract|
+    @args_validators ||= args_contracts.map do |contract|
       Contract.make_validator(contract)
     end
+    @args_validators
   end
-  memoize :args_validators
 
   def ret_validator
-    Contract.make_validator(ret_contract)
+    @ret_validator ||= Contract.make_validator(ret_contract)
+    @ret_validator
   end
-  memoize :ret_validator
 
   # the index of the splat (aka Args) contract
   def args_contract_index
-    args_contracts.index do |contract|
+    @args_contract_index ||= args_contracts.index do |contract|
       contract.is_a? Contracts::Args
     end
+    @args_contract_index
   end
-  memoize :args_contract_index
 
   def has_proc_contract?
+    return @has_proc_contract if @has_proc_contract
     last_contract = args_contracts.last
-    Contracts::Func === last_contract || (
-        Class === last_contract &&
-        (last_contract <= Proc || last_contract <= Method)
-      )
+    is_a_proc = Class === last_contract && (last_contract <= Proc || last_contract <= Method)
+
+    @has_proc_contract = is_a_proc || Contracts::Func === last_contract
+    @has_proc_contract
   end
-  memoize :has_proc_contract?
 
   def has_options_contract?
+    return @has_options_contract if @has_options_contract
     last_contract = args_contracts.last
     penultimate_contract = args_contracts[-2]
-    has_proc_contract? ? Hash === penultimate_contract : Hash === last_contract
+    @has_options_contract = if has_proc_contract?
+      Hash === penultimate_contract
+    else
+      Hash === last_contract
+    end
+    @has_options_contract
   end
-  memoize :has_options_contract?
 
   def pretty_contract c
     c.is_a?(Class) ? c.name : c.class.name
