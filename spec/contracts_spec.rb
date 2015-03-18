@@ -519,6 +519,18 @@ RSpec.describe "Contracts:" do
         @o.double('bad')
       }.to raise_error(ContractError, /Expected: Num/)
     end
+
+    it "should still show nils, not just blank space" do
+      expect {
+        @o.no_args('bad')
+      }.to raise_error(ContractError, /Expected: nil/)
+    end
+
+    it 'should show empty quotes as ""' do
+      expect {
+        @o.no_args("")
+      }.to raise_error(ContractError, /Actual: ""/)
+    end
   end
 
   describe "functype" do
