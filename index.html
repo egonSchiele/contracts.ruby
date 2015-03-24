@@ -52,8 +52,8 @@
 
 <p>A simple example:</p>
 
-<div class="highlight highlight-ruby"><pre><span class="pl-vo">Contract</span> <span class="pl-vo">Num</span>, <span class="pl-vo">Num</span> =&gt; <span class="pl-vo">Num</span>
-<span class="pl-k">def</span> <span class="pl-en">add</span>(<span class="pl-vpf">a</span>, <span class="pl-vpf">b</span>)
+<div class="highlight highlight-ruby"><pre><span class="pl-c1">Contract</span> <span class="pl-c1">Num</span>, <span class="pl-c1">Num</span> =&gt; <span class="pl-c1">Num</span>
+<span class="pl-k">def</span> <span class="pl-en">add</span>(<span class="pl-smi">a</span>, <span class="pl-smi">b</span>)
   a <span class="pl-k">+</span> b
 <span class="pl-k">end</span></pre></div>
 
@@ -61,18 +61,18 @@
 
 <p>Copy this code into a file and run it:</p>
 
-<div class="highlight highlight-ruby"><pre><span class="pl-k">require</span> <span class="pl-s1"><span class="pl-pds">'</span>contracts<span class="pl-pds">'</span></span>
+<div class="highlight highlight-ruby"><pre><span class="pl-k">require</span> <span class="pl-s"><span class="pl-pds">'</span>contracts<span class="pl-pds">'</span></span>
 
 <span class="pl-k">class</span> <span class="pl-en">Math</span>
-  <span class="pl-k">include</span> <span class="pl-vo">Contracts</span>
+  <span class="pl-k">include</span> <span class="pl-c1">Contracts</span>
 
-  <span class="pl-vo">Contract</span> <span class="pl-vo">Num</span>, <span class="pl-vo">Num</span> =&gt; <span class="pl-vo">Num</span>
-  <span class="pl-k">def</span> <span class="pl-en">self.add</span>(<span class="pl-vpf">a</span>, <span class="pl-vpf">b</span>)
+  <span class="pl-c1">Contract</span> <span class="pl-c1">Num</span>, <span class="pl-c1">Num</span> =&gt; <span class="pl-c1">Num</span>
+  <span class="pl-k">def</span> <span class="pl-en">self.add</span>(<span class="pl-smi">a</span>, <span class="pl-smi">b</span>)
     a <span class="pl-k">+</span> b
   <span class="pl-k">end</span>
 <span class="pl-k">end</span>
 
-puts <span class="pl-s3">Math</span>.add(<span class="pl-c1">1</span>, <span class="pl-s1"><span class="pl-pds">"</span>foo<span class="pl-pds">"</span></span>)</pre></div>
+puts <span class="pl-c1">Math</span>.add(<span class="pl-c1">1</span>, <span class="pl-s"><span class="pl-pds">"</span>foo<span class="pl-pds">"</span></span>)</pre></div>
 
 <p>You'll see a detailed error message like so:</p>
 
@@ -110,6 +110,8 @@ By default, an exception is thrown when a contract fails. This can be changed to
 <a href="http://www.rubydoc.info/gems/contracts/Contracts/Pos"><code>Pos</code></a> – checks that the argument is a positive number</li>
 <li>
 <a href="http://www.rubydoc.info/gems/contracts/Contracts/Neg"><code>Neg</code></a> – checks that the argument is a negative number</li>
+<li>
+<a href="http://www.rubydoc.info/gems/contracts/Contracts/Nat"><code>Nat</code></a> – checks that the argument is a natural number</li>
 <li>
 <a href="http://www.rubydoc.info/gems/contracts/Contracts/Bool"><code>Bool</code></a> – checks that the argument is <code>true</code> or <code>false</code>
 </li>
@@ -155,9 +157,9 @@ By default, an exception is thrown when a contract fails. This can be changed to
 <h3>
 <a id="hello-world" class="anchor" href="#hello-world" aria-hidden="true"><span class="octicon octicon-link"></span></a>Hello, World</h3>
 
-<div class="highlight highlight-ruby"><pre><span class="pl-vo">Contract</span> <span class="pl-vo">String</span> =&gt; <span class="pl-c1">nil</span>
-<span class="pl-k">def</span> <span class="pl-en">hello</span>(<span class="pl-vpf">name</span>)
-  puts <span class="pl-s1"><span class="pl-pds">"</span>hello, <span class="pl-pse">#{</span><span class="pl-s2">name</span><span class="pl-pse"><span class="pl-s2">}</span></span>!<span class="pl-pds">"</span></span>
+<div class="highlight highlight-ruby"><pre><span class="pl-c1">Contract</span> <span class="pl-c1">String</span> =&gt; <span class="pl-c1">nil</span>
+<span class="pl-k">def</span> <span class="pl-en">hello</span>(<span class="pl-smi">name</span>)
+  puts <span class="pl-s"><span class="pl-pds">"</span>hello, <span class="pl-pse">#{</span><span class="pl-s1">name</span><span class="pl-pse"><span class="pl-s1">}</span></span>!<span class="pl-pds">"</span></span>
 <span class="pl-k">end</span></pre></div>
 
 <p>You always need to specify a contract for the return value. In this example, <code>hello</code> doesn't return anything, so the contract is <code>nil</code>. Now you know that you can use a constant like <code>nil</code> as the end of a contract. Valid values for a contract are:</p>
@@ -173,33 +175,33 @@ By default, an exception is thrown when a contract fails. This can be changed to
 <h3>
 <a id="a-double-function" class="anchor" href="#a-double-function" aria-hidden="true"><span class="octicon octicon-link"></span></a>A Double Function</h3>
 
-<div class="highlight highlight-ruby"><pre><span class="pl-vo">Contract</span> <span class="pl-s3">Or</span>[<span class="pl-vo">Fixnum</span>, <span class="pl-vo">Float</span>] =&gt; <span class="pl-s3">Or</span>[<span class="pl-vo">Fixnum</span>, <span class="pl-vo">Float</span>]
-<span class="pl-k">def</span> <span class="pl-en">double</span>(<span class="pl-vpf">x</span>)
+<div class="highlight highlight-ruby"><pre><span class="pl-c1">Contract</span> <span class="pl-c1">Or</span>[<span class="pl-c1">Fixnum</span>, <span class="pl-c1">Float</span>] =&gt; <span class="pl-c1">Or</span>[<span class="pl-c1">Fixnum</span>, <span class="pl-c1">Float</span>]
+<span class="pl-k">def</span> <span class="pl-en">double</span>(<span class="pl-smi">x</span>)
   <span class="pl-c1">2</span> <span class="pl-k">*</span> x
 <span class="pl-k">end</span></pre></div>
 
 <p>Sometimes you want to be able to choose between a few contracts. <code>Or</code> takes a variable number of contracts and checks the argument against all of them. If it passes for any of the contracts, then the <code>Or</code> contract passes.
 This introduces some new syntax. One of the valid values for a contract is an instance of a class that responds to the <code>valid?</code> method. This is what <code>Or[Fixnum, Float]</code> is. The longer way to write it would have been:</p>
 
-<div class="highlight highlight-ruby"><pre><span class="pl-vo">Contract</span> <span class="pl-s3">Or</span>.<span class="pl-k">new</span>(<span class="pl-vo">Fixnum</span>, <span class="pl-vo">Float</span>) =&gt; <span class="pl-s3">Or</span>.<span class="pl-k">new</span>(<span class="pl-vo">Fixnum</span>, <span class="pl-vo">Float</span>)</pre></div>
+<div class="highlight highlight-ruby"><pre><span class="pl-c1">Contract</span> <span class="pl-c1">Or</span>.<span class="pl-k">new</span>(<span class="pl-c1">Fixnum</span>, <span class="pl-c1">Float</span>) =&gt; <span class="pl-c1">Or</span>.<span class="pl-k">new</span>(<span class="pl-c1">Fixnum</span>, <span class="pl-c1">Float</span>)</pre></div>
 
 <p>All the built-in contracts have overridden the square brackets (<code>[]</code>) to give the same functionality. So you could write</p>
 
-<div class="highlight highlight-ruby"><pre><span class="pl-vo">Contract</span> <span class="pl-s3">Or</span>[<span class="pl-vo">Fixnum</span>, <span class="pl-vo">Float</span>] =&gt; <span class="pl-s3">Or</span>[<span class="pl-vo">Fixnum</span>, <span class="pl-vo">Float</span>]</pre></div>
+<div class="highlight highlight-ruby"><pre><span class="pl-c1">Contract</span> <span class="pl-c1">Or</span>[<span class="pl-c1">Fixnum</span>, <span class="pl-c1">Float</span>] =&gt; <span class="pl-c1">Or</span>[<span class="pl-c1">Fixnum</span>, <span class="pl-c1">Float</span>]</pre></div>
 
 <p>or</p>
 
-<div class="highlight highlight-ruby"><pre><span class="pl-vo">Contract</span> <span class="pl-s3">Or</span>.<span class="pl-k">new</span>(<span class="pl-vo">Fixnum</span>, <span class="pl-vo">Float</span>) =&gt; <span class="pl-s3">Or</span>.<span class="pl-k">new</span>(<span class="pl-vo">Fixnum</span>, <span class="pl-vo">Float</span>)</pre></div>
+<div class="highlight highlight-ruby"><pre><span class="pl-c1">Contract</span> <span class="pl-c1">Or</span>.<span class="pl-k">new</span>(<span class="pl-c1">Fixnum</span>, <span class="pl-c1">Float</span>) =&gt; <span class="pl-c1">Or</span>.<span class="pl-k">new</span>(<span class="pl-c1">Fixnum</span>, <span class="pl-c1">Float</span>)</pre></div>
 
 <p>whichever you prefer. They both mean the same thing here: make a new instance of <code>Or</code> with <code>Fixnum</code> and <code>Float</code>. Use that instance to validate the argument.</p>
 
 <h3>
 <a id="a-product-function" class="anchor" href="#a-product-function" aria-hidden="true"><span class="octicon octicon-link"></span></a>A Product Function</h3>
 
-<div class="highlight highlight-ruby"><pre><span class="pl-vo">Contract</span> <span class="pl-s3">ArrayOf</span>[<span class="pl-vo">Num</span>] =&gt; <span class="pl-vo">Num</span>
-<span class="pl-k">def</span> <span class="pl-en">product</span>(<span class="pl-vpf">vals</span>)
+<div class="highlight highlight-ruby"><pre><span class="pl-c1">Contract</span> <span class="pl-c1">ArrayOf</span>[<span class="pl-c1">Num</span>] =&gt; <span class="pl-c1">Num</span>
+<span class="pl-k">def</span> <span class="pl-en">product</span>(<span class="pl-smi">vals</span>)
   total <span class="pl-k">=</span> <span class="pl-c1">1</span>
-  vals.each <span class="pl-k">do </span>|<span class="pl-vo">val</span>|
+  vals.each <span class="pl-k">do </span>|<span class="pl-smi">val</span>|
     total <span class="pl-k">*=</span> val
   <span class="pl-k">end</span>
   total
@@ -211,15 +213,15 @@ This introduces some new syntax. One of the valid values for a contract is an in
 product([<span class="pl-c1">1</span>, <span class="pl-c1">2</span>, <span class="pl-c1">3</span>, <span class="pl-c1">4</span>])
 
 <span class="pl-c"># fails</span>
-product([<span class="pl-c1">1</span>, <span class="pl-c1">2</span>, <span class="pl-c1">3</span>, <span class="pl-s1"><span class="pl-pds">"</span>foo<span class="pl-pds">"</span></span>])</pre></div>
+product([<span class="pl-c1">1</span>, <span class="pl-c1">2</span>, <span class="pl-c1">3</span>, <span class="pl-s"><span class="pl-pds">"</span>foo<span class="pl-pds">"</span></span>])</pre></div>
 
 <h3>
 <a id="another-product-function" class="anchor" href="#another-product-function" aria-hidden="true"><span class="octicon octicon-link"></span></a>Another Product Function</h3>
 
-<div class="highlight highlight-ruby"><pre><span class="pl-vo">Contract</span> <span class="pl-s3">Args</span>[<span class="pl-vo">Num</span>] =&gt; <span class="pl-vo">Num</span>
-<span class="pl-k">def</span> <span class="pl-en">product</span>(<span class="pl-st">*</span><span class="pl-vpf">vals</span>)
+<div class="highlight highlight-ruby"><pre><span class="pl-c1">Contract</span> <span class="pl-c1">Args</span>[<span class="pl-c1">Num</span>] =&gt; <span class="pl-c1">Num</span>
+<span class="pl-k">def</span> <span class="pl-en">product</span>(<span class="pl-k">*</span><span class="pl-smi">vals</span>)
   total <span class="pl-k">=</span> <span class="pl-c1">1</span>
-  vals.each <span class="pl-k">do </span>|<span class="pl-vo">val</span>|
+  vals.each <span class="pl-k">do </span>|<span class="pl-smi">val</span>|
     total <span class="pl-k">*=</span> val
   <span class="pl-k">end</span>
   total
@@ -239,8 +241,8 @@ product([<span class="pl-c1">1</span>, <span class="pl-c1">2</span>, <span class
 <p>If an array is one of the arguments and you know how many elements it's going to have, you can put a contract on it:</p>
 
 <div class="highlight highlight-ruby"><pre><span class="pl-c"># a function that takes an array of two elements...a person's age and a person's name.</span>
-<span class="pl-vo">Contract</span> [<span class="pl-vo">Num</span>, <span class="pl-vo">String</span>] =&gt; <span class="pl-c1">nil</span>
-<span class="pl-k">def</span> <span class="pl-en">person</span>(<span class="pl-vpf">data</span>)
+<span class="pl-c1">Contract</span> [<span class="pl-c1">Num</span>, <span class="pl-c1">String</span>] =&gt; <span class="pl-c1">nil</span>
+<span class="pl-k">def</span> <span class="pl-en">person</span>(<span class="pl-smi">data</span>)
   p data
 <span class="pl-k">end</span></pre></div>
 
@@ -252,26 +254,26 @@ product([<span class="pl-c1">1</span>, <span class="pl-c1">2</span>, <span class
 <p>Here's a contract that requires a Hash. We can put contracts on each of the keys:</p>
 
 <div class="highlight highlight-ruby"><pre><span class="pl-c"># note the parentheses around the hash; without those you would get a syntax error</span>
-<span class="pl-vo">Contract</span> ({ <span class="pl-c1">:age</span> =&gt; <span class="pl-vo">Num</span>, <span class="pl-c1">:name</span> =&gt; <span class="pl-vo">String</span> }) =&gt; <span class="pl-c1">nil</span>
-<span class="pl-k">def</span> <span class="pl-en">person</span>(<span class="pl-vpf">data</span>)
+<span class="pl-c1">Contract</span> ({ <span class="pl-c1">:age</span> =&gt; <span class="pl-c1">Num</span>, <span class="pl-c1">:name</span> =&gt; <span class="pl-c1">String</span> }) =&gt; <span class="pl-c1">nil</span>
+<span class="pl-k">def</span> <span class="pl-en">person</span>(<span class="pl-smi">data</span>)
   p data
 <span class="pl-k">end</span></pre></div>
 
 <p>Then if someone tries to call the function with bad data, it will fail:</p>
 
 <div class="highlight highlight-ruby"><pre><span class="pl-c"># error: age can't be nil!</span>
-person({<span class="pl-c1">:name</span> =&gt; <span class="pl-s1"><span class="pl-pds">"</span>Adit<span class="pl-pds">"</span></span>, <span class="pl-c1">:age</span> =&gt; <span class="pl-c1">nil</span>})</pre></div>
+person({<span class="pl-c1">:name</span> =&gt; <span class="pl-s"><span class="pl-pds">"</span>Adit<span class="pl-pds">"</span></span>, <span class="pl-c1">:age</span> =&gt; <span class="pl-c1">nil</span>})</pre></div>
 
 <p>You don't need to put a contract on every key. So this call would succeed:</p>
 
-<div class="highlight highlight-ruby"><pre>person({<span class="pl-c1">:name</span> =&gt; <span class="pl-s1"><span class="pl-pds">"</span>Adit<span class="pl-pds">"</span></span>, <span class="pl-c1">:age</span> =&gt; <span class="pl-c1">42</span>, <span class="pl-c1">:foo</span> =&gt; <span class="pl-s1"><span class="pl-pds">"</span>bar<span class="pl-pds">"</span></span>})</pre></div>
+<div class="highlight highlight-ruby"><pre>person({<span class="pl-c1">:name</span> =&gt; <span class="pl-s"><span class="pl-pds">"</span>Adit<span class="pl-pds">"</span></span>, <span class="pl-c1">:age</span> =&gt; <span class="pl-c1">42</span>, <span class="pl-c1">:foo</span> =&gt; <span class="pl-s"><span class="pl-pds">"</span>bar<span class="pl-pds">"</span></span>})</pre></div>
 
 <p>even though we don't specify a type for <code>:foo</code>.</p>
 
 <p>Peruse this contract on the keys and values of a Hash.</p>
 
-<div class="highlight highlight-ruby"><pre><span class="pl-vo">Contract</span> <span class="pl-s3">HashOf</span>[<span class="pl-vo">Symbol</span>, <span class="pl-vo">Num</span>] =&gt; <span class="pl-vo">Num</span>
-<span class="pl-k">def</span> <span class="pl-en">give_largest_value</span>(<span class="pl-vpf">hsh</span>)
+<div class="highlight highlight-ruby"><pre><span class="pl-c1">Contract</span> <span class="pl-c1">HashOf</span>[<span class="pl-c1">Symbol</span>, <span class="pl-c1">Num</span>] =&gt; <span class="pl-c1">Num</span>
+<span class="pl-k">def</span> <span class="pl-en">give_largest_value</span>(<span class="pl-smi">hsh</span>)
   hsh.values.max
 <span class="pl-k">end</span></pre></div>
 
@@ -281,32 +283,32 @@ person({<span class="pl-c1">:name</span> =&gt; <span class="pl-s1"><span class="
 give_largest_value(<span class="pl-c1">a:</span> <span class="pl-c1">1</span>, <span class="pl-c1">b:</span> <span class="pl-c1">2</span>, <span class="pl-c1">c:</span> <span class="pl-c1">3</span>) <span class="pl-c"># returns 3</span>
 
 <span class="pl-c"># fails</span>
-give_largest_value(<span class="pl-s1"><span class="pl-pds">"</span>a<span class="pl-pds">"</span></span> =&gt; <span class="pl-c1">1</span>, <span class="pl-c1">2</span> =&gt; <span class="pl-c1">2</span>, <span class="pl-c1">c:</span> <span class="pl-c1">3</span>)</pre></div>
+give_largest_value(<span class="pl-s"><span class="pl-pds">"</span>a<span class="pl-pds">"</span></span> =&gt; <span class="pl-c1">1</span>, <span class="pl-c1">2</span> =&gt; <span class="pl-c1">2</span>, <span class="pl-c1">c:</span> <span class="pl-c1">3</span>)</pre></div>
 
 <h3>
 <a id="contracts-on-functions" class="anchor" href="#contracts-on-functions" aria-hidden="true"><span class="octicon octicon-link"></span></a>Contracts On Functions</h3>
 
 <p>Lets say you are writing a simple map function:</p>
 
-<div class="highlight highlight-ruby"><pre><span class="pl-k">def</span> <span class="pl-en">map</span>(<span class="pl-vpf">arr</span>, <span class="pl-vpf">func</span>)</pre></div>
+<div class="highlight highlight-ruby"><pre><span class="pl-k">def</span> <span class="pl-en">map</span>(<span class="pl-smi">arr</span>, <span class="pl-smi">func</span>)</pre></div>
 
 <p><code>map</code> takes an array, and a function. Suppose you want to add a contract to this function. You could try this:</p>
 
-<div class="highlight highlight-ruby"><pre><span class="pl-vo">Contract</span> <span class="pl-s3">ArrayOf</span>[<span class="pl-vo">Any</span>], <span class="pl-vo">Proc</span> =&gt; <span class="pl-s3">ArrayOf</span>[<span class="pl-vo">Any</span>]
-<span class="pl-k">def</span> <span class="pl-en">map</span>(<span class="pl-vpf">arr</span>, <span class="pl-vpf">func</span>)</pre></div>
+<div class="highlight highlight-ruby"><pre><span class="pl-c1">Contract</span> <span class="pl-c1">ArrayOf</span>[<span class="pl-c1">Any</span>], <span class="pl-c1">Proc</span> =&gt; <span class="pl-c1">ArrayOf</span>[<span class="pl-c1">Any</span>]
+<span class="pl-k">def</span> <span class="pl-en">map</span>(<span class="pl-smi">arr</span>, <span class="pl-smi">func</span>)</pre></div>
 
 <p>This says that the second argument should be a <code>Proc</code>. You can call the function like so:</p>
 
-<div class="highlight highlight-ruby"><pre>p map([<span class="pl-c1">1</span>, <span class="pl-c1">2</span>, <span class="pl-c1">3</span>], lambda { |<span class="pl-vo">x</span>| x <span class="pl-k">+</span> <span class="pl-c1">1</span> }) <span class="pl-c"># works</span></pre></div>
+<div class="highlight highlight-ruby"><pre>p map([<span class="pl-c1">1</span>, <span class="pl-c1">2</span>, <span class="pl-c1">3</span>], lambda { |<span class="pl-smi">x</span>| x <span class="pl-k">+</span> <span class="pl-c1">1</span> }) <span class="pl-c"># works</span></pre></div>
 
 <p>But suppose you want to have a contract on the Proc too! Suppose you want to make sure that the Proc returns a number. Use the <code>Func</code> contract. <code>Func</code> takes a contract as it's argument, and uses that contract on the function that you pass in.</p>
 
 <p>Here's a <code>map</code> function that requires an array of numbers, and a function that takes a number and returns a number:</p>
 
-<div class="highlight highlight-ruby"><pre><span class="pl-vo">Contract</span> <span class="pl-s3">ArrayOf</span>[<span class="pl-vo">Num</span>], <span class="pl-s3">Func</span>[<span class="pl-vo">Num</span> =&gt; <span class="pl-vo">Num</span>] =&gt; <span class="pl-s3">ArrayOf</span>[<span class="pl-vo">Num</span>]
-<span class="pl-k">def</span> <span class="pl-en">map</span>(<span class="pl-vpf">arr</span>, <span class="pl-vpf">func</span>)
+<div class="highlight highlight-ruby"><pre><span class="pl-c1">Contract</span> <span class="pl-c1">ArrayOf</span>[<span class="pl-c1">Num</span>], <span class="pl-c1">Func</span>[<span class="pl-c1">Num</span> =&gt; <span class="pl-c1">Num</span>] =&gt; <span class="pl-c1">ArrayOf</span>[<span class="pl-c1">Num</span>]
+<span class="pl-k">def</span> <span class="pl-en">map</span>(<span class="pl-smi">arr</span>, <span class="pl-smi">func</span>)
   ret <span class="pl-k">=</span> []
-  arr.each <span class="pl-k">do </span>|<span class="pl-vo">x</span>|
+  arr.each <span class="pl-k">do </span>|<span class="pl-smi">x</span>|
     ret <span class="pl-k">&lt;&lt;</span> func[x]
   <span class="pl-k">end</span>
   ret
@@ -316,13 +318,13 @@ give_largest_value(<span class="pl-s1"><span class="pl-pds">"</span>a<span class
 
 <p>Try this map function with these two examples:</p>
 
-<div class="highlight highlight-ruby"><pre>p map([<span class="pl-c1">1</span>, <span class="pl-c1">2</span>, <span class="pl-c1">3</span>], lambda { |<span class="pl-vo">x</span>| x <span class="pl-k">+</span> <span class="pl-c1">1</span> }) <span class="pl-c"># works</span>
-p map([<span class="pl-c1">1</span>, <span class="pl-c1">2</span>, <span class="pl-c1">3</span>], lambda { |<span class="pl-vo">x</span>| <span class="pl-s1"><span class="pl-pds">"</span>oops<span class="pl-pds">"</span></span> }) <span class="pl-c"># fails, the lambda returns a string.</span></pre></div>
+<div class="highlight highlight-ruby"><pre>p map([<span class="pl-c1">1</span>, <span class="pl-c1">2</span>, <span class="pl-c1">3</span>], lambda { |<span class="pl-smi">x</span>| x <span class="pl-k">+</span> <span class="pl-c1">1</span> }) <span class="pl-c"># works</span>
+p map([<span class="pl-c1">1</span>, <span class="pl-c1">2</span>, <span class="pl-c1">3</span>], lambda { |<span class="pl-smi">x</span>| <span class="pl-s"><span class="pl-pds">"</span>oops<span class="pl-pds">"</span></span> }) <span class="pl-c"># fails, the lambda returns a string.</span></pre></div>
 
 <p>NOTE: This is not valid:</p>
 
-<div class="highlight highlight-ruby"><pre><span class="pl-vo">Contract</span> <span class="pl-s3">ArrayOf</span>[<span class="pl-vo">Num</span>], <span class="pl-vo">Func</span> =&gt; <span class="pl-s3">ArrayOf</span>[<span class="pl-vo">Num</span>]
-<span class="pl-k">def</span> <span class="pl-en">map</span>(<span class="pl-vpf">arr</span>, <span class="pl-st">&amp;</span><span class="pl-vpf">func</span>)</pre></div>
+<div class="highlight highlight-ruby"><pre><span class="pl-c1">Contract</span> <span class="pl-c1">ArrayOf</span>[<span class="pl-c1">Num</span>], <span class="pl-c1">Func</span> =&gt; <span class="pl-c1">ArrayOf</span>[<span class="pl-c1">Num</span>]
+<span class="pl-k">def</span> <span class="pl-en">map</span>(<span class="pl-smi">arr</span>, <span class="pl-k">&amp;</span><span class="pl-smi">func</span>)</pre></div>
 
 <p>Here I am using <code>Func</code> without specifying a contract, like <code>Func[Num =&gt; Num]</code>. That's not a legal contract. If you just want to validate that the second argument is a proc, use <code>Proc</code>.</p>
 
@@ -331,8 +333,8 @@ p map([<span class="pl-c1">1</span>, <span class="pl-c1">2</span>, <span class="
 
 <p>Treat the return value as an array. For example, here's a function that returns two numbers:</p>
 
-<div class="highlight highlight-ruby"><pre><span class="pl-vo">Contract</span> <span class="pl-vo">Num</span> =&gt; [<span class="pl-vo">Num</span>, <span class="pl-vo">Num</span>]
-<span class="pl-k">def</span> <span class="pl-en">mult</span>(<span class="pl-vpf">x</span>)
+<div class="highlight highlight-ruby"><pre><span class="pl-c1">Contract</span> <span class="pl-c1">Num</span> =&gt; [<span class="pl-c1">Num</span>, <span class="pl-c1">Num</span>]
+<span class="pl-k">def</span> <span class="pl-en">mult</span>(<span class="pl-smi">x</span>)
   <span class="pl-k">return</span> x, x<span class="pl-k">+</span><span class="pl-c1">1</span>
 <span class="pl-k">end</span></pre></div>
 
@@ -341,17 +343,17 @@ p map([<span class="pl-c1">1</span>, <span class="pl-c1">2</span>, <span class="
 
 <p>If you use a contract a lot, it's a good idea to give it a meaningful synonym that tells the reader more about what your code returns. For example, suppose you have many functions that return a <code>Hash</code> or <code>nil</code>. If a <code>Hash</code> is returned, it contains information about a person. Your contact might look like this:</p>
 
-<div class="highlight highlight-ruby"><pre><span class="pl-vo">Contract</span> <span class="pl-vo">String</span> =&gt; <span class="pl-s3">Or</span>[<span class="pl-vo">Hash</span>, <span class="pl-c1">nil</span>]
-<span class="pl-k">def</span> <span class="pl-en">some_func</span>(<span class="pl-vpf">str</span>)</pre></div>
+<div class="highlight highlight-ruby"><pre><span class="pl-c1">Contract</span> <span class="pl-c1">String</span> =&gt; <span class="pl-c1">Or</span>[<span class="pl-c1">Hash</span>, <span class="pl-c1">nil</span>]
+<span class="pl-k">def</span> <span class="pl-en">some_func</span>(<span class="pl-smi">str</span>)</pre></div>
 
 <p>You can make your contract more meaningful with a synonym:</p>
 
 <div class="highlight highlight-ruby"><pre><span class="pl-c"># the synonym</span>
-<span class="pl-vo">Person</span> <span class="pl-k">=</span> <span class="pl-s3">Or</span>[<span class="pl-vo">Hash</span>, <span class="pl-c1">nil</span>]
+<span class="pl-c1">Person</span> <span class="pl-k">=</span> <span class="pl-c1">Or</span>[<span class="pl-c1">Hash</span>, <span class="pl-c1">nil</span>]
 
 <span class="pl-c"># use the synonym here</span>
-<span class="pl-vo">Contract</span> <span class="pl-vo">String</span> =&gt; <span class="pl-vo">Person</span>
-<span class="pl-k">def</span> <span class="pl-en">some_func</span>(<span class="pl-vpf">str</span>)</pre></div>
+<span class="pl-c1">Contract</span> <span class="pl-c1">String</span> =&gt; <span class="pl-c1">Person</span>
+<span class="pl-k">def</span> <span class="pl-en">some_func</span>(<span class="pl-smi">str</span>)</pre></div>
 
 <p>Now you can use <code>Person</code> wherever you would have used <code>Or[Hash, nil]</code>. Your code is now cleaner and more clearly says what the function is doing.</p>
 
@@ -373,8 +375,8 @@ p map([<span class="pl-c1">1</span>, <span class="pl-c1">2</span>, <span class="
 <h3>
 <a id="a-proc" class="anchor" href="#a-proc" aria-hidden="true"><span class="octicon octicon-link"></span></a>A Proc</h3>
 
-<div class="highlight highlight-ruby"><pre><span class="pl-vo">Contract</span> lambda { |<span class="pl-vo">x</span>| x.is_a? <span class="pl-vo">Numeric</span> } =&gt; <span class="pl-vo">Num</span>
-<span class="pl-k">def</span> <span class="pl-en">double</span>(<span class="pl-vpf">x</span>)</pre></div>
+<div class="highlight highlight-ruby"><pre><span class="pl-c1">Contract</span> lambda { |<span class="pl-smi">x</span>| x.is_a? <span class="pl-c1">Numeric</span> } =&gt; <span class="pl-c1">Num</span>
+<span class="pl-k">def</span> <span class="pl-en">double</span>(<span class="pl-smi">x</span>)</pre></div>
 
 <p>The lambda takes one parameter: the argument that is getting passed to the function. It checks to see if it's a <code>Numeric</code>. If it is, it returns true. Otherwise it returns false.
 It's not good practice to write a lambda right in your contract...if you find yourself doing it often, write it as a class instead:</p>
@@ -385,8 +387,8 @@ It's not good practice to write a lambda right in your contract...if you find yo
 <p>Here's how the <code>Num</code> class is defined. It does exactly what the <code>lambda</code> did in the previous example:</p>
 
 <div class="highlight highlight-ruby"><pre><span class="pl-k">class</span> <span class="pl-en">Num</span>
-  <span class="pl-k">def</span> <span class="pl-en">self.valid?</span> <span class="pl-vpf">val</span>
-    val.is_a? <span class="pl-vo">Numeric</span>
+  <span class="pl-k">def</span> <span class="pl-en">self.valid?</span> <span class="pl-smi">val</span>
+    val.is_a? <span class="pl-c1">Numeric</span>
   <span class="pl-k">end</span>
 <span class="pl-k">end</span></pre></div>
 
@@ -398,13 +400,13 @@ It's not good practice to write a lambda right in your contract...if you find yo
 <p>Here's how the <code>Or</code> class is defined:</p>
 
 <div class="highlight highlight-ruby"><pre><span class="pl-k">class</span> <span class="pl-en">Or<span class="pl-e"> &lt; CallableClass</span></span>
-  <span class="pl-k">def</span> <span class="pl-en">initialize</span>(<span class="pl-st">*</span><span class="pl-vpf">vals</span>)
-    <span class="pl-vo">@vals</span> <span class="pl-k">=</span> vals
+  <span class="pl-k">def</span> <span class="pl-en">initialize</span>(<span class="pl-k">*</span><span class="pl-smi">vals</span>)
+    <span class="pl-smi">@vals</span> <span class="pl-k">=</span> vals
   <span class="pl-k">end</span>
 
-  <span class="pl-k">def</span> <span class="pl-en">valid?</span>(<span class="pl-vpf">val</span>)
-    <span class="pl-vo">@vals</span>.any? <span class="pl-k">do </span>|<span class="pl-vo">contract</span>|
-      res, _ <span class="pl-k">=</span> <span class="pl-s3">Contract</span>.valid?(val, contract)
+  <span class="pl-k">def</span> <span class="pl-en">valid?</span>(<span class="pl-smi">val</span>)
+    <span class="pl-smi">@vals</span>.any? <span class="pl-k">do </span>|<span class="pl-smi">contract</span>|
+      res, _ <span class="pl-k">=</span> <span class="pl-c1">Contract</span>.valid?(val, contract)
       res
     <span class="pl-k">end</span>
   <span class="pl-k">end</span>
@@ -414,15 +416,15 @@ It's not good practice to write a lambda right in your contract...if you find yo
 
 <p>This class inherits from <code>CallableClass</code>, which allows us to use <code>[]</code> when using the class:</p>
 
-<div class="highlight highlight-ruby"><pre><span class="pl-vo">Contract</span> <span class="pl-s3">Or</span>[<span class="pl-vo">Fixnum</span>, <span class="pl-vo">Float</span>] =&gt; <span class="pl-vo">Num</span>
-<span class="pl-k">def</span> <span class="pl-en">double</span>(<span class="pl-vpf">x</span>)
+<div class="highlight highlight-ruby"><pre><span class="pl-c1">Contract</span> <span class="pl-c1">Or</span>[<span class="pl-c1">Fixnum</span>, <span class="pl-c1">Float</span>] =&gt; <span class="pl-c1">Num</span>
+<span class="pl-k">def</span> <span class="pl-en">double</span>(<span class="pl-smi">x</span>)
   <span class="pl-c1">2</span> <span class="pl-k">*</span> x
 <span class="pl-k">end</span></pre></div>
 
 <p>Without <code>CallableClass</code>, we would have to use <code>.new</code> instead:</p>
 
-<div class="highlight highlight-ruby"><pre><span class="pl-vo">Contract</span> <span class="pl-s3">Or</span>.<span class="pl-k">new</span>(<span class="pl-vo">Fixnum</span>, <span class="pl-vo">Float</span>) =&gt; <span class="pl-vo">Num</span>
-<span class="pl-k">def</span> <span class="pl-en">double</span>(<span class="pl-vpf">x</span>)
+<div class="highlight highlight-ruby"><pre><span class="pl-c1">Contract</span> <span class="pl-c1">Or</span>.<span class="pl-k">new</span>(<span class="pl-c1">Fixnum</span>, <span class="pl-c1">Float</span>) =&gt; <span class="pl-c1">Num</span>
+<span class="pl-k">def</span> <span class="pl-en">double</span>(<span class="pl-smi">x</span>)
 <span class="pl-c"># etc</span></pre></div>
 
 <p>You can use <code>CallableClass</code> in your own contracts to make them callable using <code>[]</code>.</p>
@@ -440,7 +442,7 @@ Expected: Contracts::Num,
 <p>You can customize this message by overriding the <code>to_s</code> method on your class or proc. For example, suppose we overrode <code>Num</code>'s <code>to_s</code> method:</p>
 
 <div class="highlight highlight-ruby"><pre><span class="pl-k">def</span> <span class="pl-en">Num.to_s</span>
-  <span class="pl-s1"><span class="pl-pds">"</span>a number please<span class="pl-pds">"</span></span>
+  <span class="pl-s"><span class="pl-pds">"</span>a number please<span class="pl-pds">"</span></span>
 <span class="pl-k">end</span></pre></div>
 
 <p>Now the error says:</p>
@@ -457,8 +459,8 @@ Expected: a number please,
 
 <p>contracts.ruby provides a failure callback that gets called when a contract fails. For example, here we log every failure instead of raising an error:</p>
 
-<div class="highlight highlight-ruby"><pre><span class="pl-s3">Contract</span>.override_failure_callback <span class="pl-k">do </span>|<span class="pl-vo">data</span>|
-  puts <span class="pl-s1"><span class="pl-pds">"</span>You had an error<span class="pl-pds">"</span></span>
+<div class="highlight highlight-ruby"><pre><span class="pl-c1">Contract</span>.override_failure_callback <span class="pl-k">do </span>|<span class="pl-smi">data</span>|
+  puts <span class="pl-s"><span class="pl-pds">"</span>You had an error<span class="pl-pds">"</span></span>
   puts failure_msg(data)
 <span class="pl-k">end</span></pre></div>
 
@@ -487,8 +489,8 @@ Expected: a number please,
 
 <p>For example, here's a factorial function without method overloading:</p>
 
-<div class="highlight highlight-ruby"><pre><span class="pl-vo">Contract</span> <span class="pl-vo">Num</span> =&gt; <span class="pl-vo">Num</span>
-<span class="pl-k">def</span> <span class="pl-en">fact</span> <span class="pl-vpf">x</span>
+<div class="highlight highlight-ruby"><pre><span class="pl-c1">Contract</span> <span class="pl-c1">Num</span> =&gt; <span class="pl-c1">Num</span>
+<span class="pl-k">def</span> <span class="pl-en">fact</span> <span class="pl-smi">x</span>
   <span class="pl-k">if</span> x <span class="pl-k">==</span> <span class="pl-c1">1</span>
     x
   <span class="pl-k">else</span>
@@ -498,13 +500,13 @@ Expected: a number please,
 
 <p>Here it is again, re-written with method overloading:</p>
 
-<div class="highlight highlight-ruby"><pre><span class="pl-vo">Contract</span> <span class="pl-c1">1</span> =&gt; <span class="pl-c1">1</span>
-<span class="pl-k">def</span> <span class="pl-en">fact</span> <span class="pl-vpf">x</span>
+<div class="highlight highlight-ruby"><pre><span class="pl-c1">Contract</span> <span class="pl-c1">1</span> =&gt; <span class="pl-c1">1</span>
+<span class="pl-k">def</span> <span class="pl-en">fact</span> <span class="pl-smi">x</span>
   x
 <span class="pl-k">end</span>
 
-<span class="pl-vo">Contract</span> <span class="pl-vo">Num</span> =&gt; <span class="pl-vo">Num</span>
-<span class="pl-k">def</span> <span class="pl-en">fact</span> <span class="pl-vpf">x</span>
+<span class="pl-c1">Contract</span> <span class="pl-c1">Num</span> =&gt; <span class="pl-c1">Num</span>
+<span class="pl-k">def</span> <span class="pl-en">fact</span> <span class="pl-smi">x</span>
   x <span class="pl-k">*</span> fact(x <span class="pl-k">-</span> <span class="pl-c1">1</span>)
 <span class="pl-k">end</span></pre></div>
 
@@ -512,20 +514,20 @@ Expected: a number please,
 
 <p>This allows you write methods more declaratively, rather than using conditional branching. This feature is not only useful for recursion; you can use it to keep parallel use cases separate:</p>
 
-<div class="highlight highlight-ruby"><pre><span class="pl-vo">Contract</span> lambda{|<span class="pl-vo">n</span>| n <span class="pl-k">&lt;</span> <span class="pl-c1">12</span> } =&gt; <span class="pl-vo">Ticket</span>
-<span class="pl-k">def</span> <span class="pl-en">get_ticket</span>(<span class="pl-vpf">age</span>)
-  <span class="pl-s3">ChildTicket</span>.<span class="pl-k">new</span>(<span class="pl-c1">age:</span> age)
+<div class="highlight highlight-ruby"><pre><span class="pl-c1">Contract</span> lambda{|<span class="pl-smi">n</span>| n <span class="pl-k">&lt;</span> <span class="pl-c1">12</span> } =&gt; <span class="pl-c1">Ticket</span>
+<span class="pl-k">def</span> <span class="pl-en">get_ticket</span>(<span class="pl-smi">age</span>)
+  <span class="pl-c1">ChildTicket</span>.<span class="pl-k">new</span>(<span class="pl-c1">age:</span> age)
 <span class="pl-k">end</span>
 
-<span class="pl-vo">Contract</span> lambda{|<span class="pl-vo">n</span>| n <span class="pl-k">&gt;=</span> <span class="pl-c1">12</span> } =&gt; <span class="pl-vo">Ticket</span>
-<span class="pl-k">def</span> <span class="pl-en">get_ticket</span>(<span class="pl-vpf">age</span>)
-  <span class="pl-s3">AdultTicket</span>.<span class="pl-k">new</span>(<span class="pl-c1">age:</span> age)
+<span class="pl-c1">Contract</span> lambda{|<span class="pl-smi">n</span>| n <span class="pl-k">&gt;=</span> <span class="pl-c1">12</span> } =&gt; <span class="pl-c1">Ticket</span>
+<span class="pl-k">def</span> <span class="pl-en">get_ticket</span>(<span class="pl-smi">age</span>)
+  <span class="pl-c1">AdultTicket</span>.<span class="pl-k">new</span>(<span class="pl-c1">age:</span> age)
 <span class="pl-k">end</span>
 </pre></div>
 
 <p>Note that the second <code>get_ticket</code> contract above could have been simplified to:</p>
 
-<div class="highlight highlight-ruby"><pre><span class="pl-vo">Contract</span> <span class="pl-vo">Num</span> =&gt; <span class="pl-vo">Ticket</span></pre></div>
+<div class="highlight highlight-ruby"><pre><span class="pl-c1">Contract</span> <span class="pl-c1">Num</span> =&gt; <span class="pl-c1">Ticket</span></pre></div>
 
 <p>This is because the first contract eliminated the possibility of <code>age</code> being less than 12. However, the simpler contract is less explicit; you may want to "spell out" the age condition for clarity, especially if the method is overloaded with many contracts.</p>
 
@@ -535,10 +537,10 @@ Expected: a number please,
 <p>To use contracts on module you need to include both <code>Contracts</code> and <code>Contracts::Modules</code> into it:</p>
 
 <div class="highlight highlight-ruby"><pre><span class="pl-k">module</span> <span class="pl-en">M</span>
-  <span class="pl-k">include</span> <span class="pl-vo">Contracts</span>
-  <span class="pl-k">include</span> <span class="pl-s3">Contracts</span>::<span class="pl-vo">Modules</span>
+  <span class="pl-k">include</span> <span class="pl-c1">Contracts</span>
+  <span class="pl-k">include</span> <span class="pl-c1">Contracts</span>::<span class="pl-c1">Modules</span>
 
-  <span class="pl-vo">Contract</span> <span class="pl-vo">String</span> =&gt; <span class="pl-vo">String</span>
+  <span class="pl-c1">Contract</span> <span class="pl-c1">String</span> =&gt; <span class="pl-c1">String</span>
   <span class="pl-k">def</span> <span class="pl-en">self.parse</span>
     <span class="pl-c"># do some hard parsing</span>
   <span class="pl-k">end</span>
@@ -554,30 +556,35 @@ Expected: a number please,
 <p>A simple example:</p>
 
 <div class="highlight highlight-ruby"><pre><span class="pl-k">class</span> <span class="pl-en">MyBirthday<span class="pl-e"> &lt; Struct.new</span></span>(<span class="pl-c1">:day</span>, <span class="pl-c1">:month</span>)
-  <span class="pl-k">include</span> <span class="pl-vo">Contracts</span>
-  <span class="pl-k">include</span> <span class="pl-s3">Contracts</span>::<span class="pl-vo">Invariants</span>
+  <span class="pl-k">include</span> <span class="pl-c1">Contracts</span>
+  <span class="pl-k">include</span> <span class="pl-c1">Contracts</span>::<span class="pl-c1">Invariants</span>
 
-  <span class="pl-vo">Invariant</span>(<span class="pl-c1">:day</span>) { <span class="pl-c1">1</span> <span class="pl-k">&lt;=</span> day <span class="pl-k">&amp;&amp;</span> day <span class="pl-k">&lt;=</span> <span class="pl-c1">31</span> }
-  <span class="pl-vo">Invariant</span>(<span class="pl-c1">:month</span>) { <span class="pl-c1">1</span> <span class="pl-k">&lt;=</span> month <span class="pl-k">&amp;&amp;</span> month <span class="pl-k">&lt;=</span> <span class="pl-c1">12</span> }
+  <span class="pl-c1">Invariant</span>(<span class="pl-c1">:day</span>) { <span class="pl-c1">1</span> <span class="pl-k">&lt;=</span> day <span class="pl-k">&amp;&amp;</span> day <span class="pl-k">&lt;=</span> <span class="pl-c1">31</span> }
+  <span class="pl-c1">Invariant</span>(<span class="pl-c1">:month</span>) { <span class="pl-c1">1</span> <span class="pl-k">&lt;=</span> month <span class="pl-k">&amp;&amp;</span> month <span class="pl-k">&lt;=</span> <span class="pl-c1">12</span> }
 
-  <span class="pl-vo">Contract</span> <span class="pl-vo">None</span> =&gt; <span class="pl-vo">Fixnum</span>
+  <span class="pl-c1">Contract</span> <span class="pl-c1">None</span> =&gt; <span class="pl-c1">Fixnum</span>
   <span class="pl-k">def</span> <span class="pl-en">silly_next_day!</span>
     <span class="pl-v">self</span>.day <span class="pl-k">+=</span> <span class="pl-c1">1</span>
   <span class="pl-k">end</span>
 <span class="pl-k">end</span>
 
-birthday <span class="pl-k">=</span> <span class="pl-s3">MyBirthday</span>.<span class="pl-k">new</span>(<span class="pl-c1">31</span>, <span class="pl-c1">12</span>)
+birthday <span class="pl-k">=</span> <span class="pl-c1">MyBirthday</span>.<span class="pl-k">new</span>(<span class="pl-c1">31</span>, <span class="pl-c1">12</span>)
 birthday.silly_next_day!</pre></div>
 
 <p>If you run it, last line will generate invariant violation:</p>
 
-<div class="highlight highlight-ruby"><pre>.<span class="pl-k">/</span>invariant.<span class="pl-c1">rb:</span><span class="pl-c1">38</span><span class="pl-c1">:in</span> <span class="pl-s1"><span class="pl-pds">`</span>failure_callback': Invariant violation: (RuntimeError)</span>
-<span class="pl-s1">   Expected: day condition to be true</span>
-<span class="pl-s1">   Actual: false</span>
-<span class="pl-s1">   Value guarded in: MyBirthday::silly_next_day!</span>
-<span class="pl-s1">   At: main.rb:9</span></pre></div>
+<div class="highlight highlight-ruby"><pre>.<span class="pl-k">/</span>invariant.<span class="pl-c1">rb:</span><span class="pl-c1">38</span><span class="pl-c1">:in</span> <span class="pl-s"><span class="pl-pds">`</span>failure_callback': Invariant violation: (RuntimeError)</span>
+<span class="pl-s">   Expected: day condition to be true</span>
+<span class="pl-s">   Actual: false</span>
+<span class="pl-s">   Value guarded in: MyBirthday::silly_next_day!</span>
+<span class="pl-s">   At: main.rb:9</span></pre></div>
 
 <p>Which means, that after <code>#silly_next_day!</code> all checks specified in <code>Invariant</code> statement will be verified, and if at least one fail, then Invariant violation error will be raised.</p>
+
+<h2>
+<a id="auto-generate-documentation-using-contracts" class="anchor" href="#auto-generate-documentation-using-contracts" aria-hidden="true"><span class="octicon octicon-link"></span></a>Auto-generate documentation using contracts</h2>
+
+<p>If you are generating documentation for your code with <a href="http://yardoc.org/">YARD</a>, check out <a href="https://github.com/sfcgeorge/yard-contracts">yard-contracts</a>. It will automatically annotate your functions with contracts information. Instead of documenting each parameter for a function yourself, you can just add a contract and yard-contracts will generate the documentation for you!</p>
 
 <h2>
 <a id="misc" class="anchor" href="#misc" aria-hidden="true"><span class="octicon octicon-link"></span></a>Misc</h2>
