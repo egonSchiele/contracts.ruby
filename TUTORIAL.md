@@ -561,6 +561,10 @@ If you run it, last line will generate invariant violation:
 
 Which means, that after `#silly_next_day!` all checks specified in `Invariant` statement will be verified, and if at least one fail, then Invariant violation error will be raised.
 
+## Auto-generate documentation using contracts
+
+If you are generating documentation for your code with [YARD](http://yardoc.org/), check out [yard-contracts](https://github.com/sfcgeorge/yard-contracts). It will automatically annotate your functions with contracts information. Instead of documenting each parameter for a function yourself, you can just add a contract and yard-contracts will generate the documentation for you!
+
 ## Misc
 
 Please submit any bugs [here](https://github.com/egonSchiele/contracts.ruby/issues) and I'll try to get them resolved ASAP!
