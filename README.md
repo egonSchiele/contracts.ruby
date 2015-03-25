@@ -1,5 +1,7 @@
 # contracts.ruby
 
+[![Join the chat at https://gitter.im/egonSchiele/contracts.ruby](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/egonSchiele/contracts.ruby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 [![Build Status](https://travis-ci.org/egonSchiele/contracts.ruby.png?branch=master)](https://travis-ci.org/egonSchiele/contracts.ruby)
 
 Contracts let you clearly – even beautifully – express how your code behaves, and free you from writing tons of boilerplate, defensive code.
