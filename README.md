@@ -67,6 +67,11 @@ Using contracts.ruby results in very little slowdown. Check out [this blog post]
 
 If you're using the library, please [let me know](https://github.com/egonSchiele) what project you're using it on :)
 
+## Testimonials
+
+> Contracts literally saves us hours of pain at Snowplow every day
+- Alexander Dean, creator of [Snowplow](https://github.com/snowplow/snowplow)
+
 ## Credits
 
 Inspired by [contracts.coffee](http://disnetdev.com/contracts.coffee/).
