@@ -70,7 +70,8 @@ If you're using the library, please [let me know](https://github.com/egonSchiele
 ## Testimonials
 
 > Contracts literally saves us hours of pain at Snowplow every day
-- Alexander Dean, creator of [Snowplow](https://github.com/snowplow/snowplow)
+
+Alexander Dean, creator of [Snowplow](https://github.com/snowplow/snowplow)
 
 ## Credits
 
