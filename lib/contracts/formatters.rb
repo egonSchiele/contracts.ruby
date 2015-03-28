@@ -5,7 +5,7 @@ module Contracts
     class Expected
       # @param full [Boolean] if false only unique `to_s` values will be output,
       #   non unique values become empty string.
-      def initialize(contract, full=true)
+      def initialize(contract, full = true)
         @contract, @full = contract, full
       end
 
@@ -23,15 +23,15 @@ module Contracts
       # Formats Hash contracts.
       def hash_contract(hash)
         @full = true # Complex values output completely, overriding @full
-        hash.inject({}) { |repr, (k, v)|
+        hash.inject({}) do |repr, (k, v)|
           repr.merge(k => InspectWrapper.new(contract(v), @full))
-        }.inspect
+        end.inspect
       end
 
       # Formats Array contracts.
       def array_contract(array)
         @full = true
-        array.map{ |v| InspectWrapper.new(contract(v), @full) }.inspect
+        array.map { |v| InspectWrapper.new(contract(v), @full) }.inspect
       end
     end
 
@@ -40,7 +40,7 @@ module Contracts
     class InspectWrapper
       # @param full [Boolean] if false only unique `to_s` values will be output,
       #   non unique values become empty string.
-      def initialize(value, full=true)
+      def initialize(value, full = true)
         @value, @full = value, full
       end
 
@@ -53,7 +53,7 @@ module Contracts
         return '' unless full?
         return @value.inspect if empty_val?
         return @value.to_s if plain?
-        return delim(@value.to_s) if has_useful_to_s?
+        return delim(@value.to_s) if useful_to_s?
         @value.inspect.gsub(/^Contracts::/, '')
       end
 
@@ -67,14 +67,15 @@ module Contracts
       end
 
       private
+
       def empty_val?
-        @value.nil? || @value == ""
+        @value.nil? || @value == ''
       end
 
       def full?
         @full ||
-        @value.is_a?(Hash) || @value.is_a?(Array) ||
-        (!plain? && has_useful_to_s?)
+          @value.is_a?(Hash) || @value.is_a?(Array) ||
+          (!plain? && useful_to_s?)
       end
 
       def plain?
@@ -82,10 +83,10 @@ module Contracts
         !@value.is_a?(CallableClass) && @value.class != Class
       end
 
-      def has_useful_to_s?
+      def useful_to_s?
         # Useless to_s value or no custom to_s behavious defined
         # Ruby < 2.0 makes inspect call to_s so this won't work
-        @value.to_s != "" && @value.to_s != @value.inspect
+        @value.to_s != '' && @value.to_s != @value.inspect
       end
     end
   end
