@@ -341,9 +341,9 @@ RSpec.describe "Contracts:" do
 
   describe "blocks" do
     it "should pass for correct input" do
-      expect do @o.do_call do
+      expect { @o.do_call {
         2 + 2
-      endend.to_not raise_error
+      }}.to_not raise_error
     end
 
     it "should fail for incorrect input" do

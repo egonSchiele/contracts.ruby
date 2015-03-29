@@ -29,5 +29,22 @@ Lint/UnusedMethodArgument:
 Style/SpaceAroundOperators:
   Enabled: false
 
+Lint/UnderscorePrefixedVariableName:
+  Enabled: false
+
 Metrics/MethodLength:
+  Enabled: false
+
+Style/Documentation:
+  Enabled: false
+
+Metrics/LineLength:
+  Enabled: false
+
+# getting triggered by "::String"
+Style/ClassAndModuleChildren:
+  Enabled: false
+
+# triggered by Contract ({ :name => String, :age => Fixnum }) => nil
+Lint/ParenthesesAsGroupedExpression:
   Enabled: false

@@ -16,7 +16,8 @@ require 'contracts/formatters'
 #     a + b
 #   end
 #
-# The contract is <tt>Contract Num, Num, Num</tt>. That says that the +add+ function takes two numbers and returns a number.
+# The contract is <tt>Contract Num, Num, Num</tt>.
+# That says that the +add+ function takes two numbers and returns a number.
 module Contracts
   # Check that an argument is +Numeric+.
   class Num
@@ -123,7 +124,9 @@ module Contracts
     end
 
     def to_s
-      @vals[0, @vals.size-1].map { |x| InspectWrapper.new(x) }.join(", ") + " or " + InspectWrapper.new(@vals[-1]).to_s
+      @vals[0, @vals.size-1].map do |x|
+        InspectWrapper.new(x)
+      end.join(", ") + " or " + InspectWrapper.new(@vals[-1]).to_s
     end
 
     # this can only be tested IF all the sub-contracts have a test_data method
@@ -157,7 +160,9 @@ module Contracts
     end
 
     def to_s
-      @vals[0, @vals.size-1].map { |x| InspectWrapper.new(x) }.join(", ") + " xor " + InspectWrapper.new(@vals[-1]).to_s
+      @vals[0, @vals.size-1].map do |x|
+        InspectWrapper.new(x)
+      end.join(", ") + " xor " + InspectWrapper.new(@vals[-1]).to_s
     end
 
     def testable?
@@ -189,7 +194,9 @@ module Contracts
     end
 
     def to_s
-      @vals[0, @vals.size-1].map { |x| InspectWrapper.new(x) }.join(", ") + " and " + InspectWrapper.new(@vals[-1]).to_s
+      @vals[0, @vals.size-1].map do |x|
+        InspectWrapper.new(x)
+      end.join(", ") + " and " + InspectWrapper.new(@vals[-1]).to_s
     end
   end
 
@@ -234,7 +241,7 @@ module Contracts
     end
   end
 
-  # Takes a class +A+. If argument is an object of type +A+, the contract passes.
+  # Takes a class +A+. If argument is object of type +A+, the contract passes.
   # If it is a subclass of A (or not related to A in any way), it fails.
   # Example: <tt>Exactly[Numeric]</tt>
   class Exactly < CallableClass
@@ -314,7 +321,11 @@ module Contracts
     end
 
     def test_data
-      [[], [Testable.test_data(@contract)], [Testable.test_data(@contract), Testable.test_data(@contract)]]
+      [
+        [],
+        [Testable.test_data(@contract)],
+        [Testable.test_data(@contract), Testable.test_data(@contract)]
+      ]
     end
   end
 
@@ -337,7 +348,11 @@ module Contracts
     end
 
     def test_data
-      [[], [Testable.test_data(@contract)], [Testable.test_data(@contract), Testable.test_data(@contract)]]
+      [
+        [],
+        [Testable.test_data(@contract)],
+        [Testable.test_data(@contract), Testable.test_data(@contract)]
+      ]
     end
   end
 

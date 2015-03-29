@@ -1,5 +1,5 @@
 class GenericExample
-  Contract Args[String], { repeat: Maybe[Num] } => ArrayOf[String }
+  Contract Args[String], { repeat: Maybe[Num] } => ArrayOf[String]
   def splat_then_optional_named(*vals, repeat: 2)
     vals.map { |v| v * repeat }
   end

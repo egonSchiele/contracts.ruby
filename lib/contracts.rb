@@ -95,19 +95,19 @@ class Contract < Contracts::Decorator
 
     # == @has_proc_contract
     last_contract = args_contracts.last
-    is_a_proc = Class === last_contract && (last_contract <= Proc || last_contract <= Method)
+    is_a_proc = last_contract.is_a?(Class) && (last_contract <= Proc || last_contract <= Method)
 
-    @has_proc_contract = is_a_proc || Contracts::Func === last_contract
+    @has_proc_contract = is_a_proc || last_contract.is_a?(Contracts::Func)
     # ====
 
     # == @has_options_contract
     last_contract = args_contracts.last
     penultimate_contract = args_contracts[-2]
     @has_options_contract = if @has_proc_contract
-                              Hash === penultimate_contract
+                              penultimate_contract.is_a?(Hash)
                             else
-                              Hash === last_contract
-    end
+                              last_contract.is_a?(Hash)
+                            end
     # ===
 
     @klass, @method = klass, method
@@ -135,7 +135,7 @@ class Contract < Contracts::Decorator
                "Contract violation for return value:"
              else
                "Contract violation for argument #{data[:arg_pos]} of #{data[:total_args]}:"
-    end
+             end
 
     %{#{header}
         Expected: #{expected},
@@ -213,7 +213,7 @@ class Contract < Contracts::Decorator
       contract
     elsif klass == Array
       # e.g. [Num, String]
-      # TODO account for these errors too
+      # TODO: account for these errors too
       lambda do |arg|
         return false unless arg.is_a?(Array) && arg.length == contract.length
         arg.zip(contract).all? do |_arg, _contract|
@@ -318,7 +318,7 @@ class Contract < Contracts::Decorator
       (args.size - @args_contract_index).times do |i|
         arg = args[args.size - 1 - i]
 
-        if Contracts::Args === args_contracts[args_contracts.size - 1 - i]
+        if args_contracts[args_contracts.size - 1 - i].is_a?(Contracts::Args)
           splat_upper_index = i
         end
 

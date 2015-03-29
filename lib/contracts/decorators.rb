@@ -10,9 +10,7 @@ module Contracts
 
     module EigenclassWithOwner
       def self.lift(eigenclass)
-        unless with_owner?(eigenclass)
-          raise Contracts::ContractsNotIncluded
-        end
+        raise Contracts::ContractsNotIncluded unless with_owner?(eigenclass)
 
         eigenclass
       end

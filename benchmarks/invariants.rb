@@ -4,8 +4,13 @@ require 'rubygems'
 require 'method_profiler'
 require 'ruby-prof'
 
-class Obj < Struct.new(:value)
+class Obj
   include Contracts
+
+  attr_accessor :value
+  def initialize value
+    @value = value
+  end
 
   Contract Num, Num => Num
   def contracts_add a, b
@@ -13,12 +18,17 @@ class Obj < Struct.new(:value)
   end
 end
 
-class ObjWithInvariants < Struct.new(:value)
+class ObjWithInvariants
   include Contracts
   include Contracts::Invariants
 
   Invariant(:value_not_nil) { value != nil }
   Invariant(:value_not_string) { !value.is_a?(String) }
+
+  attr_accessor :value
+  def initialize value
+    @value = value
+  end
 
   Contract Num, Num => Num
   def contracts_add a, b
