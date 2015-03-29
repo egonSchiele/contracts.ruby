@@ -1,0 +1,33 @@
+Style/MethodDefParentheses:
+  Enabled: false
+
+# not my preference -- I prefer "" to '' always
+Style/StringLiterals:
+  Enabled: false
+
+Style/SignalException:
+  Enabled: false
+
+Style/NonNilCheck:
+  Enabled: false
+
+Style/PercentLiteralDelimiters:
+  Enabled: false
+
+# not compatible with ruby 1.8
+Style/Lambda:
+  Enabled: false
+
+# not compatible with ruby 1.8
+Style/HashSyntax:
+  Enabled: false
+
+# we use unused method args a lot in tests/fixtures (a quirk of this lib)
+Lint/UnusedMethodArgument:
+  Enabled: false
+
+Style/SpaceAroundOperators:
+  Enabled: false
+
+Metrics/MethodLength:
+  Enabled: false
