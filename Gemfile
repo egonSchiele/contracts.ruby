@@ -4,7 +4,7 @@ gemspec
 
 group :test do
   gem "rspec"
-  gem "rubocop"
+  gem "rubocop", "~> 0.29"
 end
 
 group :development do

@@ -45,5 +45,5 @@ DEPENDENCIES
   contracts!
   method_profiler
   rspec
-  rubocop
+  rubocop (~> 0.29)
   ruby-prof
