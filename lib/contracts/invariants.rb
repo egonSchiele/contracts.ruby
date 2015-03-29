@@ -23,7 +23,7 @@ module Contracts
     end
 
     module InvariantExtension
-      def Invariant(name, &condition)
+      def invariant(name, &condition)
         return if ENV["NO_CONTRACTS"]
 
         invariants << Invariant.new(self, name, &condition)
@@ -53,17 +53,16 @@ module Contracts
       end
 
       def self.failure_callback(data)
-        raise InvariantError, failure_msg(data)
+        fail InvariantError, failure_msg(data)
       end
 
       def self.failure_msg(data)
-%{Invariant violation:
-    Expected: #{data[:expected]}
-    Actual: #{data[:actual]}
-    Value guarded in: #{data[:target].class}::#{Support.method_name(data[:method])}
-    At: #{Support.method_position(data[:method])}}
+        %{Invariant violation:
+            Expected: #{data[:expected]}
+            Actual: #{data[:actual]}
+            Value guarded in: #{data[:target].class}::#{Support.method_name(data[:method])}
+            At: #{Support.method_position(data[:method])}}
       end
     end
-
   end
 end

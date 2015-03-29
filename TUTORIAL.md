@@ -536,8 +536,8 @@ class MyBirthday < Struct.new(:day, :month)
   include Contracts
   include Contracts::Invariants
 
-  Invariant(:day) { 1 <= day && day <= 31 }
-  Invariant(:month) { 1 <= month && month <= 12 }
+  invariant(:day) { 1 <= day && day <= 31 }
+  invariant(:month) { 1 <= month && month <= 12 }
 
   Contract None => Fixnum
   def silly_next_day!
@@ -559,7 +559,7 @@ If you run it, last line will generate invariant violation:
    At: main.rb:9
 ```
 
-Which means, that after `#silly_next_day!` all checks specified in `Invariant` statement will be verified, and if at least one fail, then Invariant violation error will be raised.
+Which means, that after `#silly_next_day!` all checks specified in `invariant` statement will be verified, and if at least one fail, then invariant violation error will be raised.
 
 ## Auto-generate documentation using contracts
 

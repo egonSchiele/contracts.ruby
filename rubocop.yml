@@ -1,0 +1,122 @@
+# forces method defs to have params in parens
+Style/MethodDefParentheses:
+  Enabled: false
+
+Style/StringLiterals:
+  EnforcedStyle: double_quotes
+
+# changes x != nil to !x.nil?
+Style/NonNilCheck:
+  Enabled: false
+
+# changes %{} to %()
+Style/PercentLiteralDelimiters:
+  Enabled: false
+
+# changes lambdas to ruby 1.9-style ->
+# not compatible with ruby 1.8
+Style/Lambda:
+  Enabled: false
+
+# changes to new hash syntax
+# not compatible with ruby 1.8
+Style/HashSyntax:
+  Enabled: false
+
+# we use unused method args a lot in tests/fixtures (a quirk of this lib)
+Lint/UnusedMethodArgument:
+  Enabled: false
+
+# changes x ** 2 to x**2
+Style/SpaceAroundOperators:
+  Enabled: false
+
+# doesn't allow vars starting with _
+Lint/UnderscorePrefixedVariableName:
+  Enabled: false
+
+# enforces method length of 10 lines
+Metrics/MethodLength:
+  Enabled: false
+
+# forces you to document classes
+# TODO: try to enable this cop
+Style/Documentation:
+  Enabled: false
+
+# enforces line length of 80
+Metrics/LineLength:
+  Enabled: false
+
+# triggered by Contract ({ :name => String, :age => Fixnum }) => nil
+Lint/ParenthesesAsGroupedExpression:
+  Enabled: false
+
+# checks how much a method branches.
+# TODO try to get this cop enabled
+Metrics/AbcSize:
+  Enabled: false
+
+# checks complexity of method
+# TODO try to get this cop enabled
+Metrics/CyclomaticComplexity:
+  Enabled: false
+
+# checks for too many nested ifs, whiles or rescues (but not too many nested blocks)
+# TODO: try to get this cop enabled eventually
+Metrics/BlockNesting:
+  Enabled: false
+
+# calls out class variables.
+# TODO: try to get this cop enabled eventually
+Style/ClassVars:
+  Enabled: false
+
+# enforces class length of < 100 lines
+Metrics/ClassLength:
+  Enabled: false
+
+# TODO: try to get this cop enabled eventually
+Metrics/PerceivedComplexity:
+  Enabled: false
+
+# checks for duplicate methods, but contracts
+# provides this functionality (multi-dispatch)
+Lint/DuplicateMethods:
+  Enabled: false
+
+# checks to see if you could've used attr_accessor instead.
+# nice in theory but noisy cop with false positives
+Style/TrivialAccessors:
+  Enabled: false
+
+Style/MultilineOperationIndentation:
+  EnforcedStyle: indented
+
+# Asks you to use %w{array of words} if possible.
+# Not a style I like.
+Style/WordArray:
+  Enabled: false
+
+# conflicts with contracts
+# we define contracts like `Baz = 1`
+Style/ConstantName:
+  Enabled: false
+
+# `Contract` violates this, otherwise a good cop (enforces snake_case method names)
+# TODO possible to get this enabled but ignore `Contract`?
+Style/MethodName:
+  Enabled: false
+
+# checks for !!
+Style/DoubleNegation:
+  Enabled: false
+
+# enforces < 5 params for a function.
+# contracts-specific (long parameter list for test)
+Metrics/ParameterLists:
+  Enabled: false
+
+# Checks that braces used for hash literals have or don't have surrounding space depending on configuration.
+Style/SpaceInsideHashLiteralBraces:
+  Enabled: false

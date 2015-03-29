@@ -1,6 +1,5 @@
 module Contracts
   module Eigenclass
-
     def self.extended(eigenclass)
       return if eigenclass.respond_to?(:owner_class=)
 
@@ -14,9 +13,7 @@ module Contracts
 
       eigenclass = base.singleton_class
 
-      unless eigenclass.respond_to?(:owner_class=)
-        eigenclass.extend(Eigenclass)
-      end
+      eigenclass.extend(Eigenclass) unless eigenclass.respond_to?(:owner_class=)
 
       unless eigenclass.respond_to?(:pop_decorators)
         eigenclass.extend(MethodDecorators)
@@ -37,6 +34,5 @@ module Contracts
         []
       end
     end
-
   end
 end

@@ -1,23 +1,23 @@
-require 'contracts/testable'
-require 'contracts/formatters'
+require "contracts/testable"
+require "contracts/formatters"
 
-=begin rdoc
-This module contains all the builtin contracts.
-If you want to use them, first:
-
-  import Contracts
-
-And then use these or write your own!
-
-A simple example:
-
-  Contract Num, Num => Num
-  def add(a, b)
-    a + b
-  end
-
-The contract is <tt>Contract Num, Num, Num</tt>. That says that the +add+ function takes two numbers and returns a number.
-=end
+# rdoc
+# This module contains all the builtin contracts.
+# If you want to use them, first:
+#
+#   import Contracts
+#
+# And then use these or write your own!
+#
+# A simple example:
+#
+#   Contract Num, Num => Num
+#   def add(a, b)
+#     a + b
+#   end
+#
+# The contract is <tt>Contract Num, Num, Num</tt>.
+# That says that the +add+ function takes two numbers and returns a number.
 module Contracts
   # Check that an argument is +Numeric+.
   class Num
@@ -30,7 +30,7 @@ module Contracts
     end
 
     def self.test_data
-      [-1, 0, 1, 1.5, 50000]
+      [-1, 0, 1, 1.5, 50_000]
     end
   end
 
@@ -104,7 +104,7 @@ module Contracts
   class CallableClass
     include ::Contracts::Formatters
     def self.[](*vals)
-      self.new(*vals)
+      new(*vals)
     end
   end
 
@@ -124,7 +124,9 @@ module Contracts
     end
 
     def to_s
-      @vals[0, @vals.size-1].map { |x| InspectWrapper.new(x) }.join(", ") + " or " + InspectWrapper.new(@vals[-1]).to_s
+      @vals[0, @vals.size-1].map do |x|
+        InspectWrapper.new(x)
+      end.join(", ") + " or " + InspectWrapper.new(@vals[-1]).to_s
     end
 
     # this can only be tested IF all the sub-contracts have a test_data method
@@ -135,9 +137,9 @@ module Contracts
     end
 
     def test_data
-      @vals.map { |val|
+      @vals.map do |val|
         Testable.test_data(val)
-      }.flatten
+      end.flatten
     end
   end
 
@@ -158,7 +160,9 @@ module Contracts
     end
 
     def to_s
-      @vals[0, @vals.size-1].map { |x| InspectWrapper.new(x) }.join(", ") + " xor " + InspectWrapper.new(@vals[-1]).to_s
+      @vals[0, @vals.size-1].map do |x|
+        InspectWrapper.new(x)
+      end.join(", ") + " xor " + InspectWrapper.new(@vals[-1]).to_s
     end
 
     def testable?
@@ -168,9 +172,9 @@ module Contracts
     end
 
     def test_data
-      @vals.map { |val|
+      @vals.map do |val|
         Testable.test_data val
-      }.flatten
+      end.flatten
     end
   end
 
@@ -190,7 +194,9 @@ module Contracts
     end
 
     def to_s
-      @vals[0, @vals.size-1].map { |x| InspectWrapper.new(x) }.join(", ") + " and " + InspectWrapper.new(@vals[-1]).to_s
+      @vals[0, @vals.size-1].map do |x|
+        InspectWrapper.new(x)
+      end.join(", ") + " and " + InspectWrapper.new(@vals[-1]).to_s
     end
   end
 
@@ -235,7 +241,7 @@ module Contracts
     end
   end
 
-  # Takes a class +A+. If argument is an object of type +A+, the contract passes.
+  # Takes a class +A+. If argument is object of type +A+, the contract passes.
   # If it is a subclass of A (or not related to A in any way), it fails.
   # Example: <tt>Exactly[Numeric]</tt>
   class Exactly < CallableClass
@@ -315,7 +321,11 @@ module Contracts
     end
 
     def test_data
-      [[], [Testable.test_data(@contract)], [Testable.test_data(@contract), Testable.test_data(@contract)]]
+      [
+        [],
+        [Testable.test_data(@contract)],
+        [Testable.test_data(@contract), Testable.test_data(@contract)]
+      ]
     end
   end
 
@@ -338,7 +348,11 @@ module Contracts
     end
 
     def test_data
-      [[], [Testable.test_data(@contract)], [Testable.test_data(@contract), Testable.test_data(@contract)]]
+      [
+        [],
+        [Testable.test_data(@contract)],
+        [Testable.test_data(@contract), Testable.test_data(@contract)]
+      ]
     end
   end
 
@@ -358,14 +372,14 @@ module Contracts
     end
 
     def valid?(hash)
-      keys_match = hash.keys.map {|k| Contract.valid?(k, @key) }.all?
-      vals_match = hash.values.map {|v| Contract.valid?(v, @value) }.all?
+      keys_match = hash.keys.map { |k| Contract.valid?(k, @key) }.all?
+      vals_match = hash.values.map { |v| Contract.valid?(v, @value) }.all?
 
       [keys_match, vals_match].all?
     end
 
     def to_s
-      "Hash<#{@key.to_s}, #{@value.to_s}>"
+      "Hash<#{@key}, #{@value}>"
     end
   end
 
@@ -378,46 +392,46 @@ module Contracts
     end
   end
 
-  class ::Hash
-    def testable?
-      self.values.all? do |val|
-        Testable.testable?(val)
-      end
-    end
+  # class ::Hash
+  #   def testable?
+  #     values.all? do |val|
+  #       Testable.testable?(val)
+  #     end
+  #   end
 
-    def test_data
-      keys = self.keys
-      _vals = keys.map do |key|
-        ret = Testable.test_data(self[key])
-        if ret.is_a? Array
-          ret
-        else
-          [ret]
-        end
-      end
-      all_vals = Testable.product(_vals)
-      hashes = []
-      all_vals.each do |vals|
-        hash = {}
-        keys.zip(vals).each do |key, val|
-          hash[key] = val
-        end
-        hashes << hash
-      end
-      hashes
-    end
-  end
+  #   def test_data
+  #     keys = self.keys
+  #     _vals = keys.map do |key|
+  #       ret = Testable.test_data(self[key])
+  #       if ret.is_a? Array
+  #         ret
+  #       else
+  #         [ret]
+  #       end
+  #     end
+  #     all_vals = Testable.product(_vals)
+  #     hashes = []
+  #     all_vals.each do |vals|
+  #       hash = {}
+  #       keys.zip(vals).each do |key, val|
+  #         hash[key] = val
+  #       end
+  #       hashes << hash
+  #     end
+  #     hashes
+  #   end
+  # end
 
-  class ::String
-    def self.testable?
-      true
-    end
+  # class ::String
+  #   def self.testable?
+  #     true
+  #   end
 
-    def self.test_data
-      # send a random string
-      ('a'..'z').to_a.shuffle[0, 10].join
-    end
-  end
+  #   def self.test_data
+  #     # send a random string
+  #     ("a".."z").to_a.shuffle[0, 10].join
+  #   end
+  # end
 
   # Used to define contracts on functions passed in as arguments.
   # Example: <tt>Func[Num => Num] # the function should take a number and return a number</tt>

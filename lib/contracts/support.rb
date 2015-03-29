@@ -1,8 +1,7 @@
 module Contracts
   module Support
-
     def self.method_position(method)
-      return method.method_position if MethodReference === method
+      return method.method_position if method.is_a?(MethodReference)
 
       if RUBY_VERSION =~ /^1\.8/
         if method.respond_to?(:__file__)
@@ -26,13 +25,12 @@ module Contracts
     #    Contracts::Support.unique_id   # => "i53u6tiw5hbo"
     def self.unique_id
       # Consider using SecureRandom.hex here, and benchmark which one is better
-      (Time.now.to_f * 1000).to_i.to_s(36) + rand(1000000).to_s(36)
+      (Time.now.to_f * 1000).to_i.to_s(36) + rand(1_000_000).to_s(36)
     end
 
     def self.eigenclass_hierarchy_supported?
       return false if RUBY_PLATFORM == "java" && RUBY_VERSION.to_f < 2.0
       RUBY_VERSION.to_f > 1.8
     end
-
   end
 end

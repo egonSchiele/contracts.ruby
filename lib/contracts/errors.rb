@@ -58,7 +58,7 @@ module Contracts
     attr_reader :message
     alias_method :to_s, :message
 
-    def initialize(message=DEFAULT_MESSAGE)
+    def initialize(message = DEFAULT_MESSAGE)
       @message = message
     end
   end

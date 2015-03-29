@@ -7,11 +7,11 @@ module Contracts
     #
     #   [[1, 3], [1, 4], [2, 3], [2, 4]]
     def self.product(arrays)
-      arrays.inject { |acc, x|
+      arrays.inject do |acc, x|
         acc.product(x)
-      }.flatten(arrays.size - 2)
+      end.flatten(arrays.size - 2)
     end
-    
+
     # Given a contract, tells if you it's testable
     def self.testable?(contract)
       if contract.respond_to?(:testable?)
@@ -30,10 +30,10 @@ module Contracts
       end
     end
 
-    # TODO Should work on whatever class it was invoked on, no?
+    # TODO: Should work on whatever class it was invoked on, no?
     def self.check_all
       o = Object.new
-      Object.decorated_methods.each do |name, contracts|
+      Object.decorated_methods.each do |name, _contracts|
         check(o.method(name))
       end
     end
@@ -64,6 +64,6 @@ module Contracts
         end
         puts "#{test_data.size} tests run."
       end
-    end    
+    end
   end
 end

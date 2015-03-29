@@ -50,11 +50,11 @@ module Contracts
       # from standard Strings.
       # Primitive values e.g. 42, true, nil will be left alone.
       def inspect
-        return '' unless full?
+        return "" unless full?
         return @value.inspect if empty_val?
         return @value.to_s if plain?
         return delim(@value.to_s) if useful_to_s?
-        @value.inspect.gsub(/^Contracts::/, '')
+        @value.inspect.gsub(/^Contracts::/, "")
       end
 
       def delim(value)
@@ -69,7 +69,7 @@ module Contracts
       private
 
       def empty_val?
-        @value.nil? || @value == ''
+        @value.nil? || @value == ""
       end
 
       def full?
@@ -86,7 +86,7 @@ module Contracts
       def useful_to_s?
         # Useless to_s value or no custom to_s behavious defined
         # Ruby < 2.0 makes inspect call to_s so this won't work
-        @value.to_s != '' && @value.to_s != @value.inspect
+        @value.to_s != "" && @value.to_s != @value.inspect
       end
     end
   end

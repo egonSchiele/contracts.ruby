@@ -1,13 +1,13 @@
-require 'contracts/builtin_contracts'
-require 'contracts/core_ext'
-require 'contracts/decorators'
-require 'contracts/eigenclass'
-require 'contracts/errors'
-require 'contracts/formatters'
-require 'contracts/invariants'
-require 'contracts/method_reference'
-require 'contracts/modules'
-require 'contracts/support'
+require "contracts/builtin_contracts"
+require "contracts/core_ext"
+require "contracts/decorators"
+require "contracts/eigenclass"
+require "contracts/errors"
+require "contracts/formatters"
+require "contracts/invariants"
+require "contracts/method_reference"
+require "contracts/modules"
+require "contracts/support"
 
 module Contracts
   def self.included(base)
@@ -27,7 +27,7 @@ module Contracts
 
     base.instance_eval do
       def functype(funcname)
-        contracts = self.decorated_methods[:class_methods][funcname]
+        contracts = decorated_methods[:class_methods][funcname]
         if contracts.nil?
           "No contract for #{self}.#{funcname}"
         else
@@ -66,8 +66,8 @@ class Contract < Contracts::Decorator
   # Default implementation of failure_callback. Provided as a block to be able
   # to monkey patch #failure_callback only temporary and then switch it back.
   # First important usage - for specs.
-  DEFAULT_FAILURE_CALLBACK = Proc.new do |data|
-    raise data[:contracts].failure_exception.new(failure_msg(data), data)
+  DEFAULT_FAILURE_CALLBACK = proc do |data|
+    fail data[:contracts].failure_exception.new(failure_msg(data), data)
   end
 
   attr_reader :args_contracts, :ret_contract, :klass, :method
@@ -95,19 +95,19 @@ class Contract < Contracts::Decorator
 
     # == @has_proc_contract
     last_contract = args_contracts.last
-    is_a_proc = Class === last_contract && (last_contract <= Proc || last_contract <= Method)
+    is_a_proc = last_contract.is_a?(Class) && (last_contract <= Proc || last_contract <= Method)
 
-    @has_proc_contract = is_a_proc || Contracts::Func === last_contract
+    @has_proc_contract = is_a_proc || last_contract.is_a?(Contracts::Func)
     # ====
 
     # == @has_options_contract
     last_contract = args_contracts.last
     penultimate_contract = args_contracts[-2]
     @has_options_contract = if @has_proc_contract
-      Hash === penultimate_contract
-    else
-      Hash === last_contract
-    end
+                              penultimate_contract.is_a?(Hash)
+                            else
+                              last_contract.is_a?(Hash)
+                            end
     # ===
 
     @klass, @method = klass, method
@@ -127,22 +127,22 @@ class Contract < Contracts::Decorator
   # This function is used by the default #failure_callback method
   # and uses the hash passed into the failure_callback method.
   def self.failure_msg(data)
-   expected = Contracts::Formatters::Expected.new(data[:contract]).contract
-   position = Contracts::Support.method_position(data[:method])
-   method_name = Contracts::Support.method_name(data[:method])
+    expected = Contracts::Formatters::Expected.new(data[:contract]).contract
+    position = Contracts::Support.method_position(data[:method])
+    method_name = Contracts::Support.method_name(data[:method])
 
-   header = if data[:return_value]
-     "Contract violation for return value:"
-   else
-     "Contract violation for argument #{data[:arg_pos]} of #{data[:total_args]}:"
-   end
+    header = if data[:return_value]
+               "Contract violation for return value:"
+             else
+               "Contract violation for argument #{data[:arg_pos]} of #{data[:total_args]}:"
+             end
 
-%{#{header}
-    Expected: #{expected},
-    Actual: #{data[:arg].inspect}
-    Value guarded in: #{data[:class]}::#{method_name}
-    With Contract: #{data[:contracts]}
-    At: #{position} }
+    %{#{header}
+        Expected: #{expected},
+        Actual: #{data[:arg].inspect}
+        Value guarded in: #{data[:class]}::#{method_name}
+        With Contract: #{data[:contracts]}
+        At: #{position} }
   end
 
   # Callback for when a contract fails. By default it raises
@@ -158,7 +158,7 @@ class Contract < Contracts::Decorator
   #     puts failure_msg(data)
   #     exit
   #   end
-  def self.failure_callback(data, use_pattern_matching=true)
+  def self.failure_callback(data, use_pattern_matching = true)
     if data[:contracts].pattern_match? && use_pattern_matching
       return DEFAULT_FAILURE_CALLBACK.call(data)
     end
@@ -213,29 +213,29 @@ class Contract < Contracts::Decorator
       contract
     elsif klass == Array
       # e.g. [Num, String]
-      # TODO account for these errors too
-      lambda { |arg|
+      # TODO: account for these errors too
+      lambda do |arg|
         return false unless arg.is_a?(Array) && arg.length == contract.length
         arg.zip(contract).all? do |_arg, _contract|
           Contract.valid?(_arg, _contract)
         end
-      }
+      end
     elsif klass == Hash
       # e.g. { :a => Num, :b => String }
-      lambda { |arg|
+      lambda do |arg|
         return false unless arg.is_a?(Hash)
         contract.keys.all? do |k|
           Contract.valid?(arg[k], contract[k])
         end
-      }
+      end
     elsif klass == Contracts::Args
-      lambda { |arg|
+      lambda do |arg|
         Contract.valid?(arg, contract.contract)
-      }
+      end
     elsif klass == Contracts::Func
-      lambda { |arg|
+      lambda do |arg|
         arg.is_a?(Method) || arg.is_a?(Proc)
-      }
+      end
     else
       # classes and everything else
       # e.g. Fixnum, Num
@@ -264,18 +264,17 @@ class Contract < Contracts::Decorator
   # a better way to handle this might be to take this into account
   # before throwing a "mismatched # of args" error.
   def maybe_append_block! args, blk
-    if @has_proc_contract && !blk &&
-      (@args_contract_index || args.size < args_contracts.size)
-      args << nil
-    end
+    return unless @has_proc_contract && !blk &&
+        (@args_contract_index || args.size < args_contracts.size)
+    args << nil
   end
 
   # Same thing for when we have named params but didn't pass any in.
   def maybe_append_options! args, blk
     return unless @has_options_contract
-    if @has_proc_contract && Hash === args_contracts[-2] && !args[-2].is_a?(Hash)
+    if @has_proc_contract && args_contracts[-2].is_a?(Hash) && !args[-2].is_a?(Hash)
       args.insert(-2, {})
-    elsif Hash === args_contracts[-1] && !args[-1].is_a?(Hash)
+    elsif args_contracts[-1].is_a?(Hash) && !args[-1].is_a?(Hash)
       args << {}
     end
   end
@@ -296,15 +295,13 @@ class Contract < Contracts::Decorator
       validator = @args_validators[i]
 
       unless validator && validator[arg]
-        return unless Contract.failure_callback({
-          :arg => arg,
-          :contract => contract,
-          :class => klass,
-          :method => method,
-          :contracts => self,
-          :arg_pos => i+1,
-          :total_args => args.size
-        })
+        return unless Contract.failure_callback(:arg => arg,
+                                                :contract => contract,
+                                                :class => klass,
+                                                :method => method,
+                                                :contracts => self,
+                                                :arg_pos => i+1,
+                                                :total_args => args.size)
       end
 
       if contract.is_a?(Contracts::Func)
@@ -320,7 +317,7 @@ class Contract < Contracts::Decorator
       (args.size - @args_contract_index).times do |i|
         arg = args[args.size - 1 - i]
 
-        if Contracts::Args === args_contracts[args_contracts.size - 1 - i]
+        if args_contracts[args_contracts.size - 1 - i].is_a?(Contracts::Args)
           splat_upper_index = i
         end
 
@@ -330,15 +327,13 @@ class Contract < Contracts::Decorator
         validator = @args_validators[args_contracts.size - 1 - j]
 
         unless validator && validator[arg]
-          return unless Contract.failure_callback({
-            :arg => arg,
-            :contract => contract,
-            :class => klass,
-            :method => method,
-            :contracts => self,
-            :arg_pos => i-1,
-            :total_args => args.size
-          })
+          return unless Contract.failure_callback(:arg => arg,
+                                                  :contract => contract,
+                                                  :class => klass,
+                                                  :method => method,
+                                                  :contracts => self,
+                                                  :arg_pos => i-1,
+                                                  :total_args => args.size)
         end
 
         if contract.is_a?(Contracts::Func)
@@ -350,20 +345,20 @@ class Contract < Contracts::Decorator
     # If we put the block into args for validating, restore the args
     args.slice!(-1) if blk
     result = if method.respond_to?(:call)
-      # proc, block, lambda, etc
-      method.call(*args, &blk)
-    else
-      # original method name referrence
-      method.send_to(this, *args, &blk)
-    end
+               # proc, block, lambda, etc
+               method.call(*args, &blk)
+             else
+               # original method name referrence
+               method.send_to(this, *args, &blk)
+             end
 
     unless @ret_validator[result]
-      Contract.failure_callback({:arg => result,
-                                 :contract => ret_contract,
-                                 :class => klass,
-                                 :method => method,
-                                 :contracts => self,
-                                 :return_value => true})
+      Contract.failure_callback(:arg => result,
+                                :contract => ret_contract,
+                                :class => klass,
+                                :method => method,
+                                :contracts => self,
+                                :return_value => true)
     end
 
     this.verify_invariants!(method) if this.respond_to?(:verify_invariants!)

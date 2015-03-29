@@ -1,9 +1,9 @@
-require './lib/contracts'
-require 'benchmark'
-require 'rubygems'
-require 'method_profiler'
-require 'ruby-prof'
-require 'open-uri'
+require "./lib/contracts"
+require "benchmark"
+require "rubygems"
+require "method_profiler"
+require "ruby-prof"
+require "open-uri"
 
 include Contracts
 
@@ -20,12 +20,12 @@ end
 
 def benchmark
   Benchmark.bm 30 do |x|
-    x.report 'testing download' do
+    x.report "testing download" do
       100.times do |_|
         download(@urls.sample)
       end
     end
-    x.report 'testing contracts download' do
+    x.report "testing contracts download" do
       100.times do |_|
         contracts_download(@urls.sample)
       end
@@ -48,13 +48,13 @@ def profile
 end
 
 def ruby_prof
-RubyProf.start
-    10.times do |_|
-      contracts_download(@urls.sample)
-    end
-result = RubyProf.stop
-printer = RubyProf::FlatPrinter.new(result)
-printer.print(STDOUT)
+  RubyProf.start
+  10.times do |_|
+    contracts_download(@urls.sample)
+  end
+  result = RubyProf.stop
+  printer = RubyProf::FlatPrinter.new(result)
+  printer.print(STDOUT)
 end
 
 benchmark

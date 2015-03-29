@@ -10,9 +10,7 @@ module Contracts
 
     module EigenclassWithOwner
       def self.lift(eigenclass)
-        unless with_owner?(eigenclass)
-          raise Contracts::ContractsNotIncluded
-        end
+        fail Contracts::ContractsNotIncluded unless with_owner?(eigenclass)
 
         eigenclass
       end
@@ -51,7 +49,7 @@ module Contracts
       decorators = fetch_decorators
       return if decorators.empty?
 
-      @decorated_methods ||= {:class_methods => {}, :instance_methods => {}}
+      @decorated_methods ||= { :class_methods => {}, :instance_methods => {} }
 
       if is_class_method
         method_reference = SingletonMethodReference.new(name, method(name))
@@ -75,9 +73,7 @@ module Contracts
       end
 
       if @decorated_methods[method_type][name].any? { |x| x.method != method_reference }
-        @decorated_methods[method_type][name].each do |decorator|
-          decorator.pattern_match!
-        end
+        @decorated_methods[method_type][name].each(&:pattern_match!)
 
         pattern_matching = true
       end
@@ -91,42 +87,40 @@ module Contracts
       # The decorator in turn has a reference to the actual method, so it can call it
       # on its own, after doing it's decorating of course.
 
-=begin
-Very important: THe line `current = #{self}` in the start is crucial.
-Not having it means that any method that used contracts could NOT use `super`
-(see this issue for example: https://github.com/egonSchiele/contracts.ruby/issues/27).
-Here's why: Suppose you have this code:
-
-    class Foo
-      Contract nil => String
-      def to_s
-        "Foo"
-      end
-    end
-
-    class Bar < Foo
-      Contract nil => String
-      def to_s
-        super + "Bar"
-      end
-    end
-
-    b = Bar.new
-    p b.to_s
-
-    `to_s` in Bar calls `super`. So you expect this to call `Foo`'s to_s. However,
-    we have overwritten the function (that's what this next defn is). So it gets a
-    reference to the function to call by looking at `decorated_methods`.
-
-    Now, this line used to read something like:
-
-      current = self#{is_class_method ? "" : ".class"}
-
-    In that case, `self` would always be `Bar`, regardless of whether you were calling
-    Foo's to_s or Bar's to_s. So you would keep getting Bar's decorated_methods, which
-    means you would always call Bar's to_s...infinite recursion! Instead, you want to
-    call Foo's version of decorated_methods. So the line needs to be `current = #{self}`.
-=end
+      # Very important: THe line `current = #{self}` in the start is crucial.
+      # Not having it means that any method that used contracts could NOT use `super`
+      # (see this issue for example: https://github.com/egonSchiele/contracts.ruby/issues/27).
+      # Here's why: Suppose you have this code:
+      #
+      #     class Foo
+      #       Contract nil => String
+      #       def to_s
+      #         "Foo"
+      #       end
+      #     end
+      #
+      #     class Bar < Foo
+      #       Contract nil => String
+      #       def to_s
+      #         super + "Bar"
+      #       end
+      #     end
+      #
+      #     b = Bar.new
+      #     p b.to_s
+      #
+      #     `to_s` in Bar calls `super`. So you expect this to call `Foo`'s to_s. However,
+      #     we have overwritten the function (that's what this next defn is). So it gets a
+      #     reference to the function to call by looking at `decorated_methods`.
+      #
+      #     Now, this line used to read something like:
+      #
+      #       current = self#{is_class_method ? "" : ".class"}
+      #
+      #     In that case, `self` would always be `Bar`, regardless of whether you were calling
+      #     Foo's to_s or Bar's to_s. So you would keep getting Bar's decorated_methods, which
+      #     means you would always call Bar's to_s...infinite recursion! Instead, you want to
+      #     call Foo's version of decorated_methods. So the line needs to be `current = #{self}`.
 
       current = self
       method_reference.make_definition(self) do |*args, &blk|
@@ -136,7 +130,7 @@ Here's why: Suppose you have this code:
           current = ancestors.shift
         end
         if !current.respond_to?(:decorated_methods) || current.decorated_methods.nil?
-          raise "Couldn't find decorator for method " + self.class.name + ":#{name}.\nDoes this method look correct to you? If you are using contracts from rspec, rspec wraps classes in it's own class.\nLook at the specs for contracts.ruby as an example of how to write contracts in this case."
+          fail "Couldn't find decorator for method " + self.class.name + ":#{name}.\nDoes this method look correct to you? If you are using contracts from rspec, rspec wraps classes in it's own class.\nLook at the specs for contracts.ruby as an example of how to write contracts in this case."
         end
         methods = current.decorated_methods[method_type][name]
 
@@ -147,7 +141,7 @@ Here's why: Suppose you have this code:
         i = 0
         result = nil
         expected_error = methods[0].failure_exception
-        while !success
+        until success
           method = methods[i]
           i += 1
           begin
@@ -183,7 +177,7 @@ Here's why: Suppose you have this code:
     class << self; attr_accessor :decorators; end
 
     def self.inherited(klass)
-      name = klass.name.gsub(/^./) {|m| m.downcase}
+      name = klass.name.gsub(/^./) { |m| m.downcase }
 
       return if name =~ /^[^A-Za-z_]/ || name =~ /[^0-9A-Za-z_]/
 
