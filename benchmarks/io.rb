@@ -48,13 +48,13 @@ def profile
 end
 
 def ruby_prof
-RubyProf.start
-    10.times do |_|
-      contracts_download(@urls.sample)
-    end
-result = RubyProf.stop
-printer = RubyProf::FlatPrinter.new(result)
-printer.print(STDOUT)
+  RubyProf.start
+  10.times do |_|
+    contracts_download(@urls.sample)
+  end
+  result = RubyProf.stop
+  printer = RubyProf::FlatPrinter.new(result)
+  printer.print(STDOUT)
 end
 
 benchmark

@@ -32,15 +32,15 @@ def benchmark
 
   Benchmark.bm 30 do |x|
     x.report 'testing contracts add' do
-      1000000.times do |_|
+      1_000_000.times do |_|
         obj.contracts_add(rand(1000), rand(1000))
       end
     end
     x.report 'testing contracts add with invariants' do
-      1000000.times do |_|
+      1_000_000.times do |_|
         obj_with_invariants.contracts_add(rand(1000), rand(1000))
       end
-    end  
+    end
   end
 end
 
@@ -55,19 +55,19 @@ def profile
   profilers << MethodProfiler.observe(Contracts::Invariants::InvariantExtension)
   profilers << MethodProfiler.observe(UnboundMethod)
 
-  10000.times do |_|
+  10_000.times do |_|
     obj_with_invariants.contracts_add(rand(1000), rand(1000))
-  end  
+  end
 
   profilers.each { |p| puts p.report }
 end
 
 def ruby_prof
-  RubyProf.start  
+  RubyProf.start
 
   obj_with_invariants = ObjWithInvariants.new(3)
 
-  100000.times do |_|
+  100_000.times do |_|
     obj_with_invariants.contracts_add(rand(1000), rand(1000))
   end
 

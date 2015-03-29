@@ -57,13 +57,12 @@ module Contracts
       end
 
       def self.failure_msg(data)
-%{Invariant violation:
-    Expected: #{data[:expected]}
-    Actual: #{data[:actual]}
-    Value guarded in: #{data[:target].class}::#{Support.method_name(data[:method])}
-    At: #{Support.method_position(data[:method])}}
+        %{Invariant violation:
+            Expected: #{data[:expected]}
+            Actual: #{data[:actual]}
+            Value guarded in: #{data[:target].class}::#{Support.method_name(data[:method])}
+            At: #{Support.method_position(data[:method])}}
       end
     end
-
   end
 end

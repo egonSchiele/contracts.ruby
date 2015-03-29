@@ -1,10 +1,9 @@
 class GenericExample
   Contract Args[String], Num => ArrayOf[String]
   def splat_then_arg(*vals, n)
-    vals.map{ |v| v * n }
+    vals.map { |v| v * n }
   end
 end
-
 
 RSpec.describe "Contracts:" do
   before :all do
@@ -17,6 +16,3 @@ RSpec.describe "Contracts:" do
     end
   end
 end
-
-
-

@@ -2,7 +2,6 @@ module Contracts
   # MethodReference represents original method reference that was
   # decorated by contracts.ruby. Used for instance methods.
   class MethodReference
-
     attr_reader :name
 
     # name - name of the method
@@ -79,7 +78,6 @@ module Contracts
     def construct_unique_name
       :"__contracts_ruby_original_#{name}_#{Support.unique_id}"
     end
-
   end
 
   # The same as MethodReference, but used for singleton methods.

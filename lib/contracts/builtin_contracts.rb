@@ -1,23 +1,22 @@
 require 'contracts/testable'
 require 'contracts/formatters'
 
-=begin rdoc
-This module contains all the builtin contracts.
-If you want to use them, first:
-
-  import Contracts
-
-And then use these or write your own!
-
-A simple example:
-
-  Contract Num, Num => Num
-  def add(a, b)
-    a + b
-  end
-
-The contract is <tt>Contract Num, Num, Num</tt>. That says that the +add+ function takes two numbers and returns a number.
-=end
+# rdoc
+# This module contains all the builtin contracts.
+# If you want to use them, first:
+#
+#   import Contracts
+#
+# And then use these or write your own!
+#
+# A simple example:
+#
+#   Contract Num, Num => Num
+#   def add(a, b)
+#     a + b
+#   end
+#
+# The contract is <tt>Contract Num, Num, Num</tt>. That says that the +add+ function takes two numbers and returns a number.
 module Contracts
   # Check that an argument is +Numeric+.
   class Num
@@ -30,7 +29,7 @@ module Contracts
     end
 
     def self.test_data
-      [-1, 0, 1, 1.5, 50000]
+      [-1, 0, 1, 1.5, 50_000]
     end
   end
 
@@ -104,7 +103,7 @@ module Contracts
   class CallableClass
     include ::Contracts::Formatters
     def self.[](*vals)
-      self.new(*vals)
+      new(*vals)
     end
   end
 
@@ -135,9 +134,9 @@ module Contracts
     end
 
     def test_data
-      @vals.map { |val|
+      @vals.map do |val|
         Testable.test_data(val)
-      }.flatten
+      end.flatten
     end
   end
 
@@ -168,9 +167,9 @@ module Contracts
     end
 
     def test_data
-      @vals.map { |val|
+      @vals.map do |val|
         Testable.test_data val
-      }.flatten
+      end.flatten
     end
   end
 
@@ -358,14 +357,14 @@ module Contracts
     end
 
     def valid?(hash)
-      keys_match = hash.keys.map {|k| Contract.valid?(k, @key) }.all?
-      vals_match = hash.values.map {|v| Contract.valid?(v, @value) }.all?
+      keys_match = hash.keys.map { |k| Contract.valid?(k, @key) }.all?
+      vals_match = hash.values.map { |v| Contract.valid?(v, @value) }.all?
 
       [keys_match, vals_match].all?
     end
 
     def to_s
-      "Hash<#{@key.to_s}, #{@value.to_s}>"
+      "Hash<#{@key}, #{@value}>"
     end
   end
 
@@ -380,7 +379,7 @@ module Contracts
 
   class ::Hash
     def testable?
-      self.values.all? do |val|
+      values.all? do |val|
         Testable.testable?(val)
       end
     end

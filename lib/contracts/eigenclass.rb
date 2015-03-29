@@ -1,6 +1,5 @@
 module Contracts
   module Eigenclass
-
     def self.extended(eigenclass)
       return if eigenclass.respond_to?(:owner_class=)
 
@@ -37,6 +36,5 @@ module Contracts
         []
       end
     end
-
   end
 end

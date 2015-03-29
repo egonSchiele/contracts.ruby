@@ -5,9 +5,9 @@ RSpec.describe "Contracts:" do
 
   describe "basic" do
     it "should fail for insufficient arguments" do
-      expect {
+      expect do
         @o.hello
-      }.to raise_error
+      end.to raise_error
     end
 
     it "should fail for insufficient contracts" do
@@ -33,15 +33,15 @@ RSpec.describe "Contracts:" do
 
     it "should not fall through to next pattern when there is a deep contract violation" do
       expect(PatternMatchingExample::Failure).not_to receive(:is_a?)
-      expect {
+      expect do
         subject.process_request(PatternMatchingExample::Success[string_without_hello])
-      }.to raise_error(ContractError)
+      end.to raise_error(ContractError)
     end
 
     it "should fail when the pattern-matched method's contract fails" do
-      expect {
+      expect do
         subject.process_request("bad input")
-      }.to raise_error(ContractError)
+      end.to raise_error(ContractError)
     end
 
     it "should work for differing arities" do
@@ -74,9 +74,9 @@ RSpec.describe "Contracts:" do
       end
 
       it "uses overriden failure_callback when pattern matching fails" do
-        expect {
+        expect do
           subject.process_request("hello")
-        }.to raise_error(RuntimeError, /contract violation/)
+        end.to raise_error(RuntimeError, /contract violation/)
       end
     end
   end
@@ -87,13 +87,13 @@ RSpec.describe "Contracts:" do
     end
 
     it "should fail with proper error when there is contract violation" do
-      expect {
+      expect do
         SingletonClassExample.hoge(3)
-      }.to raise_error(ContractError, /Expected: String/)
+      end.to raise_error(ContractError, /Expected: String/)
     end
 
     context "when owner class does not include Contracts" do
-      let(:error) {
+      let(:error) do
         # NOTE Unable to support this user-friendly error for ruby
         # 1.8.7 and jruby 1.8, 1.9 it has much less support for
         # singleton inheritance hierarchy
@@ -102,10 +102,10 @@ RSpec.describe "Contracts:" do
         else
           [NoMethodError, /undefined method `Contract'/]
         end
-      }
+      end
 
       it "fails with descriptive error" do
-        expect {
+        expect do
           Class.new(GenericExample) do
             class << self
               Contract String => String
@@ -114,15 +114,15 @@ RSpec.describe "Contracts:" do
               end
             end
           end
-        }.to raise_error(*error)
+        end.to raise_error(*error)
       end
     end
 
     describe "builtin contracts usage" do
       it "allows to use builtin contracts without namespacing and redundant Contracts inclusion" do
-        expect {
+        expect do
           SingletonClassExample.add("55", 5.6)
-        }.to raise_error(ContractError, /Expected: Num/)
+        end.to raise_error(ContractError, /Expected: Num/)
       end
     end
   end
@@ -246,20 +246,20 @@ RSpec.describe "Contracts:" do
     it "should allow two classes to have the same method with different contracts" do
       a = A.new
       b = B.new
-      expect {
+      expect do
         a.triple(5)
         b.triple("a string")
-      }.to_not raise_error
+      end.to_not raise_error
     end
   end
 
   describe "instance and class methods" do
     it "should allow a class to have an instance method and a class method with the same name" do
       a = A.new
-      expect {
+      expect do
         a.instance_and_class_method(5)
         A.instance_and_class_method("a string")
-      }.to_not raise_error
+      end.to_not raise_error
     end
   end
 
@@ -341,9 +341,9 @@ RSpec.describe "Contracts:" do
 
   describe "blocks" do
     it "should pass for correct input" do
-      expect { @o.do_call {
+      expect do @o.do_call do
         2 + 2
-      }}.to_not raise_error
+      endend.to_not raise_error
     end
 
     it "should fail for incorrect input" do
@@ -376,28 +376,28 @@ RSpec.describe "Contracts:" do
     end
 
     it "should fail for incorrect input" do
-      expect {
+      expect do
         @o.with_partial_sums(1, 2, "bad") { |partial_sum| 2 * partial_sum + 1 }
-      }.to raise_error(ContractError, /Actual: "bad"/)
+      end.to raise_error(ContractError, /Actual: "bad"/)
 
-      expect {
+      expect do
         @o.with_partial_sums(1, 2, 3)
-      }.to raise_error(ContractError, /Actual: nil/)
+      end.to raise_error(ContractError, /Actual: nil/)
 
-      expect {
+      expect do
         @o.with_partial_sums(1, 2, 3, lambda { |x| x })
-      }.to raise_error(ContractError, /Actual: nil/)
+      end.to raise_error(ContractError, /Actual: nil/)
     end
 
     context "when block has Func contract" do
       it "should fail for incorrect input" do
-        expect {
+        expect do
           @o.with_partial_sums_contracted(1, 2, "bad") { |partial_sum| 2 * partial_sum + 1 }
-        }.to raise_error(ContractError, /Actual: "bad"/)
+        end.to raise_error(ContractError, /Actual: "bad"/)
 
-        expect {
+        expect do
           @o.with_partial_sums_contracted(1, 2, 3)
-        }.to raise_error(ContractError, /Actual: nil/)
+        end.to raise_error(ContractError, /Actual: nil/)
       end
     end
   end
@@ -412,7 +412,7 @@ RSpec.describe "Contracts:" do
     end
 
     it "should fail for a function that doesn't pass the contract" do
-      expect { @o.map([1, 2, 3], lambda { |x| "bad return value" }) }.to raise_error(ContractError)
+      expect { @o.map([1, 2, 3], lambda { |_x| "bad return value" }) }.to raise_error(ContractError)
     end
 
     it "should pass for a function that passes the contract with weak other args" do
@@ -420,7 +420,7 @@ RSpec.describe "Contracts:" do
     end
 
     it "should fail for a function that doesn't pass the contract with weak other args" do
-      expect { @o.map_plain(['hello', 'joe'], lambda { |x| nil }) }.to raise_error(ContractError)
+      expect { @o.map_plain(['hello', 'joe'], lambda { |_x| nil }) }.to raise_error(ContractError)
     end
   end
 
@@ -479,57 +479,57 @@ RSpec.describe "Contracts:" do
     end
 
     it "should not stringify native types" do
-      expect {
+      expect do
         @o.constanty('bad', nil)
-      }.to raise_error(ContractError, not_s(123))
+      end.to raise_error(ContractError, not_s(123))
 
-      expect {
+      expect do
         @o.constanty(123, 'bad')
-      }.to raise_error(ContractError, not_s(nil))
+      end.to raise_error(ContractError, not_s(nil))
     end
 
     it "should contain to_s representation within a Hash contract" do
-      expect {
+      expect do
         @o.hash_complex_contracts({ :rigged => 'bad' })
-      }.to raise_error(ContractError, not_s(delim 'TrueClass or FalseClass'))
+      end.to raise_error(ContractError, not_s(delim 'TrueClass or FalseClass'))
     end
 
     it "should contain to_s representation within a nested Hash contract" do
-      expect {
+      expect do
         @o.nested_hash_complex_contracts({ :rigged => true,
                                            :contents => {
                                              :kind => 0, :total => 42 } })
-      }.to raise_error(ContractError, not_s(delim 'String or Symbol'))
+      end.to raise_error(ContractError, not_s(delim 'String or Symbol'))
     end
 
     it "should contain to_s representation within an Array contract" do
-      expect {
+      expect do
         @o.array_complex_contracts(['bad'])
-      }.to raise_error(ContractError, not_s(delim 'TrueClass or FalseClass'))
+      end.to raise_error(ContractError, not_s(delim 'TrueClass or FalseClass'))
     end
 
     it "should contain to_s representation within a nested Array contract" do
-      expect {
+      expect do
         @o.nested_array_complex_contracts([true, [0]])
-      }.to raise_error(ContractError, not_s(delim 'String or Symbol'))
+      end.to raise_error(ContractError, not_s(delim 'String or Symbol'))
     end
 
     it "should not contain Contracts:: module prefix" do
-      expect {
+      expect do
         @o.double('bad')
-      }.to raise_error(ContractError, /Expected: Num/)
+      end.to raise_error(ContractError, /Expected: Num/)
     end
 
     it "should still show nils, not just blank space" do
-      expect {
+      expect do
         @o.no_args('bad')
-      }.to raise_error(ContractError, /Expected: nil/)
+      end.to raise_error(ContractError, /Expected: nil/)
     end
 
     it 'should show empty quotes as ""' do
-      expect {
+      expect do
         @o.no_args("")
-      }.to raise_error(ContractError, /Actual: ""/)
+      end.to raise_error(ContractError, /Actual: ""/)
     end
   end
 

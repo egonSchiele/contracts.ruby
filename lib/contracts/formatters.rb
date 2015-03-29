@@ -20,14 +20,14 @@ module Contracts
 
       # Formats Hash contracts.
       def hash_contract(hash)
-        hash.inject({}) { |repr, (k, v)|
+        hash.inject({}) do |repr, (k, v)|
           repr.merge(k => InspectWrapper.new(contract(v)))
-        }.inspect
+        end.inspect
       end
 
       # Formats Array contracts.
       def array_contract(array)
-        array.map{ |v| InspectWrapper.new(contract(v)) }.inspect
+        array.map { |v| InspectWrapper.new(contract(v)) }.inspect
       end
     end
 
@@ -46,7 +46,7 @@ module Contracts
       def inspect
         return @value.inspect if empty_val?
         return @value.to_s if plain?
-        return "(#{@value.to_s})" if has_useful_to_s?
+        return "(#{@value})" if has_useful_to_s?
         @value.inspect.gsub(/^Contracts::/, '')
       end
 
@@ -56,6 +56,7 @@ module Contracts
       end
 
       private
+
       def empty_val?
         @value.nil? || @value == ""
       end

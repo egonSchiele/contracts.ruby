@@ -45,6 +45,7 @@ class C
   def good
     false
   end
+
   def bad
     true
   end
@@ -54,7 +55,7 @@ class GenericExample
   include Contracts
 
   Contract Num => Num
-  def GenericExample.a_class_method x
+  def self.a_class_method x
     x + 1
   end
 
@@ -145,7 +146,7 @@ class GenericExample
   # Important to use different arg types or it falsely passes
   Contract Num, Args[String] => ArrayOf[String]
   def arg_then_splat(n, *vals)
-    vals.map{ |v| v * n }
+    vals.map { |v| v * n }
   end
 
   Contract Num, Proc => nil

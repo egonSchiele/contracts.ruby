@@ -1,6 +1,5 @@
 module Contracts
   RSpec.describe Invariants do
-
     def new_subject
       MyBirthday.new(31, 12)
     end
@@ -14,6 +13,5 @@ module Contracts
       expect { new_subject.silly_next_day! }.to raise_error(InvariantError, /day condition to be true/)
       expect { new_subject.silly_next_month! }.to raise_error(InvariantError, /month condition to be true/)
     end
-
   end
 end
