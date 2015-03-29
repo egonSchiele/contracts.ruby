@@ -1,12 +1,8 @@
 Style/MethodDefParentheses:
   Enabled: false
 
-# not my preference -- I prefer "" to '' always
 Style/StringLiterals:
-  Enabled: false
-
-Style/SignalException:
-  Enabled: false
+  EnforcedStyle: double_quotes
 
 Style/NonNilCheck:
   Enabled: false
@@ -48,3 +44,32 @@ Style/ClassAndModuleChildren:
 # triggered by Contract ({ :name => String, :age => Fixnum }) => nil
 Lint/ParenthesesAsGroupedExpression:
   Enabled: false
+
+Metrics/AbcSize:
+  Enabled: false
+
+Metrics/CyclomaticComplexity:
+  Enabled: false
+
+Metrics/BlockNesting:
+  Enabled: false
+
+Style/ClassVars:
+  Enabled: false
+
+Metrics/ClassLength:
+  Enabled: false
+
+Metrics/PerceivedComplexity:
+  Enabled: false
+
+# contracts provides this functionality
+Lint/DuplicateMethods:
+  Enabled: false
+
+# noisy cop with false positives
+Style/TrivialAccessors:
+  Enabled: false
+
+Style/MultilineOperationIndentation:
+  EnforcedStyle: indented

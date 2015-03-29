@@ -1,5 +1,5 @@
-require 'contracts/testable'
-require 'contracts/formatters'
+require "contracts/testable"
+require "contracts/formatters"
 
 # rdoc
 # This module contains all the builtin contracts.
@@ -429,7 +429,7 @@ module Contracts
 
     def self.test_data
       # send a random string
-      ('a'..'z').to_a.shuffle[0, 10].join
+      ("a".."z").to_a.shuffle[0, 10].join
     end
   end
 

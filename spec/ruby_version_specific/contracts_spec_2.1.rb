@@ -15,13 +15,13 @@ RSpec.describe "Contracts:" do
     describe "really complicated method signature" do
       it "should work with default named args used" do
         expect do
-          @o.complicated('a', false, :b, 2.0, e: (1..5)) { |x| x }
+          @o.complicated("a", false, :b, 2.0, e: (1..5)) { |x| x }
         end.to_not raise_error
       end
 
       it "should work with all args filled manually, with extra splat and hash" do
         expect do
-          @o.complicated('a', true, :b, :c, 2.0, e: (1..5), f: 8.3, g: :d) do |x|
+          @o.complicated("a", true, :b, :c, 2.0, e: (1..5), f: 8.3, g: :d) do |x|
             x
           end
         end.to_not raise_error
@@ -29,25 +29,25 @@ RSpec.describe "Contracts:" do
 
       it "should fail when the return is invalid" do
         expect do
-          @o.complicated('a', true, :b, 2.0, e: (1..5)) { |_x| 'bad' }
+          @o.complicated("a", true, :b, 2.0, e: (1..5)) { |_x| "bad" }
         end.to raise_error(ContractError)
       end
 
       it "should fail when args are invalid" do
         expect do
-          @o.complicated('a', 'bad', :b, 2.0, e: (1..5)) { |x| x }
+          @o.complicated("a", "bad", :b, 2.0, e: (1..5)) { |x| x }
         end.to raise_error(ContractError)
       end
 
       it "should fail when splat is invalid" do
         expect do
-          @o.complicated('a', true, 'bad', 2.0, e: (1..5)) { |x| x }
+          @o.complicated("a", true, "bad", 2.0, e: (1..5)) { |x| x }
         end.to raise_error(ContractError)
       end
 
       it "should fail when named argument is invalid" do
         expect do
-          @o.complicated('a', true, :b, 2.0, e: 'bad') { |x| x }
+          @o.complicated("a", true, :b, 2.0, e: "bad") { |x| x }
         end.to raise_error(ContractError)
       end
     end

@@ -10,7 +10,7 @@ module Contracts
 
     module EigenclassWithOwner
       def self.lift(eigenclass)
-        raise Contracts::ContractsNotIncluded unless with_owner?(eigenclass)
+        fail Contracts::ContractsNotIncluded unless with_owner?(eigenclass)
 
         eigenclass
       end
@@ -130,7 +130,7 @@ module Contracts
           current = ancestors.shift
         end
         if !current.respond_to?(:decorated_methods) || current.decorated_methods.nil?
-          raise "Couldn't find decorator for method " + self.class.name + ":#{name}.\nDoes this method look correct to you? If you are using contracts from rspec, rspec wraps classes in it's own class.\nLook at the specs for contracts.ruby as an example of how to write contracts in this case."
+          fail "Couldn't find decorator for method " + self.class.name + ":#{name}.\nDoes this method look correct to you? If you are using contracts from rspec, rspec wraps classes in it's own class.\nLook at the specs for contracts.ruby as an example of how to write contracts in this case."
         end
         methods = current.decorated_methods[method_type][name]
 

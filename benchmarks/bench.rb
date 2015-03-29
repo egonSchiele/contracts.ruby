@@ -1,8 +1,8 @@
-require './lib/contracts'
-require 'benchmark'
-require 'rubygems'
-require 'method_profiler'
-require 'ruby-prof'
+require "./lib/contracts"
+require "benchmark"
+require "rubygems"
+require "method_profiler"
+require "ruby-prof"
 
 include Contracts
 
@@ -16,21 +16,21 @@ def contracts_add a, b
 end
 
 def explicit_add a, b
-  raise unless a.is_a?(Numeric)
-  raise unless b.is_a?(Numeric)
+  fail unless a.is_a?(Numeric)
+  fail unless b.is_a?(Numeric)
   c = a + b
-  raise unless c.is_a?(Numeric)
+  fail unless c.is_a?(Numeric)
   c
 end
 
 def benchmark
   Benchmark.bm 30 do |x|
-    x.report 'testing add' do
+    x.report "testing add" do
       1_000_000.times do |_|
         add(rand(1000), rand(1000))
       end
     end
-    x.report 'testing contracts add' do
+    x.report "testing contracts add" do
       1_000_000.times do |_|
         contracts_add(rand(1000), rand(1000))
       end

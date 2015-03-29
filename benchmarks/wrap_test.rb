@@ -1,4 +1,4 @@
-require 'benchmark'
+require "benchmark"
 
 module Wrapper
   def self.extended(klass)
@@ -44,12 +44,12 @@ nw = NotWrapped.new
 # exit
 # 30 is the width of the output column
 Benchmark.bm 30 do |x|
-  x.report 'wrapped' do
+  x.report "wrapped" do
     100_000.times do |_|
       w.add(rand(1000), rand(1000))
     end
   end
-  x.report 'not wrapped' do
+  x.report "not wrapped" do
     100_000.times do |_|
       nw.add(rand(1000), rand(1000))
     end

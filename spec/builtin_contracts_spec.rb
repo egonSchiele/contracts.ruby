@@ -170,23 +170,23 @@ RSpec.describe "Contracts:" do
   end
 
   describe "Eq:" do
-    it 'should pass for a class' do
+    it "should pass for a class" do
       expect { @o.eq_class_test(Foo) }
     end
 
-    it 'should pass for a module' do
+    it "should pass for a module" do
       expect { @o.eq_module_test(Bar) }
     end
 
-    it 'should pass for other values' do
+    it "should pass for other values" do
       expect { @o.eq_value_test(Baz) }
     end
 
-    it 'should fail when not equal' do
+    it "should fail when not equal" do
       expect { @o.eq_class_test(Bar) }.to raise_error(ContractError)
     end
 
-    it 'should fail when given instance of class' do
+    it "should fail when given instance of class" do
       expect { @o.eq_class_test(Foo.new) }.to raise_error(ContractError)
     end
   end
@@ -240,22 +240,22 @@ RSpec.describe "Contracts:" do
     end
   end
 
-  describe 'HashOf:' do
-    context 'given a fulfilled contract' do
+  describe "HashOf:" do
+    context "given a fulfilled contract" do
       it { expect(@o.gives_max_value(:panda => 1, :bamboo => 2)).to eq(2) }
     end
 
-    context 'given an unfulfilled contract' do
-      it { expect { @o.gives_max_value(:panda => '1', :bamboo => '2') }.to raise_error(ContractError) }
+    context "given an unfulfilled contract" do
+      it { expect { @o.gives_max_value(:panda => "1", :bamboo => "2") }.to raise_error(ContractError) }
     end
 
-    describe '#to_s' do
-      context 'given Symbol => String' do
-        it { expect(Contracts::HashOf[Symbol, String].to_s).to eq('Hash<Symbol, String>') }
+    describe "#to_s" do
+      context "given Symbol => String" do
+        it { expect(Contracts::HashOf[Symbol, String].to_s).to eq("Hash<Symbol, String>") }
       end
 
-      context 'given String => Num' do
-        it { expect(Contracts::HashOf[String, Contracts::Num].to_s).to eq('Hash<String, Contracts::Num>') }
+      context "given String => Num" do
+        it { expect(Contracts::HashOf[String, Contracts::Num].to_s).to eq("Hash<String, Contracts::Num>") }
       end
     end
   end

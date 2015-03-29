@@ -1,7 +1,7 @@
 module Contracts
   module Support
     def self.method_position(method)
-      return method.method_position if MethodReference === method
+      return method.method_position if method.is_a?(MethodReference)
 
       if RUBY_VERSION =~ /^1\.8/
         if method.respond_to?(:__file__)

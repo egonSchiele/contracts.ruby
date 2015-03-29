@@ -1,8 +1,8 @@
-require './lib/contracts'
-require 'benchmark'
-require 'rubygems'
-require 'method_profiler'
-require 'ruby-prof'
+require "./lib/contracts"
+require "benchmark"
+require "rubygems"
+require "method_profiler"
+require "ruby-prof"
 
 class Obj
   include Contracts
@@ -22,8 +22,8 @@ class ObjWithInvariants
   include Contracts
   include Contracts::Invariants
 
-  Invariant(:value_not_nil) { value != nil }
-  Invariant(:value_not_string) { !value.is_a?(String) }
+  invariant(:value_not_nil) { value != nil }
+  invariant(:value_not_string) { !value.is_a?(String) }
 
   attr_accessor :value
   def initialize value
@@ -41,12 +41,12 @@ def benchmark
   obj_with_invariants = ObjWithInvariants.new(3)
 
   Benchmark.bm 30 do |x|
-    x.report 'testing contracts add' do
+    x.report "testing contracts add" do
       1_000_000.times do |_|
         obj.contracts_add(rand(1000), rand(1000))
       end
     end
-    x.report 'testing contracts add with invariants' do
+    x.report "testing contracts add with invariants" do
       1_000_000.times do |_|
         obj_with_invariants.contracts_add(rand(1000), rand(1000))
       end

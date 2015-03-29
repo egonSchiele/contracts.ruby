@@ -1,13 +1,13 @@
-require 'contracts/builtin_contracts'
-require 'contracts/core_ext'
-require 'contracts/decorators'
-require 'contracts/eigenclass'
-require 'contracts/errors'
-require 'contracts/formatters'
-require 'contracts/invariants'
-require 'contracts/method_reference'
-require 'contracts/modules'
-require 'contracts/support'
+require "contracts/builtin_contracts"
+require "contracts/core_ext"
+require "contracts/decorators"
+require "contracts/eigenclass"
+require "contracts/errors"
+require "contracts/formatters"
+require "contracts/invariants"
+require "contracts/method_reference"
+require "contracts/modules"
+require "contracts/support"
 
 module Contracts
   def self.included(base)
@@ -67,7 +67,7 @@ class Contract < Contracts::Decorator
   # to monkey patch #failure_callback only temporary and then switch it back.
   # First important usage - for specs.
   DEFAULT_FAILURE_CALLBACK = proc do |data|
-    raise data[:contracts].failure_exception.new(failure_msg(data), data)
+    fail data[:contracts].failure_exception.new(failure_msg(data), data)
   end
 
   attr_reader :args_contracts, :ret_contract, :klass, :method
@@ -264,18 +264,17 @@ class Contract < Contracts::Decorator
   # a better way to handle this might be to take this into account
   # before throwing a "mismatched # of args" error.
   def maybe_append_block! args, blk
-    if @has_proc_contract && !blk &&
-       (@args_contract_index || args.size < args_contracts.size)
-      args << nil
-    end
+    return unless @has_proc_contract && !blk &&
+        (@args_contract_index || args.size < args_contracts.size)
+    args << nil
   end
 
   # Same thing for when we have named params but didn't pass any in.
   def maybe_append_options! args, blk
     return unless @has_options_contract
-    if @has_proc_contract && Hash === args_contracts[-2] && !args[-2].is_a?(Hash)
+    if @has_proc_contract && args_contracts[-2].is_a?(Hash) && !args[-2].is_a?(Hash)
       args.insert(-2, {})
-    elsif Hash === args_contracts[-1] && !args[-1].is_a?(Hash)
+    elsif args_contracts[-1].is_a?(Hash) && !args[-1].is_a?(Hash)
       args << {}
     end
   end
@@ -351,7 +350,7 @@ class Contract < Contracts::Decorator
              else
                # original method name referrence
                method.send_to(this, *args, &blk)
-    end
+             end
 
     unless @ret_validator[result]
       Contract.failure_callback(:arg => result,

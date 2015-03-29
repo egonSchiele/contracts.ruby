@@ -23,8 +23,8 @@ RSpec.describe "Contracts:" do
 
     it "should work as expected when there is no contract violation" do
       expect(
-        subject.process_request(PatternMatchingExample::Success[string_with_hello])
-      ).to eq(PatternMatchingExample::Success[expected_decorated_string])
+        subject.process_request(PatternMatchingExample::Success.new(string_with_hello))
+      ).to eq(PatternMatchingExample::Success.new(expected_decorated_string))
 
       expect(
         subject.process_request(PatternMatchingExample::Failure.new)
@@ -34,7 +34,7 @@ RSpec.describe "Contracts:" do
     it "should not fall through to next pattern when there is a deep contract violation" do
       expect(PatternMatchingExample::Failure).not_to receive(:is_a?)
       expect do
-        subject.process_request(PatternMatchingExample::Success[string_without_hello])
+        subject.process_request(PatternMatchingExample::Success.new(string_without_hello))
       end.to raise_error(ContractError)
     end
 
@@ -63,8 +63,8 @@ RSpec.describe "Contracts:" do
 
       it "calls a method when first pattern matches" do
         expect(
-          subject.process_request(PatternMatchingExample::Success[string_with_hello])
-        ).to eq(PatternMatchingExample::Success[expected_decorated_string])
+          subject.process_request(PatternMatchingExample::Success.new(string_with_hello))
+        ).to eq(PatternMatchingExample::Success.new(expected_decorated_string))
       end
 
       it "falls through to 2nd pattern when first pattern does not match" do
@@ -323,19 +323,19 @@ RSpec.describe "Contracts:" do
 
   describe "Hashes" do
     it "should pass for exact correct input" do
-      expect { @o.person({:name => "calvin", :age => 10}) }.to_not raise_error
+      expect { @o.person(:name => "calvin", :age => 10) }.to_not raise_error
     end
 
     it "should pass even if some keys don't have contracts" do
-      expect { @o.person({:name => "calvin", :age => 10, :foo => "bar"}) }.to_not raise_error
+      expect { @o.person(:name => "calvin", :age => 10, :foo => "bar") }.to_not raise_error
     end
 
     it "should fail if a key with a contract on it isn't provided" do
-      expect { @o.person({:name => "calvin"}) }.to raise_error(ContractError)
+      expect { @o.person(:name => "calvin") }.to raise_error(ContractError)
     end
 
     it "should fail for incorrect input" do
-      expect { @o.person({:name => 50, :age => 10}) }.to raise_error(ContractError)
+      expect { @o.person(:name => 50, :age => 10) }.to raise_error(ContractError)
     end
   end
 

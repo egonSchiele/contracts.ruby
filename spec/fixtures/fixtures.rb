@@ -337,7 +337,15 @@ end
 class PatternMatchingExample
   include Contracts
 
-  class Success < Struct.new(:request)
+  class Success
+    attr_accessor :request
+    def initialize request
+      @request = request
+    end
+
+    def ==(other)
+      request = other.request
+    end
   end
 
   class Failure
@@ -347,13 +355,13 @@ class PatternMatchingExample
 
   class StringWithHello
     def self.valid?(string)
-      String === string && !!string.match(/hello/i)
+      string.is_a?(String) && !!string.match(/hello/i)
     end
   end
 
   Contract Success => Response
   def process_request(status)
-    Success[decorated_request(status.request)]
+    Success.new(decorated_request(status.request))
   end
 
   Contract Failure => Response
@@ -382,8 +390,8 @@ class MyBirthday
   include Contracts
   include Contracts::Invariants
 
-  Invariant(:day) { 1 <= day && day <= 31 }
-  Invariant(:month) { 1 <= month && month <= 12 }
+  invariant(:day) { 1 <= day && day <= 31 }
+  invariant(:month) { 1 <= month && month <= 12 }
 
   attr_accessor :day, :month
   def initialize(day, month)
@@ -456,7 +464,7 @@ with_enabled_no_contracts do
 
     attr_accessor :day
 
-    Invariant(:day_rule) { 1 <= day && day <= 7 }
+    invariant(:day_rule) { 1 <= day && day <= 7 }
 
     Contract None => nil
     def next_day

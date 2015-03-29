@@ -12,7 +12,7 @@ RSpec.describe "Contracts:" do
 
   describe "Splat not last (or penultimate to block)" do
     it "should work with arg after splat" do
-      expect { @o.splat_then_arg('hello', 'world', 3) }.to_not raise_error
+      expect { @o.splat_then_arg("hello", "world", 3) }.to_not raise_error
     end
   end
 end

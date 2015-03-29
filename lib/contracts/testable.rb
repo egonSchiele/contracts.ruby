@@ -30,7 +30,7 @@ module Contracts
       end
     end
 
-    # TODO Should work on whatever class it was invoked on, no?
+    # TODO: Should work on whatever class it was invoked on, no?
     def self.check_all
       o = Object.new
       Object.decorated_methods.each do |name, _contracts|
