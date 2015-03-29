@@ -12,4 +12,4 @@ rvm:
 script:
   - bundle exec rspec
   - ruby rubocop_test.rb
-bundler_args: --without development
+bundler_args: --without development ruby2

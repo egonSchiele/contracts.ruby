@@ -4,6 +4,9 @@ gemspec
 
 group :test do
   gem "rspec"
+end
+
+group :ruby2 do
   gem "rubocop", "~> 0.29"
 end
 
