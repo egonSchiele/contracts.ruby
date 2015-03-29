@@ -344,7 +344,7 @@ class PatternMatchingExample
     end
 
     def ==(other)
-      request = other.request
+      request == other.request
     end
   end
 

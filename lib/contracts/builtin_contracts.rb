@@ -392,46 +392,46 @@ module Contracts
     end
   end
 
-  class ::Hash
-    def testable?
-      values.all? do |val|
-        Testable.testable?(val)
-      end
-    end
+  # class ::Hash
+  #   def testable?
+  #     values.all? do |val|
+  #       Testable.testable?(val)
+  #     end
+  #   end
 
-    def test_data
-      keys = self.keys
-      _vals = keys.map do |key|
-        ret = Testable.test_data(self[key])
-        if ret.is_a? Array
-          ret
-        else
-          [ret]
-        end
-      end
-      all_vals = Testable.product(_vals)
-      hashes = []
-      all_vals.each do |vals|
-        hash = {}
-        keys.zip(vals).each do |key, val|
-          hash[key] = val
-        end
-        hashes << hash
-      end
-      hashes
-    end
-  end
+  #   def test_data
+  #     keys = self.keys
+  #     _vals = keys.map do |key|
+  #       ret = Testable.test_data(self[key])
+  #       if ret.is_a? Array
+  #         ret
+  #       else
+  #         [ret]
+  #       end
+  #     end
+  #     all_vals = Testable.product(_vals)
+  #     hashes = []
+  #     all_vals.each do |vals|
+  #       hash = {}
+  #       keys.zip(vals).each do |key, val|
+  #         hash[key] = val
+  #       end
+  #       hashes << hash
+  #     end
+  #     hashes
+  #   end
+  # end
 
-  class ::String
-    def self.testable?
-      true
-    end
+  # class ::String
+  #   def self.testable?
+  #     true
+  #   end
 
-    def self.test_data
-      # send a random string
-      ("a".."z").to_a.shuffle[0, 10].join
-    end
-  end
+  #   def self.test_data
+  #     # send a random string
+  #     ("a".."z").to_a.shuffle[0, 10].join
+  #   end
+  # end
 
   # Used to define contracts on functions passed in as arguments.
   # Example: <tt>Func[Num => Num] # the function should take a number and return a number</tt>

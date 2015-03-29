@@ -57,7 +57,7 @@ RSpec.describe "Contracts:" do
     context "when failure_callback was overriden" do
       before do
         ::Contract.override_failure_callback do |_data|
-          raise RuntimeError, "contract violation"
+          fail "contract violation"
         end
       end
 
@@ -341,43 +341,65 @@ RSpec.describe "Contracts:" do
 
   describe "blocks" do
     it "should pass for correct input" do
-      expect { @o.do_call {
-        2 + 2
-      }}.to_not raise_error
+      expect do
+        @o.do_call do
+          2 + 2
+        end
+      end.to_not raise_error
     end
 
     it "should fail for incorrect input" do
-      expect { @o.do_call(nil) }.to raise_error(ContractError)
+      expect do
+        @o.do_call(nil)
+      end.to raise_error(ContractError)
     end
 
     it "should handle properly lack of block when there are other arguments" do
-      expect { @o.double_with_proc(4) }.to raise_error(ContractError, /Actual: nil/)
+      expect do
+        @o.double_with_proc(4)
+      end.to raise_error(ContractError, /Actual: nil/)
     end
   end
 
   describe "varargs" do
     it "should pass for correct input" do
-      expect { @o.sum(1, 2, 3) }.to_not raise_error
+      expect do
+        @o.sum(1, 2, 3)
+      end.to_not raise_error
     end
 
     it "should fail for incorrect input" do
-      expect { @o.sum(1, 2, "bad") }.to raise_error(ContractError)
+      expect do
+        @o.sum(1, 2, "bad")
+      end.to raise_error(ContractError)
     end
 
     it "should work with arg before splat" do
-      expect { @o.arg_then_splat(3, 'hello', 'world') }.to_not raise_error
+      expect do
+        @o.arg_then_splat(3, "hello", "world")
+      end.to_not raise_error
     end
   end
 
   describe "varargs with block" do
     it "should pass for correct input" do
-      expect { @o.with_partial_sums(1, 2, 3) { |partial_sum| 2 * partial_sum + 1 } }.not_to raise_error
-      expect { @o.with_partial_sums_contracted(1, 2, 3) { |partial_sum| 2 * partial_sum + 1 } }.not_to raise_error
+      expect do
+        @o.with_partial_sums(1, 2, 3) do |partial_sum|
+          2 * partial_sum + 1
+        end
+      end.not_to raise_error
+      expect do
+        @o.with_partial_sums_contracted(1, 2, 3) do |partial_sum|
+          2 * partial_sum + 1
+        end
+      end.not_to raise_error
     end
 
     it "should fail for incorrect input" do
       expect do
-        @o.with_partial_sums(1, 2, "bad") { |partial_sum| 2 * partial_sum + 1 }
+        @o.with_partial_sums(1, 2, "bad") do |partial_sum|
+          2 * partial_sum + 1
+        end
       end.to raise_error(ContractError, /Actual: "bad"/)
 
       expect do
@@ -412,15 +434,15 @@ RSpec.describe "Contracts:" do
     end
 
     it "should fail for a function that doesn't pass the contract" do
-      expect { @o.map([1, 2, 3], lambda { |_x| "bad return value" }) }.to raise_error(ContractError)
+      expect { @o.map([1, 2, 3], lambda { |_| "bad return value" }) }.to raise_error(ContractError)
     end
 
     it "should pass for a function that passes the contract with weak other args" do
-      expect { @o.map_plain(['hello', 'joe'], lambda { |x| x.size }) }.to_not raise_error
+      expect { @o.map_plain(["hello", "joe"], lambda { |x| x.size }) }.to_not raise_error
     end
 
     it "should fail for a function that doesn't pass the contract with weak other args" do
-      expect { @o.map_plain(['hello', 'joe'], lambda { |_x| nil }) }.to raise_error(ContractError)
+      expect { @o.map_plain(["hello", "joe"], lambda { |_| nil }) }.to raise_error(ContractError)
     end
   end
 
@@ -480,49 +502,50 @@ RSpec.describe "Contracts:" do
 
     it "should not stringify native types" do
       expect do
-        @o.constanty('bad', nil)
+        @o.constanty("bad", nil)
       end.to raise_error(ContractError, not_s(123))
 
       expect do
-        @o.constanty(123, 'bad')
+        @o.constanty(123, "bad")
       end.to raise_error(ContractError, not_s(nil))
     end
 
     it "should contain to_s representation within a Hash contract" do
       expect do
-        @o.hash_complex_contracts({ :rigged => 'bad' })
-      end.to raise_error(ContractError, not_s(delim 'TrueClass or FalseClass'))
+        @o.hash_complex_contracts(:rigged => "bad")
+      end.to raise_error(ContractError, not_s(delim "TrueClass or FalseClass"))
     end
 
     it "should contain to_s representation within a nested Hash contract" do
       expect do
-        @o.nested_hash_complex_contracts({ :rigged => true,
-                                           :contents => {
-                                             :kind => 0, :total => 42 } })
-      end.to raise_error(ContractError, not_s(delim 'String or Symbol'))
+        @o.nested_hash_complex_contracts(:rigged => true,
+                                         :contents => {
+                                           :kind => 0,
+                                           :total => 42 })
+      end.to raise_error(ContractError, not_s(delim "String or Symbol"))
     end
 
     it "should contain to_s representation within an Array contract" do
       expect do
-        @o.array_complex_contracts(['bad'])
-      end.to raise_error(ContractError, not_s(delim 'TrueClass or FalseClass'))
+        @o.array_complex_contracts(["bad"])
+      end.to raise_error(ContractError, not_s(delim "TrueClass or FalseClass"))
     end
 
     it "should contain to_s representation within a nested Array contract" do
       expect do
         @o.nested_array_complex_contracts([true, [0]])
-      end.to raise_error(ContractError, not_s(delim 'String or Symbol'))
+      end.to raise_error(ContractError, not_s(delim "String or Symbol"))
     end
 
     it "should not contain Contracts:: module prefix" do
       expect do
-        @o.double('bad')
+        @o.double("bad")
       end.to raise_error(ContractError, /Expected: Num/)
     end
 
     it "should still show nils, not just blank space" do
       expect do
-        @o.no_args('bad')
+        @o.no_args("bad")
       end.to raise_error(ContractError, /Expected: nil/)
     end
 

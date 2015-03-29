@@ -12,14 +12,11 @@ RSpec.describe "Contracts:" do
 
   describe "Optional named arguments" do
     it "should work with optional named argument unfilled after splat" do
-      expect { @o.splat_then_optional_named('hello', 'world') }.to_not raise_error
+      expect { @o.splat_then_optional_named("hello", "world") }.to_not raise_error
     end
 
     it "should work with optional named argument filled after splat" do
-      expect { @o.splat_then_optional_named('hello', 'world', repeat: 3) }.to_not raise_error
+      expect { @o.splat_then_optional_named("hello", "world", repeat: 3) }.to_not raise_error
     end
   end
 end
-
-
-
