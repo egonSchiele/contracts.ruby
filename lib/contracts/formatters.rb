@@ -54,7 +54,7 @@ module Contracts
         return @value.inspect if empty_val?
         return @value.to_s if plain?
         return delim(@value.to_s) if useful_to_s?
-        @value.inspect.gsub(/^Contracts::/, "")
+        raw_inspect
       end
 
       def delim(value)
@@ -98,6 +98,15 @@ module Contracts
         else # It's an instance contract
           !@value.to_s.match(/#\<\w+:.+\>/)
         end
+      end
+
+      # Ruby < 2 makes inspect call to_s so we need a custom inspect
+      def raw_inspect
+        if @value.class == Class # It's a class contract
+          empty_to_s? ? @value.name : @value.inspect
+        else # It's an instance contract
+          empty_to_s? ? @value.class.name : @value.inspect
+        end.gsub(/^Contracts::/, "")
       end
     end
   end
