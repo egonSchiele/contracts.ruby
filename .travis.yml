@@ -11,5 +11,5 @@ rvm:
 
 script:
   - bundle exec rspec
-  - ruby rubocop_test.rb
-bundler_args: --without development ruby2
+  - ruby script/rubocop.rb
+bundler_args: --without development

@@ -4,10 +4,7 @@ gemspec
 
 group :test do
   gem "rspec"
-end
-
-group :ruby2 do
-  gem "rubocop", "~> 0.29"
+  gem "rubocop", "~> 0.29", :platform => [:ruby_20, :ruby_21]
 end
 
 group :development do
