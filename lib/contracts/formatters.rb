@@ -85,12 +85,19 @@ module Contracts
 
       def useful_to_s?
         # Useless to_s value or no custom to_s behavious defined
-        @value.to_s != "" &&
-          if @value.class == Class # It's a class contract
-            @value.to_s != @value.name
-          else # It's an instance contract
-            !@value.to_s.match(/#\<\w+:.+\>/)
-          end
+        !empty_to_s? && custom_to_s?
+      end
+
+      def empty_to_s?
+        @value.to_s.empty?
+      end
+
+      def custom_to_s?
+        if @value.class == Class # It's a class contract
+          @value.to_s != @value.name
+        else # It's an instance contract
+          !@value.to_s.match(/#\<\w+:.+\>/)
+        end
       end
     end
   end

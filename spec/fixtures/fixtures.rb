@@ -51,6 +51,12 @@ class C
   end
 end
 
+class EmptyCont
+  def self.to_s
+    ''
+  end
+end
+
 class GenericExample
   include Contracts
 
@@ -259,6 +265,11 @@ class GenericExample
   Contract HashOf[Symbol, Num] => Num
   def gives_max_value(hash)
     hash.values.max
+  end
+
+  Contract EmptyCont => Any
+  def using_empty_contract(a)
+    a
   end
 
   Contract nil => String
