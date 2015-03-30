@@ -38,9 +38,28 @@ module Contracts
     # A wrapper class to produce correct inspect behaviour for different
     # contract values - constants, Class contracts, instance contracts etc.
     class InspectWrapper
+      # Turn InspectWrapper into a factory, will never be an instance
+      class << self
+        alias_method :__new__, :new
+
+        def inherited(subclass)
+          class << subclass
+            alias_method :new, :__new__
+          end
+        end
+      end
+
+      def self.new(value, full = true)
+        if value.class == Class
+          ClassInspectWrapper
+        else
+          ObjectInspectWrapper
+        end.new(value, full)
+      end
+
       # @param full [Boolean] if false only unique `to_s` values will be output,
       #   non unique values become empty string.
-      def initialize(value, full = true)
+      def initialize(value, full)
         @value, @full = value, full
       end
 
@@ -54,7 +73,7 @@ module Contracts
         return @value.inspect if empty_val?
         return @value.to_s if plain?
         return delim(@value.to_s) if useful_to_s?
-        raw_inspect
+        useful_inspect
       end
 
       def delim(value)
@@ -92,21 +111,28 @@ module Contracts
         @value.to_s.empty?
       end
 
+      def strip_prefix(val)
+        val.gsub(/^Contracts::/, "")
+      end
+    end
+
+    class ClassInspectWrapper < InspectWrapper
       def custom_to_s?
-        if @value.class == Class # It's a class contract
-          @value.to_s != @value.name
-        else # It's an instance contract
-          !@value.to_s.match(/#\<\w+:.+\>/)
-        end
+        @value.to_s != @value.name
       end
 
-      # Ruby < 2 makes inspect call to_s so we need a custom inspect
-      def raw_inspect
-        if @value.class == Class # It's a class contract
-          empty_to_s? ? @value.name : @value.inspect
-        else # It's an instance contract
-          empty_to_s? ? @value.class.name : @value.inspect
-        end.gsub(/^Contracts::/, "")
+      def useful_inspect
+        strip_prefix(empty_to_s? ? @value.name : @value.inspect)
+      end
+    end
+
+    class ObjectInspectWrapper < InspectWrapper
+      def custom_to_s?
+        !@value.to_s.match(/#\<\w+:.+\>/)
+      end
+
+      def useful_inspect
+        strip_prefix(empty_to_s? ? @value.class.name : @value.inspect)
       end
     end
   end
