@@ -73,6 +73,10 @@ If you're using the library, please [let me know](https://github.com/egonSchiele
 
 Alexander Dean, creator of [Snowplow](https://github.com/snowplow/snowplow)
 
+> It caught a bug that saved us several hundred dollars. It took less than 30 seconds to add the contract.
+
+Michael Tomer
+
 ## Credits
 
 Inspired by [contracts.coffee](http://disnetdev.com/contracts.coffee/).
