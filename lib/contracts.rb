@@ -39,6 +39,13 @@ module Contracts
       unless base.instance_of?(Module)
         def Contract(*args)
           return if ENV["NO_CONTRACTS"]
+          if self.class == Module
+            puts %{
+Warning: You have added a Contract on a module function
+without including Contracts::Modules. Your Contract will
+just be ignored. Please include Contracts::Modules into
+your module.}
+          end
           self.class.Contract(*args)
         end
       end
