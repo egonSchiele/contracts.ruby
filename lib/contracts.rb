@@ -1,5 +1,4 @@
 require "contracts/builtin_contracts"
-require "contracts/core_ext"
 require "contracts/decorators"
 require "contracts/eigenclass"
 require "contracts/errors"

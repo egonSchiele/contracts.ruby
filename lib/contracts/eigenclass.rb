@@ -9,9 +9,9 @@ module Contracts
     end
 
     def self.lift(base)
-      return NullEigenclass if base.send(:singleton_class?)
+      return NullEigenclass if Support.eigenclass? base
 
-      eigenclass = base.singleton_class
+      eigenclass = Support.eigenclass_of base
 
       eigenclass.extend(Eigenclass) unless eigenclass.respond_to?(:owner_class=)
 
