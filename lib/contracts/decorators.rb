@@ -163,7 +163,7 @@ module Contracts
     end
 
     def decorate(klass, *args)
-      if singleton_class?
+      if Support.eigenclass? self
         return EigenclassWithOwner.lift(self).owner_class.decorate(klass, *args)
       end
 

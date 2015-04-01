@@ -94,7 +94,7 @@ module Contracts
 
     # Return alias target for singleton methods.
     def alias_target(this)
-      this.singleton_class
+      Support.eigenclass_of this
     end
   end
 end

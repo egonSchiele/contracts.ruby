@@ -32,5 +32,13 @@ module Contracts
       return false if RUBY_PLATFORM == "java" && RUBY_VERSION.to_f < 2.0
       RUBY_VERSION.to_f > 1.8
     end
+
+    def self.eigenclass_of(target)
+      class << target; self; end
+    end
+
+    def self.eigenclass?(target)
+      target <= eigenclass_of(Object)
+    end
   end
 end
