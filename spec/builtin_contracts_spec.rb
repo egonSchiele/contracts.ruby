@@ -259,4 +259,23 @@ RSpec.describe "Contracts:" do
       end
     end
   end
+
+  describe "Receiver:" do
+    subject { subject_class.new 3 }
+    let(:subject_class) { Class.new ReceiverExample }
+    let(:sibling) { Class.new ReceiverExample }
+    let(:child) { Class.new subject_class }
+
+    it "fails on sibling classes" do
+      expect { subject.append sibling.new 2 }.to raise_error ContractError
+    end
+
+    it "passes for instances of the receiver" do
+      expect(subject.append(subject_class.new 2).value).to eq 5
+    end
+
+    it "passes for children of the receiver" do
+      expect(subject.append(child.new 2).value).to eq 5
+    end
+  end
 end

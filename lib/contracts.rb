@@ -70,7 +70,10 @@ class Contract < Contracts::Decorator
     fail data[:contracts].failure_exception.new(failure_msg(data), data)
   end
 
+  Thread.current[:contracts_receivers] = []
+
   attr_reader :args_contracts, :ret_contract, :klass, :method
+
   def initialize(klass, method, *contracts)
     if contracts[-1].is_a? Hash
       # internally we just convert that return value syntax back to an array
@@ -239,7 +242,9 @@ class Contract < Contracts::Decorator
     else
       # classes and everything else
       # e.g. Fixnum, Num
-      if contract.respond_to? :valid?
+      if contract.respond_to?(:valid?) && contract.method(:valid?).arity == 2
+        lambda { |arg| contract.valid? arg, :receiver => Thread.current[:contracts_receivers].last }
+      elsif contract.respond_to? :valid?
         lambda { |arg| contract.valid?(arg) }
       elsif klass == Class
         lambda { |arg| arg.is_a?(contract) }
@@ -280,6 +285,7 @@ class Contract < Contracts::Decorator
   end
 
   def call_with(this, *args, &blk)
+    Thread.current[:contracts_receivers] << this
     args << blk if blk
 
     # Explicitly append blk=nil if nil != Proc contract violation anticipated
@@ -364,6 +370,8 @@ class Contract < Contracts::Decorator
     this.verify_invariants!(method) if this.respond_to?(:verify_invariants!)
 
     result
+  ensure
+    Thread.current[:contracts_receivers].pop
   end
 
   # Used to determine type of failure exception this contract should raise in case of failure
