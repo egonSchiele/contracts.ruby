@@ -1,12 +1,8 @@
-# contracts.ruby
-
-[![Join the chat at https://gitter.im/egonSchiele/contracts.ruby](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/egonSchiele/contracts.ruby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-
-[![Build Status](https://travis-ci.org/egonSchiele/contracts.ruby.png?branch=master)](https://travis-ci.org/egonSchiele/contracts.ruby)
+# contracts.ruby [![Build Status](https://travis-ci.org/egonSchiele/contracts.ruby.png?branch=master)](https://travis-ci.org/egonSchiele/contracts.ruby) [![Join the chat at https://gitter.im/egonSchiele/contracts.ruby](https://img.shields.io/badge/gitter-join%20chat-brightgreen.svg)](https://gitter.im/egonSchiele/contracts.ruby)
 
 Contracts let you clearly – even beautifully – express how your code behaves, and free you from writing tons of boilerplate, defensive code.
 
-You can think of contracts as `assert` on steroids.
+You can think of contracts as `assert` on steroids. They check inputs, and outputs of functions and invarients of data. Read more about [design by contract](http://en.wikipedia.org/wiki/Design_by_contract) on Wikipedia.
 
 ## Installation
 
