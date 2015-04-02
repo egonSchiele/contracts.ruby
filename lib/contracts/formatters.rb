@@ -16,7 +16,7 @@ module Contracts
         elsif contract.is_a?(Array)
           array_contract(contract)
         else
-          InspectWrapper.new(contract, @full)
+          InspectWrapper.create(contract, @full)
         end
       end
 
@@ -24,23 +24,33 @@ module Contracts
       def hash_contract(hash)
         @full = true # Complex values output completely, overriding @full
         hash.inject({}) do |repr, (k, v)|
-          repr.merge(k => InspectWrapper.new(contract(v), @full))
+          repr.merge(k => InspectWrapper.create(contract(v), @full))
         end.inspect
       end
 
       # Formats Array contracts.
       def array_contract(array)
         @full = true
-        array.map { |v| InspectWrapper.new(contract(v), @full) }.inspect
+        array.map { |v| InspectWrapper.create(contract(v), @full) }.inspect
       end
     end
 
     # A wrapper class to produce correct inspect behaviour for different
     # contract values - constants, Class contracts, instance contracts etc.
-    class InspectWrapper
+    module InspectWrapper
+      # InspectWrapper is a factory, will never be an instance
+      # @return [ClassInspectWrapper, ObjectInspectWrapper]
+      def self.create(value, full = true)
+        if value.class == Class
+          ClassInspectWrapper
+        else
+          ObjectInspectWrapper
+        end.new(value, full)
+      end
+
       # @param full [Boolean] if false only unique `to_s` values will be output,
       #   non unique values become empty string.
-      def initialize(value, full = true)
+      def initialize(value, full)
         @value, @full = value, full
       end
 
@@ -54,7 +64,7 @@ module Contracts
         return @value.inspect if empty_val?
         return @value.to_s if plain?
         return delim(@value.to_s) if useful_to_s?
-        @value.inspect.gsub(/^Contracts::/, "")
+        useful_inspect
       end
 
       def delim(value)
@@ -85,8 +95,39 @@ module Contracts
 
       def useful_to_s?
         # Useless to_s value or no custom to_s behavious defined
-        # Ruby < 2.0 makes inspect call to_s so this won't work
-        @value.to_s != "" && @value.to_s != @value.inspect
+        !empty_to_s? && custom_to_s?
+      end
+
+      def empty_to_s?
+        @value.to_s.empty?
+      end
+
+      def strip_prefix(val)
+        val.gsub(/^Contracts::/, "")
+      end
+    end
+
+    class ClassInspectWrapper
+      include InspectWrapper
+
+      def custom_to_s?
+        @value.to_s != @value.name
+      end
+
+      def useful_inspect
+        strip_prefix(empty_to_s? ? @value.name : @value.inspect)
+      end
+    end
+
+    class ObjectInspectWrapper
+      include InspectWrapper
+
+      def custom_to_s?
+        !@value.to_s.match(/#\<\w+:.+\>/)
+      end
+
+      def useful_inspect
+        strip_prefix(empty_to_s? ? @value.class.name : @value.inspect)
       end
     end
   end
