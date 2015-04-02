@@ -16,7 +16,7 @@ module Contracts
         elsif contract.is_a?(Array)
           array_contract(contract)
         else
-          InspectWrapper.new(contract, @full)
+          InspectWrapper.create(contract, @full)
         end
       end
 
@@ -24,32 +24,23 @@ module Contracts
       def hash_contract(hash)
         @full = true # Complex values output completely, overriding @full
         hash.inject({}) do |repr, (k, v)|
-          repr.merge(k => InspectWrapper.new(contract(v), @full))
+          repr.merge(k => InspectWrapper.create(contract(v), @full))
         end.inspect
       end
 
       # Formats Array contracts.
       def array_contract(array)
         @full = true
-        array.map { |v| InspectWrapper.new(contract(v), @full) }.inspect
+        array.map { |v| InspectWrapper.create(contract(v), @full) }.inspect
       end
     end
 
     # A wrapper class to produce correct inspect behaviour for different
     # contract values - constants, Class contracts, instance contracts etc.
-    class InspectWrapper
-      # Turn InspectWrapper into a factory, will never be an instance
-      class << self
-        alias_method :__new__, :new
-
-        def inherited(subclass)
-          class << subclass
-            alias_method :new, :__new__
-          end
-        end
-      end
-
-      def self.new(value, full = true)
+    module InspectWrapper
+      # InspectWrapper is a factory, will never be an instance
+      # @return [ClassInspectWrapper, ObjectInspectWrapper]
+      def self.create(value, full = true)
         if value.class == Class
           ClassInspectWrapper
         else
@@ -116,7 +107,9 @@ module Contracts
       end
     end
 
-    class ClassInspectWrapper < InspectWrapper
+    class ClassInspectWrapper
+      include InspectWrapper
+
       def custom_to_s?
         @value.to_s != @value.name
       end
@@ -126,7 +119,9 @@ module Contracts
       end
     end
 
-    class ObjectInspectWrapper < InspectWrapper
+    class ObjectInspectWrapper
+      include InspectWrapper
+
       def custom_to_s?
         !@value.to_s.match(/#\<\w+:.+\>/)
       end

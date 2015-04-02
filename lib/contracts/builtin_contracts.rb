@@ -125,8 +125,8 @@ module Contracts
 
     def to_s
       @vals[0, @vals.size-1].map do |x|
-        InspectWrapper.new(x)
-      end.join(", ") + " or " + InspectWrapper.new(@vals[-1]).to_s
+        InspectWrapper.create(x)
+      end.join(", ") + " or " + InspectWrapper.create(@vals[-1]).to_s
     end
 
     # this can only be tested IF all the sub-contracts have a test_data method
@@ -161,8 +161,8 @@ module Contracts
 
     def to_s
       @vals[0, @vals.size-1].map do |x|
-        InspectWrapper.new(x)
-      end.join(", ") + " xor " + InspectWrapper.new(@vals[-1]).to_s
+        InspectWrapper.create(x)
+      end.join(", ") + " xor " + InspectWrapper.create(@vals[-1]).to_s
     end
 
     def testable?
@@ -195,8 +195,8 @@ module Contracts
 
     def to_s
       @vals[0, @vals.size-1].map do |x|
-        InspectWrapper.new(x)
-      end.join(", ") + " and " + InspectWrapper.new(@vals[-1]).to_s
+        InspectWrapper.create(x)
+      end.join(", ") + " and " + InspectWrapper.create(@vals[-1]).to_s
     end
   end
 

@@ -555,10 +555,10 @@ RSpec.describe "Contracts:" do
       end.to raise_error(ContractError, /Actual: ""/)
     end
 
-    it 'should not use custom to_s if empty string' do
-      expect {
-        @o.using_empty_contract('bad')
-      }.to raise_error(ContractError, /Expected: EmptyCont/)
+    it "should not use custom to_s if empty string" do
+      expect do
+        @o.using_empty_contract("bad")
+      end.to raise_error(ContractError, /Expected: EmptyCont/)
     end
   end
 

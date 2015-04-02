@@ -53,7 +53,7 @@ end
 
 class EmptyCont
   def self.to_s
-    ''
+    ""
   end
 end
 
