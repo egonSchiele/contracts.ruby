@@ -10,3 +10,5 @@
 - fixed pattern matching when the multiple definitions of functions have different arities.
 - couple of new built-in contracts: Nat, Eq.
 - changed `Invariant` to `invariant`: `invariant(:day) { 1 <= day && day <= 31 }`
+- prettier error messages (`Contracts::Num` is now just `Num`, for example)
+- support for yard-contracts
