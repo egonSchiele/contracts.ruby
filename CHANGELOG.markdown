@@ -9,3 +9,4 @@
 - if a contract is set on a protected method, it should not become public.
 - fixed pattern matching when the multiple definitions of functions have different arities.
 - couple of new built-in contracts: Nat, Eq.
+- changed `Invariant` to `invariant`: `invariant(:day) { 1 <= day && day <= 31 }`
