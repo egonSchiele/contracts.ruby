@@ -216,7 +216,7 @@ class GenericExample
   def bool_test(x)
   end
 
-  Contract nil => Num
+  Contract Num
   def no_args
     1
   end
@@ -272,13 +272,13 @@ class GenericExample
     a
   end
 
-  Contract nil => String
+  Contract String
   def a_private_method
     "works"
   end
   private :a_private_method
 
-  Contract nil => String
+  Contract String
   def a_protected_method
     "works"
   end
@@ -286,14 +286,14 @@ class GenericExample
 
   private
 
-  Contract nil => String
+  Contract String
   def a_really_private_method
     "works for sure"
   end
 
   protected
 
-  Contract nil => String
+  Contract String
   def a_really_protected_method
     "works for sure"
   end
