@@ -315,9 +315,14 @@ module Contracts
   # one for hash keys and one for hash values.
   # Example: <tt>HashOf[Symbol, String]</tt>
   class HashOf < CallableClass
-    def initialize(key, value)
-      @key   = key
-      @value = value
+    def initialize(key, value = nil)
+      if value
+        @key   = key
+        @value = value
+      else
+        @key   = key.keys.first
+        @value = key[@key]
+      end
     end
 
     def valid?(hash)

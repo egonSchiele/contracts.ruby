@@ -257,10 +257,12 @@ RSpec.describe "Contracts:" do
   describe "HashOf:" do
     context "given a fulfilled contract" do
       it { expect(@o.gives_max_value(:panda => 1, :bamboo => 2)).to eq(2) }
+      it { expect(@o.pretty_gives_max_value(:panda => 1, :bamboo => 2)).to eq(2) }
     end
 
     context "given an unfulfilled contract" do
       it { expect { @o.gives_max_value(:panda => "1", :bamboo => "2") }.to raise_error(ContractError) }
+      it { expect { @o.pretty_gives_max_value(:panda => "1", :bamboo => "2") }.to raise_error(ContractError) }
     end
 
     describe "#to_s" do
