@@ -212,6 +212,13 @@ class GenericExample
     end
   end
 
+  Contract SetOf[Num] => Num
+  def product_from_set(vals)
+    vals.inject(1) do |acc, x|
+      acc * x
+    end
+  end
+
   Contract Bool => nil
   def bool_test(x)
   end

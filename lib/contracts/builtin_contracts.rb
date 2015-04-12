@@ -259,6 +259,29 @@ module Contracts
     end
   end
 
+  # Takes a contract. The related argument must be a set.
+  # Checks the contract against every element of the set.
+  # If it passes for all elements, the contract passes.
+  # Example: <tt>SetOf[Num]</tt>
+  class SetOf < ArrayOf
+    def valid?(vals)
+      lazy_require_set
+      return false unless vals.is_a?(Set)
+      super(vals.to_a)
+    end
+
+    def to_s
+      "a set of #{@contract}"
+    end
+
+    private
+
+    # Requires set only if SetOf contract was actually used
+    def lazy_require_set
+      require "set"
+    end
+  end
+
   # Used for <tt>*args</tt> (variadic functions). Takes a contract
   # and uses it to validate every element passed in
   # through <tt>*args</tt>.
