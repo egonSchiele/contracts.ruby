@@ -215,6 +215,20 @@ RSpec.describe "Contracts:" do
     end
   end
 
+  describe "SetOf:" do
+    it "should pass for a set of nums" do
+      expect { @o.product_from_set(Set.new([1, 2, 3])) }.to_not raise_error
+    end
+
+    it "should fail for an array with one non-num" do
+      expect { @o.product_from_set(Set.new([1, 2, 3, "bad"])) }.to raise_error(ContractError)
+    end
+
+    it "should fail for a non-array" do
+      expect { @o.product_from_set(1) }.to raise_error(ContractError)
+    end
+  end
+
   describe "Bool:" do
     it "should pass for an argument that is a boolean" do
       expect { @o.bool_test(true) }.to_not raise_error

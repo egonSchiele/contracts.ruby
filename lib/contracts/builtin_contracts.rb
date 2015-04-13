@@ -237,17 +237,20 @@ module Contracts
     end
   end
 
-  # Takes a contract. The related argument must be an array.
-  # Checks the contract against every element of the array.
+  # @private
+  # Takes a collection(responds to :each) type and a contract.
+  # The related argument must be of specified collection type.
+  # Checks the contract against every element of the collection.
   # If it passes for all elements, the contract passes.
-  # Example: <tt>ArrayOf[Num]</tt>
-  class ArrayOf < CallableClass
-    def initialize(contract)
+  # Example: <tt>CollectionOf[Array, Num]</tt>
+  class CollectionOf < CallableClass
+    def initialize(collection_class, contract)
+      @collection_class = collection_class
       @contract = contract
     end
 
     def valid?(vals)
-      return false unless vals.is_a?(Array)
+      return false unless vals.is_a?(@collection_class)
       vals.all? do |val|
         res, _ = Contract.valid?(val, @contract)
         res
@@ -255,8 +258,36 @@ module Contracts
     end
 
     def to_s
-      "an array of #{@contract}"
+      "a collection #{@collection_class} of #{@contract}"
     end
+
+    class Factory
+      def initialize(collection_class, &before_new)
+        @collection_class = collection_class
+        @before_new = before_new
+      end
+
+      def new(contract)
+        @before_new && @before_new.call
+        CollectionOf.new(@collection_class, contract)
+      end
+
+      alias_method :[], :new
+    end
+  end
+
+  # Takes a contract. The related argument must be an array.
+  # Checks the contract against every element of the array.
+  # If it passes for all elements, the contract passes.
+  # Example: <tt>ArrayOf[Num]</tt>
+  ArrayOf = CollectionOf::Factory.new(Array)
+
+  # Takes a contract. The related argument must be a set.
+  # Checks the contract against every element of the set.
+  # If it passes for all elements, the contract passes.
+  # Example: <tt>SetOf[Num]</tt>
+  SetOf = CollectionOf::Factory.new(Set) do
+    require "set"
   end
 
   # Used for <tt>*args</tt> (variadic functions). Takes a contract
