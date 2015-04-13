@@ -3,6 +3,12 @@ class GenericExample
   def splat_then_arg(*vals, n)
     vals.map { |v| v * n }
   end
+
+  if ruby_version <= 1.9
+    Contract ({:foo => Nat}) => nil
+    def nat_test_with_kwarg(a_hash)
+    end
+  end
 end
 
 RSpec.describe "Contracts:" do
