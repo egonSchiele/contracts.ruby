@@ -173,7 +173,7 @@ class GenericExample
   def nat_test(x)
   end
 
-  Contract ({foo:  Nat}) => nil
+  Contract ({:foo => Nat}) => nil
   def nat_test_with_kwarg(foo: 10)
   end
 
