@@ -256,7 +256,7 @@ RSpec.describe "Contracts:" do
 
   describe "HashOf:" do
     it "doesn't allow to specify multiple key-value pairs with pretty syntax" do
-      expect {
+      expect do
         Class.new do
           include Contracts
 
@@ -265,7 +265,7 @@ RSpec.describe "Contracts:" do
             # ...
           end
         end
-      }.to raise_error(ArgumentError, "You should provide only one key-value pair to HashOf contract")
+      end.to raise_error(ArgumentError, "You should provide only one key-value pair to HashOf contract")
     end
 
     context "given a fulfilled contract" do

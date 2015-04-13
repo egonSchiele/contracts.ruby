@@ -315,6 +315,8 @@ module Contracts
   # one for hash keys and one for hash values.
   # Example: <tt>HashOf[Symbol, String]</tt>
   class HashOf < CallableClass
+    INVALID_KEY_VALUE_PAIR = "You should provide only one key-value pair to HashOf contract"
+
     def initialize(key, value = nil)
       if value
         @key   = key
@@ -340,9 +342,7 @@ module Contracts
     private
 
     def validate_hash(hash)
-      unless hash.count == 1
-        raise ArgumentError, "You should provide only one key-value pair to HashOf contract"
-      end
+      fail ArgumentError, INVALID_KEY_VALUE_PAIR unless hash.count == 1
     end
   end
 
