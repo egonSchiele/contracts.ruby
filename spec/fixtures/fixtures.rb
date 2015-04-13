@@ -174,7 +174,12 @@ class GenericExample
   end
 
   Contract ({:foo => Nat}) => nil
-  def nat_test_with_kwarg(foo: 10)
+  if ruby_version < 2.0
+    def nat_test_with_kwarg(a_hash)
+    end
+  else
+    def nat_test_with_kwarg(foo: 10)
+    end
   end
 
   Contract Any => nil
