@@ -173,10 +173,6 @@ class GenericExample
   def nat_test(x)
   end
 
-  Contract ({:foo => Nat}) => nil
-  def nat_test_with_kwarg(foo: 10)
-  end
-
   Contract Any => nil
   def show(x)
   end

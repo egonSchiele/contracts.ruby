@@ -3,6 +3,10 @@ class GenericExample
   def splat_then_optional_named(*vals, repeat: 2)
     vals.map { |v| v * repeat }
   end
+
+  Contract ({foo: Nat}) => nil
+  def nat_test_with_kwarg(foo: 10)
+  end
 end
 
 RSpec.describe "Contracts:" do
