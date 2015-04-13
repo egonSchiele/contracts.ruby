@@ -559,8 +559,8 @@ Expected: a number please,
   <span class="pl-k">include</span> <span class="pl-c1">Contracts</span>
   <span class="pl-k">include</span> <span class="pl-c1">Contracts</span>::<span class="pl-c1">Invariants</span>
 
-  <span class="pl-c1">Invariant</span>(<span class="pl-c1">:day</span>) { <span class="pl-c1">1</span> <span class="pl-k">&lt;=</span> day <span class="pl-k">&amp;&amp;</span> day <span class="pl-k">&lt;=</span> <span class="pl-c1">31</span> }
-  <span class="pl-c1">Invariant</span>(<span class="pl-c1">:month</span>) { <span class="pl-c1">1</span> <span class="pl-k">&lt;=</span> month <span class="pl-k">&amp;&amp;</span> month <span class="pl-k">&lt;=</span> <span class="pl-c1">12</span> }
+  invariant(<span class="pl-c1">:day</span>) { <span class="pl-c1">1</span> <span class="pl-k">&lt;=</span> day <span class="pl-k">&amp;&amp;</span> day <span class="pl-k">&lt;=</span> <span class="pl-c1">31</span> }
+  invariant(<span class="pl-c1">:month</span>) { <span class="pl-c1">1</span> <span class="pl-k">&lt;=</span> month <span class="pl-k">&amp;&amp;</span> month <span class="pl-k">&lt;=</span> <span class="pl-c1">12</span> }
 
   <span class="pl-c1">Contract</span> <span class="pl-c1">None</span> =&gt; <span class="pl-c1">Fixnum</span>
   <span class="pl-k">def</span> <span class="pl-en">silly_next_day!</span>
@@ -579,7 +579,7 @@ birthday.silly_next_day!</pre></div>
 <span class="pl-s">   Value guarded in: MyBirthday::silly_next_day!</span>
 <span class="pl-s">   At: main.rb:9</span></pre></div>
 
-<p>Which means, that after <code>#silly_next_day!</code> all checks specified in <code>Invariant</code> statement will be verified, and if at least one fail, then Invariant violation error will be raised.</p>
+<p>Which means, that after <code>#silly_next_day!</code> all checks specified in <code>invariant</code> statement will be verified, and if at least one fail, then invariant violation error will be raised.</p>
 
 <h2>
 <a id="auto-generate-documentation-using-contracts" class="anchor" href="#auto-generate-documentation-using-contracts" aria-hidden="true"><span class="octicon octicon-link"></span></a>Auto-generate documentation using contracts</h2>
