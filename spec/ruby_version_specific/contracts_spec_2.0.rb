@@ -19,4 +19,18 @@ RSpec.describe "Contracts:" do
       expect { @o.splat_then_optional_named("hello", "world", repeat: 3) }.to_not raise_error
     end
   end
+
+  describe "Nat:" do
+    it "should pass for keyword args with correct arg given" do
+      expect { @o.nat_test_with_kwarg(foo: 10) }.to_not raise_error
+    end
+
+    it "should fail with a ContractError for wrong keyword args input" do
+      expect { @o.nat_test_with_kwarg(foo: -10) }.to raise_error(ContractError)
+    end
+
+    it "should fail with a ContractError for no input" do
+      expect { @o.nat_test_with_kwarg }.to raise_error(ContractError)
+    end
+  end
 end

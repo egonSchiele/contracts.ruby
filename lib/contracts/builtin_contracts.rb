@@ -42,7 +42,7 @@ module Contracts
   # Check that an argument is a natural number.
   class Nat
     def self.valid? val
-      val >= 0 && val.integer?
+      val && val >= 0 && val.integer?
     end
   end
 
