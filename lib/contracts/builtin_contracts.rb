@@ -320,6 +320,7 @@ module Contracts
         @key   = key
         @value = value
       else
+        validate_hash(key)
         @key   = key.keys.first
         @value = key[@key]
       end
@@ -334,6 +335,14 @@ module Contracts
 
     def to_s
       "Hash<#{@key}, #{@value}>"
+    end
+
+    private
+
+    def validate_hash(hash)
+      unless hash.count == 1
+        raise ArgumentError, "You should provide only one key-value pair to HashOf contract"
+      end
     end
   end
 
