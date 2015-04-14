@@ -255,12 +255,27 @@ RSpec.describe "Contracts:" do
   end
 
   describe "HashOf:" do
+    it "doesn't allow to specify multiple key-value pairs with pretty syntax" do
+      expect do
+        Class.new do
+          include Contracts
+
+          Contract Contracts::HashOf[Symbol => String, Contracts::Num => Contracts::Num] => nil
+          def something(hash)
+            # ...
+          end
+        end
+      end.to raise_error(ArgumentError, "You should provide only one key-value pair to HashOf contract")
+    end
+
     context "given a fulfilled contract" do
       it { expect(@o.gives_max_value(:panda => 1, :bamboo => 2)).to eq(2) }
+      it { expect(@o.pretty_gives_max_value(:panda => 1, :bamboo => 2)).to eq(2) }
     end
 
     context "given an unfulfilled contract" do
       it { expect { @o.gives_max_value(:panda => "1", :bamboo => "2") }.to raise_error(ContractError) }
+      it { expect { @o.pretty_gives_max_value(:panda => "1", :bamboo => "2") }.to raise_error(ContractError) }
     end
 
     describe "#to_s" do

@@ -274,6 +274,11 @@ class GenericExample
     hash.values.max
   end
 
+  Contract HashOf[Symbol => Num] => Num
+  def pretty_gives_max_value(hash)
+    hash.values.max
+  end
+
   Contract EmptyCont => Any
   def using_empty_contract(a)
     a
