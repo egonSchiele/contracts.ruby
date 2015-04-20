@@ -228,6 +228,13 @@ class GenericExample
     1
   end
 
+  # This function has a contract which says it has no args,
+  # but the function does have args.
+  Contract nil => Num
+  def old_style_no_args
+    2
+  end
+
   Contract ArrayOf[Num], Func[Num => Num] => ArrayOf[Num]
   def map(arr, func)
     ret = []

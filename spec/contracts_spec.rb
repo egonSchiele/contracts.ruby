@@ -15,6 +15,27 @@ RSpec.describe "Contracts:" do
     end
   end
 
+  describe "contracts for functions with no arguments" do
+    it "should work for functions with no args" do
+      expect { @o.no_args }.to_not raise_error
+    end
+
+    it "should still work for old-style contracts for functions with no args" do
+      expect { @o.old_style_no_args }.to_not raise_error
+    end
+
+    it "should not work for a function with a bad contract" do
+      expect do
+        Class.new(GenericExample) do
+          Contract Num, Num
+          def no_args_bad_contract
+            1
+          end
+        end
+      end.to raise_error
+    end
+  end
+
   describe "pattern matching" do
     let(:string_with_hello) { "Hello, world" }
     let(:string_without_hello) { "Hi, world" }
@@ -271,10 +292,6 @@ RSpec.describe "Contracts:" do
     it "should fail for incorrect input" do
       expect { GenericExample.a_class_method("bad") }.to raise_error(ContractError)
     end
-  end
-
-  it "should work for functions with no args" do
-    expect { @o.no_args }.to_not raise_error
   end
 
   describe "classes" do

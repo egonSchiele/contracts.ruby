@@ -81,17 +81,17 @@ class Contract < Contracts::Decorator
     unless contracts.last.is_a?(Hash)
       unless contracts.one?
         fail %{
-          It looks like your contract for #{method} doesn't have a return
+          It looks like your contract for #{method.name} doesn't have a return
           value. A contract should be written as `Contract arg1, arg2 =>
           return_value`.
         }.strip
       end
-
       contracts = [nil => contracts[-1]]
     end
 
     # internally we just convert that return value syntax back to an array
     @args_contracts = contracts[0, contracts.size - 1] + contracts[-1].keys
+
     @ret_contract = contracts[-1].values[0]
 
     @args_validators = args_contracts.map do |contract|
