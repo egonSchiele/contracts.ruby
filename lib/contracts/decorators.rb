@@ -73,7 +73,7 @@ module Contracts
           contract.args_contracts == new_args_contract
         end
         unless matched.empty?
-          raise ContractError.new(%{
+          fail ContractError.new(%{
 It looks like you are trying to use pattern-matching, but
 multiple definitions for function '#{name}' have the same
 contract for input parameters:
