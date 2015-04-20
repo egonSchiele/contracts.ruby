@@ -81,6 +81,22 @@ RSpec.describe "Contracts:" do
       end.to raise_error(ContractError)
     end
 
+    it "should fail if multiple methods are defined with the same contract (for pattern-matching)" do
+      expect do
+        Class.new(GenericExample) do
+          Contract Contracts::Num => Contracts::Num
+          def same_param_contract x
+            x + 2
+          end
+
+          Contract Contracts::Num => String
+          def same_param_contract x
+            "sdf"
+          end
+        end
+      end.to raise_error(ContractError)
+    end
+
     context "when failure_callback was overriden" do
       before do
         ::Contract.override_failure_callback do |_data|

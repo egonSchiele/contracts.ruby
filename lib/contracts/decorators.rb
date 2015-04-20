@@ -68,6 +68,21 @@ module Contracts
         # now the *only* reference to the old method that exists.
         # We assume here that the decorator (klass) responds to .new
         decorator = klass.new(self, method_reference, *args)
+        new_args_contract = decorator.args_contracts
+        matched = @decorated_methods[method_type][name].select do |contract|
+          contract.args_contracts == new_args_contract
+        end
+        unless matched.empty?
+          raise ContractError.new(%{
+It looks like you are trying to use pattern-matching, but
+multiple definitions for function '#{name}' have the same
+contract for input parameters:
+
+#{(matched + [decorator]).map(&:to_s).join("\n")}
+
+Each definition needs to have a different contract for the parameters.
+          }, {})
+        end
         @decorated_methods[method_type][name] << decorator
         pattern_matching ||= decorator.pattern_match?
       end
