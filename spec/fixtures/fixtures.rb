@@ -413,6 +413,16 @@ class PatternMatchingExample
   def do_stuff(number, string, other_number)
     "bar"
   end
+
+  Contract Num => Num
+  def double x
+    "bad"
+  end
+
+  Contract String => String
+  def double x
+    x * 2
+  end
 end
 
 # invariant example (silliest implementation ever)

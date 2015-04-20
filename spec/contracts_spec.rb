@@ -75,6 +75,12 @@ RSpec.describe "Contracts:" do
       ).to eq("foo")
     end
 
+    it "if the return contract for a pattern match fails, it should fail instead of trying the next pattern match" do
+      expect do
+        subject.double(1)
+      end.to raise_error(ContractError)
+    end
+
     context "when failure_callback was overriden" do
       before do
         ::Contract.override_failure_callback do |_data|
@@ -92,6 +98,12 @@ RSpec.describe "Contracts:" do
         expect(
           subject.process_request(PatternMatchingExample::Failure.new)
         ).to be_a(PatternMatchingExample::Failure)
+      end
+
+      it "if the return contract for a pattern match fails, it should fail instead of trying the next pattern match, even with the failure callback" do
+        expect do
+          subject.double(1)
+        end.to raise_error(ContractError)
       end
 
       it "uses overriden failure_callback when pattern matching fails" do

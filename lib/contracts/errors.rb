@@ -22,6 +22,12 @@ end
 class ContractError < ContractBaseError
 end
 
+class ParamContractError < ContractError
+end
+
+class ReturnContractError < ContractError
+end
+
 # @private
 # Special contract error used internally to detect pattern failure during pattern matching
 class PatternMatchingError < ContractBaseError
