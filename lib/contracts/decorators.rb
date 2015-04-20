@@ -93,14 +93,14 @@ module Contracts
       # Here's why: Suppose you have this code:
       #
       #     class Foo
-      #       Contract nil => String
+      #       Contract String
       #       def to_s
       #         "Foo"
       #       end
       #     end
       #
       #     class Bar < Foo
-      #       Contract nil => String
+      #       Contract String
       #       def to_s
       #         super + "Bar"
       #       end
