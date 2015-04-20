@@ -61,6 +61,24 @@ module Contracts
 
       @decorated_methods[method_type][name] ||= []
 
+      unless decorators.size == 1
+        fail %{
+Oops, it looks like method '#{name}' has multiple contracts:
+#{decorators.map { |x| x[1][0].inspect }.join("\n")}
+
+Did you accidentally put more than one contract on a single function, like so?
+
+Contract String => String
+Contract Num => String
+def foo x
+end
+
+If you did NOT, then you have probably discovered a bug in this library.
+Please file it along with the relevant code at:
+https://github.com/egonSchiele/contracts.ruby/issues
+        }
+      end
+
       pattern_matching = false
       decorators.each do |klass, args|
         # a reference to the method gets passed into the contract here. This is good because
