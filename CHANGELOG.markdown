@@ -1,5 +1,19 @@
 ## v0.9
-- (delete this line and add your changes here)
+- MAJOR fix in pattern-matching: If the return contract for a pattern-matched function fails, it should NOT try the next pattern-match function. Pattern-matching is only for params, not return values.
+- raise an error if multiple defns have the same contract for pattern matching.
+
+- New syntax for functions with no input params.
+  Old way:
+  Contract nil => 1
+  def one
+
+  New way:
+  Contract 1
+  def one
+
+- Prettier HashOf contract can now be written like this: `HashOf[Num => String]`
+- Add `SetOf` contract
+- various small fixes
 
 ## v0.8
 - code refactored (very slight loss of performance, big increase in readability)
