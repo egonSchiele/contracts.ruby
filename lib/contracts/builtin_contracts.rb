@@ -1,4 +1,5 @@
 require "contracts/formatters"
+require "set"
 
 # rdoc
 # This module contains all the builtin contracts.
@@ -286,9 +287,7 @@ module Contracts
   # Checks the contract against every element of the set.
   # If it passes for all elements, the contract passes.
   # Example: <tt>SetOf[Num]</tt>
-  SetOf = CollectionOf::Factory.new(Set) do
-    require "set"
-  end
+  SetOf = CollectionOf::Factory.new(Set)
 
   # Used for <tt>*args</tt> (variadic functions). Takes a contract
   # and uses it to validate every element passed in
