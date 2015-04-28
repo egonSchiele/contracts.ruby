@@ -10,8 +10,8 @@ module Contracts
 
     def self.common(base)
       return unless base.instance_of?(Module)
-      base.extend(MethodDecorators)
-      Eigenclass.lift(base)
+      #base.extend(MethodDecorators)
+      #Eigenclass.lift(base)
     end
   end
 end

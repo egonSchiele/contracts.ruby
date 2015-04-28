@@ -7,6 +7,7 @@ require "contracts/invariants"
 require "contracts/method_reference"
 require "contracts/modules"
 require "contracts/support"
+require "contracts/engine"
 
 module Contracts
   def self.included(base)
@@ -18,7 +19,7 @@ module Contracts
   end
 
   def self.common(base)
-    Eigenclass.lift(base)
+    #Eigenclass.lift(base)
 
     return if base.respond_to?(:Contract)
 
@@ -26,7 +27,7 @@ module Contracts
 
     base.instance_eval do
       def functype(funcname)
-        contracts = decorated_methods[:class_methods][funcname]
+        contracts = Engine.fetch_from(self).decorated_methods[:class_methods][funcname]
         if contracts.nil?
           "No contract for #{self}.#{funcname}"
         else
@@ -51,7 +52,7 @@ your module.}
       end
 
       def functype(funcname)
-        contracts = self.class.decorated_methods[:instance_methods][funcname]
+        contracts = Engine.fetch_from(self.class).decorated_methods[:instance_methods][funcname]
         if contracts.nil?
           "No contract for #{self.class}.#{funcname}"
         else

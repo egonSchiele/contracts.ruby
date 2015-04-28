@@ -1,25 +1,7 @@
 module Contracts
   module MethodDecorators
     def self.extended(klass)
-      return if klass.respond_to?(:decorated_methods=)
-
-      class << klass
-        attr_accessor :decorated_methods
-      end
-    end
-
-    module EigenclassWithOwner
-      def self.lift(eigenclass)
-        fail Contracts::ContractsNotIncluded unless with_owner?(eigenclass)
-
-        eigenclass
-      end
-
-      private
-
-      def self.with_owner?(eigenclass)
-        eigenclass.respond_to?(:owner_class) && eigenclass.owner_class
-      end
+      Engine.apply(klass)
     end
 
     # first, when you write a contract, the decorate method gets called which
@@ -37,19 +19,12 @@ module Contracts
       super
     end
 
-    def pop_decorators
-      Array(@decorators).tap { @decorators = nil }
-    end
-
-    def fetch_decorators
-      pop_decorators + Eigenclass.lift(self).pop_decorators
-    end
-
     def common_method_added(name, is_class_method)
-      decorators = fetch_decorators
-      return if decorators.empty?
+      return unless Engine.applied?(self)
+      engine = Engine.fetch_from(self)
 
-      @decorated_methods ||= { :class_methods => {}, :instance_methods => {} }
+      decorators = engine.all_decorators
+      return if decorators.empty?
 
       if is_class_method
         method_reference = SingletonMethodReference.new(name, method(name))
@@ -58,8 +33,6 @@ module Contracts
         method_reference = MethodReference.new(name, instance_method(name))
         method_type = :instance_methods
       end
-
-      @decorated_methods[method_type][name] ||= []
 
       unless decorators.size == 1
         fail %{
@@ -79,6 +52,8 @@ https://github.com/egonSchiele/contracts.ruby/issues
         }
       end
 
+      engine.decorated_methods[method_type][name] ||= []
+
       pattern_matching = false
       decorators.each do |klass, args|
         # a reference to the method gets passed into the contract here. This is good because
@@ -87,7 +62,7 @@ https://github.com/egonSchiele/contracts.ruby/issues
         # We assume here that the decorator (klass) responds to .new
         decorator = klass.new(self, method_reference, *args)
         new_args_contract = decorator.args_contracts
-        matched = @decorated_methods[method_type][name].select do |contract|
+        matched = engine.decorated_methods[method_type][name].select do |contract|
           contract.args_contracts == new_args_contract
         end
         unless matched.empty?
@@ -101,12 +76,12 @@ contract for input parameters:
 Each definition needs to have a different contract for the parameters.
           }, {})
         end
-        @decorated_methods[method_type][name] << decorator
+        engine.add_method_decorator(method_type, name, decorator)
         pattern_matching ||= decorator.pattern_match?
       end
 
-      if @decorated_methods[method_type][name].any? { |x| x.method != method_reference }
-        @decorated_methods[method_type][name].each(&:pattern_match!)
+      if engine.decorated_methods[method_type][name].any? { |x| x.method != method_reference }
+        engine.decorated_methods[method_type][name].each(&:pattern_match!)
 
         pattern_matching = true
       end
@@ -156,16 +131,19 @@ Each definition needs to have a different contract for the parameters.
       #     call Foo's version of decorated_methods. So the line needs to be `current = #{self}`.
 
       current = self
+      current_engine = engine
       method_reference.make_definition(self) do |*args, &blk|
         ancestors = current.ancestors
         ancestors.shift # first one is just the class itself
-        while current && !current.respond_to?(:decorated_methods) || current.decorated_methods.nil?
+        while current && current_engine && !current_engine.has_decorated_methods?
           current = ancestors.shift
+          current_engine = Engine.fetch_from(current)
         end
-        if !current.respond_to?(:decorated_methods) || current.decorated_methods.nil?
+
+        unless current_engine && current_engine.has_decorated_methods?
           fail "Couldn't find decorator for method " + self.class.name + ":#{name}.\nDoes this method look correct to you? If you are using contracts from rspec, rspec wraps classes in it's own class.\nLook at the specs for contracts.ruby as an example of how to write contracts in this case."
         end
-        methods = current.decorated_methods[method_type][name]
+        methods = current_engine.decorated_methods[method_type][name]
 
         # this adds support for overloading methods. Here we go through each method and call it with the arguments.
         # If we get a ContractError, we move to the next function. Otherwise we return the result.
@@ -194,15 +172,6 @@ Each definition needs to have a different contract for the parameters.
         result
       end
     end
-
-    def decorate(klass, *args)
-      if Support.eigenclass? self
-        return EigenclassWithOwner.lift(self).owner_class.decorate(klass, *args)
-      end
-
-      @decorators ||= []
-      @decorators << [klass, args]
-    end
   end
 
   class Decorator
@@ -220,7 +189,7 @@ Each definition needs to have a different contract for the parameters.
       # inside, `decorate` is called with those params.
       MethodDecorators.module_eval <<-ruby_eval, __FILE__, __LINE__ + 1
         def #{klass}(*args, &blk)
-          decorate(#{klass}, *args, &blk)
+          ::Contracts::Engine.fetch_from(self).decorate(#{klass}, *args, &blk)
         end
       ruby_eval
     end
