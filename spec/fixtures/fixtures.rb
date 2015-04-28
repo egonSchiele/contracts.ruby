@@ -120,8 +120,13 @@ class GenericExample
   end
 
   Contract Proc => Any
-  def do_call(&blk)
-    blk.call
+  def do_call(&block)
+    block.call
+  end
+
+  Contract Args[Num], Maybe[Proc] => Any
+  def maybe_call(*vals, &block)
+    block.call if block
   end
 
   Contract Args[Num] => Num

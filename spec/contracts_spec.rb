@@ -404,6 +404,26 @@ RSpec.describe "Contracts:" do
         @o.double_with_proc(4)
       end.to raise_error(ContractError, /Actual: nil/)
     end
+
+    it "should succeed for maybe proc with no proc" do
+      expect do
+        @o.maybe_call(5)
+      end.to_not raise_error
+    end
+
+    it "should succeed for maybe proc with proc" do
+      expect do
+        @o.maybe_call(5) do
+          2 + 2
+        end
+      end.to_not raise_error
+    end
+
+    it "should fail for maybe proc with invalid input" do
+      expect do
+        @o.maybe_call("bad")
+      end.to raise_error(ContractError)
+    end
   end
 
   describe "varargs" do
