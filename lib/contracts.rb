@@ -8,6 +8,7 @@ require "contracts/method_reference"
 require "contracts/modules"
 require "contracts/support"
 require "contracts/engine"
+require "contracts/method_handler"
 
 module Contracts
   def self.included(base)
