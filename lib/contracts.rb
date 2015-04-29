@@ -113,8 +113,9 @@ class Contract < Contracts::Decorator
     # == @has_proc_contract
     last_contract = args_contracts.last
     is_a_proc = last_contract.is_a?(Class) && (last_contract <= Proc || last_contract <= Method)
+    maybe_a_proc = last_contract.is_a?(Contracts::Maybe) && last_contract.include_proc?
 
-    @has_proc_contract = is_a_proc || last_contract.is_a?(Contracts::Func)
+    @has_proc_contract = is_a_proc || maybe_a_proc || last_contract.is_a?(Contracts::Func)
     # ====
 
     # == @has_options_contract

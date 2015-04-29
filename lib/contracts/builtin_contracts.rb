@@ -352,6 +352,10 @@ module Contracts
     def initialize(*vals)
       super(*(vals + [nil]))
     end
+
+    def include_proc?
+      @vals.include? Proc
+    end
   end
 
   # Used to define contracts on functions passed in as arguments.
