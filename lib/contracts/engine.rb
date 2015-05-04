@@ -70,11 +70,8 @@ module Contracts
       decorators << [klass, args]
     end
 
-    def validate!
-    end
-
     def set_eigenclass_owner
-      Engine.fetch_from(eigenclass).owner_class = target
+      eigenclass_engine.owner_class = target
     end
 
     def all_decorators
@@ -102,6 +99,9 @@ module Contracts
     private
     attr_reader :target
 
+    def validate!
+    end
+
     def eigenclass
       Support.eigenclass_of(target)
     end
@@ -122,10 +122,6 @@ module Contracts
   class EigenclassEngine < Engine
     attr_accessor :owner_class
 
-    def validate!
-      fail Contracts::ContractsNotIncluded unless has_owner?
-    end
-
     def set_eigenclass_owner
     end
 
@@ -134,6 +130,10 @@ module Contracts
     end
 
     private
+
+    def validate!
+      fail Contracts::ContractsNotIncluded unless has_owner?
+    end
 
     def has_owner?
       !!owner_class
