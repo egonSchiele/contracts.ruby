@@ -6,6 +6,22 @@ module Contracts
       # Class that owns this eigenclass
       attr_accessor :owner_class
 
+      # Automatically enables eigenclass engine if it is not
+      # Returns its engine
+      # NOTE: Required by jruby in 1.9 mode. Otherwise inherited
+      # eigenclasses don't have their engines
+      #
+      # @param [Class] eigenclass - class in question
+      # @param [Class] owner - owner of eigenclass
+      # @return [Engine::Eigenclass]
+      def self.lift(eigenclass, owner)
+        return Engine.fetch_from(eigenclass) if Engine.applied?(eigenclass)
+
+        Target.new(eigenclass).apply(Eigenclass)
+        Engine.fetch_from(owner).set_eigenclass_owner
+        Engine.fetch_from(eigenclass)
+      end
+
       # No-op for eigenclasses
       def set_eigenclass_owner
       end

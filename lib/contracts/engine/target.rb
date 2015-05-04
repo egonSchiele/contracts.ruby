@@ -21,8 +21,8 @@ module Contracts
 
         apply_to_eigenclass
 
-        target.class_eval do
-          define_singleton_method(:__contracts_engine) do
+        eigenclass.class_eval do
+          define_method(:__contracts_engine) do
             @__contracts_engine ||= engine_class.new(self)
           end
         end

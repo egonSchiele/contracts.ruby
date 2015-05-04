@@ -121,7 +121,7 @@ module Contracts
       end
 
       def eigenclass_engine
-        Engine.fetch_from(eigenclass)
+        Eigenclass.lift(eigenclass, klass)
       end
 
       def decorators

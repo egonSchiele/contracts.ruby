@@ -14,7 +14,7 @@ module Contracts
       # .apply(klass)      - enables contracts engine on klass
       # .applied?(klass)   - returns true if klass has contracts engine
       # .fetch_from(klass) - returns contracts engine for klass
-      delegate [:apply, :applied?, :fetch_from] => :base_engine
+      def_delegators :base_engine, :apply, :applied?, :fetch_from
 
       private
 
