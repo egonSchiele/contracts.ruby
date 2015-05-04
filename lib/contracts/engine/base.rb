@@ -57,13 +57,8 @@ module Contracts
         pop_decorators + eigenclass_engine.all_decorators
       end
 
-      # Returns decorated methods hash (contains both class and
-      # instance methods)
-      #
-      # @return [{ :class_methods => HashOf[Symbol => Decorator],
-      #            :instance_methods => HashOf[Symbol => Decorator] }]
-      def decorated_methods
-        @_decorated_methods ||= { :class_methods => {}, :instance_methods => {} }
+      def decorated_methods_for(type, name)
+        Array(decorated_methods[type][name])
       end
 
       # Returns true if there are any decorated methods
@@ -84,8 +79,28 @@ module Contracts
         decorated_methods[type][name] << decorator
       end
 
+      # Returns nearest ancestor's engine that has decorated methods
+      #
+      # @return [Engine::Base or Engine::Eigenclass]
+      def nearest_decorated_ancestor
+        current = klass
+        current_engine = self
+        ancestors = current.ancestors[1..-1]
+
+        while current && current_engine && !current_engine.has_decorated_methods?
+          current = ancestors.shift
+          current_engine = Engine.fetch_from(current)
+        end
+
+        current_engine
+      end
+
       private
       attr_reader :klass
+
+      def decorated_methods
+        @_decorated_methods ||= { :class_methods => {}, :instance_methods => {} }
+      end
 
       # No-op because it is safe to add decorators to normal classes
       def validate!

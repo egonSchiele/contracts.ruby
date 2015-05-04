@@ -24,7 +24,7 @@ module Contracts
 
     base.instance_eval do
       def functype(funcname)
-        contracts = Engine.fetch_from(self).decorated_methods[:class_methods][funcname]
+        contracts = Engine.fetch_from(self).decorated_methods_for(:class_methods, funcname)
         if contracts.nil?
           "No contract for #{self}.#{funcname}"
         else
@@ -34,22 +34,8 @@ module Contracts
     end
 
     base.class_eval do
-      unless base.instance_of?(Module)
-        def Contract(*args)
-          return if ENV["NO_CONTRACTS"]
-          if self.class == Module
-            puts %{
-Warning: You have added a Contract on a module function
-without including Contracts::Modules. Your Contract will
-just be ignored. Please include Contracts::Modules into
-your module.}
-          end
-          self.class.Contract(*args)
-        end
-      end
-
       def functype(funcname)
-        contracts = Engine.fetch_from(self.class).decorated_methods[:instance_methods][funcname]
+        contracts = Engine.fetch_from(self.class).decorated_methods_for(:instance_methods, funcname)
         if contracts.nil?
           "No contract for #{self.class}.#{funcname}"
         else

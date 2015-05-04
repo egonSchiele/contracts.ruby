@@ -4,18 +4,13 @@ module Contracts
       Engine.apply(klass)
     end
 
-    # first, when you write a contract, the decorate method gets called which
-    # sets the @decorators variable. Then when the next method after the contract
-    # is defined, method_added is called and we look at the @decorators variable
-    # to find the decorator for that method. This is how we associate decorators
-    # with methods.
     def method_added(name)
-      MethodHandler.new(name, false).handle(self)
+      MethodHandler.new(name, false, self).handle
       super
     end
 
     def singleton_method_added(name)
-      MethodHandler.new(name, true).handle(self)
+      MethodHandler.new(name, true, self).handle
       super
     end
   end
