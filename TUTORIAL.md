@@ -510,12 +510,11 @@ This is because the first contract eliminated the possibility of `age` being les
 
 ## Contracts in modules
 
-To use contracts on module you need to include both `Contracts` and `Contracts::Modules` into it:
+Usage is the same as contracts in classes:
 
 ```ruby
 module M
   include Contracts
-  include Contracts::Modules
 
   Contract String => String
   def self.parse
