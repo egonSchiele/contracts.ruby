@@ -57,6 +57,11 @@ module Contracts
         pop_decorators + eigenclass_engine.all_decorators
       end
 
+      # Fetches decorators of specified type for method with name
+      #
+      # @param [Or[:class_methods, :instance_methods]] type - method type
+      # @param [Symbol] name - method name
+      # @return [ArrayOf[Decorator]]
       def decorated_methods_for(type, name)
         Array(decorated_methods[type][name])
       end
