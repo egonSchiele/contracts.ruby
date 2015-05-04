@@ -18,8 +18,6 @@ module Contracts
   end
 
   def self.common(base)
-    #Eigenclass.lift(base)
-
     return if base.respond_to?(:Contract)
 
     base.extend(MethodDecorators)
