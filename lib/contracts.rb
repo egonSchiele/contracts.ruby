@@ -34,6 +34,12 @@ module Contracts
     end
 
     base.class_eval do
+      # TODO: deprecate
+      # Required when contracts are included in global scope
+      def Contract(*args)
+        self.class.Contract(*args)
+      end
+
       def functype(funcname)
         contracts = Engine.fetch_from(self.class).decorated_methods_for(:instance_methods, funcname)
         if contracts.nil?
