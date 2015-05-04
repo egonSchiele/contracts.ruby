@@ -6,7 +6,6 @@ module Contracts
       # Class that owns this eigenclass
       attr_accessor :owner_class
 
-      
       # No-op for eigenclasses
       def set_eigenclass_owner
       end
@@ -20,10 +19,10 @@ module Contracts
 
       # Fails when contracts are not included in owner class
       def validate!
-        fail ContractsNotIncluded unless has_owner?
+        fail ContractsNotIncluded unless owner?
       end
 
-      def has_owner?
+      def owner?
         !!owner_class
       end
     end

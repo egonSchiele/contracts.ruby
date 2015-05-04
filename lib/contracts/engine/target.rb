@@ -45,10 +45,11 @@ module Contracts
       end
 
       private
+
       attr_reader :target
 
       def apply_to_eigenclass
-        return unless has_meaningless_eigenclass?
+        return unless meaningless_eigenclass?
 
         self.class.new(eigenclass).apply(Eigenclass)
         eigenclass.extend(MethodDecorators)
@@ -59,7 +60,7 @@ module Contracts
         Support.eigenclass_of(target)
       end
 
-      def has_meaningless_eigenclass?
+      def meaningless_eigenclass?
         !Support.eigenclass?(target)
       end
     end

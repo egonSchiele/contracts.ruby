@@ -64,7 +64,7 @@ module Contracts
       # Returns true if there are any decorated methods
       #
       # @return [Bool]
-      def has_decorated_methods?
+      def decorated_methods?
         !decorated_methods[:class_methods].empty? ||
           !decorated_methods[:instance_methods].empty?
       end
@@ -87,7 +87,7 @@ module Contracts
         current_engine = self
         ancestors = current.ancestors[1..-1]
 
-        while current && current_engine && !current_engine.has_decorated_methods?
+        while current && current_engine && !current_engine.decorated_methods?
           current = ancestors.shift
           current_engine = Engine.fetch_from(current)
         end
@@ -96,6 +96,7 @@ module Contracts
       end
 
       private
+
       attr_reader :klass
 
       def decorated_methods

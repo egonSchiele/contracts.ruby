@@ -4,12 +4,12 @@ module Contracts
   class MethodHandler
     METHOD_REFERENCE_FACTORY = {
       :class_methods => SingletonMethodReference,
-      :instance_methods => MethodReference,
+      :instance_methods => MethodReference
     }
 
     RAW_METHOD_STRATEGY = {
       :class_methods => lambda { |target, name| target.method(name) },
-      :instance_methods => lambda { |target, name| target.instance_method(name) },
+      :instance_methods => lambda { |target, name| target.instance_method(name) }
     }
 
     # Creates new instance of MethodHandler
@@ -38,6 +38,7 @@ module Contracts
     end
 
     private
+
     attr_reader :method_name, :is_class_method, :target
 
     def engine?
@@ -153,8 +154,9 @@ module Contracts
     end
 
     def validate_decorators!
-      unless decorators.size == 1
-        fail %{
+      return if decorators.size == 1
+
+      fail %{
 Oops, it looks like method '#{name}' has multiple contracts:
 #{decorators.map { |x| x[1][0].inspect }.join("\n")}
 
@@ -168,8 +170,7 @@ end
 If you did NOT, then you have probably discovered a bug in this library.
 Please file it along with the relevant code at:
 https://github.com/egonSchiele/contracts.ruby/issues
-        }
-      end
+      }
     end
 
     def validate_pattern_matching!
@@ -178,8 +179,9 @@ https://github.com/egonSchiele/contracts.ruby/issues
         contract.args_contracts == new_args_contract
       end
 
-      unless matched.empty?
-        fail ContractError.new(%{
+      return if matched.empty?
+
+      fail ContractError.new(%{
 It looks like you are trying to use pattern-matching, but
 multiple definitions for function '#{method_name}' have the same
 contract for input parameters:
@@ -187,8 +189,7 @@ contract for input parameters:
 #{(matched + [decorator]).map(&:to_s).join("\n")}
 
 Each definition needs to have a different contract for the parameters.
-        }, {})
-      end
+      }, {})
     end
   end
 end
