@@ -1,61 +1,102 @@
 module Contracts
   module Engine
+    # Contracts engine
     class Base
+      # Enable contracts engine for klass
+      #
+      # @param [Class] klass - target class
       def self.apply(klass)
         Engine::Target.new(klass).apply
       end
 
+      # Returns true if klass has contracts engine
+      #
+      # @param [Class] klass - target class
+      # @return [Bool]
       def self.applied?(klass)
         Engine::Target.new(klass).applied?
       end
 
+      # Fetches contracts engine out of klass
+      #
+      # @param [Class] klass - target class
+      # @return [Engine::Base or Engine::Eigenclass]
       def self.fetch_from(klass)
         Engine::Target.new(klass).engine
       end
 
-      def initialize(target)
-        @target = target
+      # Creates new instance of contracts engine
+      #
+      # @param [Class] klass - class that owns this engine
+      def initialize(klass)
+        @klass = klass
       end
 
-      def decorate(klass, *args)
+      # Adds provided decorator to the engine
+      # It validates that decorator can be added to this engine at the
+      # moment
+      #
+      # @param [Decorator:Class] decorator_class
+      # @param args - arguments for decorator
+      def decorate(decorator_class, *args)
         validate!
-        decorators << [klass, args]
+        decorators << [decorator_class, args]
       end
 
+      # Sets eigenclass' owner to klass
       def set_eigenclass_owner
-        eigenclass_engine.owner_class = target
+        eigenclass_engine.owner_class = klass
       end
 
+      # Fetches all accumulated decorators (both this engine and
+      # corresponding eigenclass' engine)
+      # It clears all accumulated decorators
+      #
+      # @return [ArrayOf[Decorator]]
       def all_decorators
         pop_decorators + eigenclass_engine.all_decorators
       end
 
-      def pop_decorators
-        decorators.tap { clear_decorators }
-      end
-
+      # Returns decorated methods hash (contains both class and
+      # instance methods)
+      #
+      # @return [{ :class_methods => HashOf[Symbol => Decorator],
+      #            :instance_methods => HashOf[Symbol => Decorator] }]
       def decorated_methods
         @_decorated_methods ||= { :class_methods => {}, :instance_methods => {} }
       end
 
+      # Returns true if there are any decorated methods
+      #
+      # @return [Bool]
       def has_decorated_methods?
         !decorated_methods[:class_methods].empty? ||
           !decorated_methods[:instance_methods].empty?
       end
 
+      # Adds method decorator
+      #
+      # @param [Or[:class_methods, :instance_methods]] type - method type
+      # @param [Symbol] name - method name
+      # @param [Decorator] decorator - method decorator
       def add_method_decorator(type, name, decorator)
         decorated_methods[type][name] ||= []
         decorated_methods[type][name] << decorator
       end
 
       private
-      attr_reader :target
+      attr_reader :klass
 
+      # No-op because it is safe to add decorators to normal classes
       def validate!
       end
 
+      def pop_decorators
+        decorators.tap { clear_decorators }
+      end
+
       def eigenclass
-        Support.eigenclass_of(target)
+        Support.eigenclass_of(klass)
       end
 
       def eigenclass_engine
