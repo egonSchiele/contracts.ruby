@@ -383,6 +383,10 @@ class Contract < Contracts::Decorator
 
     this.verify_invariants!(method) if this.respond_to?(:verify_invariants!)
 
+    if ret_contract.is_a?(Contracts::Func)
+      result = Contract.new(klass, result, *ret_contract.contracts)
+    end
+
     result
   end
 

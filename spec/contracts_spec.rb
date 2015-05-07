@@ -509,6 +509,18 @@ RSpec.describe "Contracts:" do
     it "should fail for a function that doesn't pass the contract with weak other args" do
       expect { @o.map_plain(["hello", "joe"], lambda { |_| nil }) }.to raise_error(ContractError)
     end
+
+    it "should fail for a returned function that doesn't pass the contract" do
+      expect { @o.lambda_with_wrong_return().("hello") }.to raise_error(ContractError)
+    end
+
+    it "should fail for a returned function that receives the wrong argument type" do
+      expect { @o.lambda_with_correct_return().(12345) }.to raise_error(ContractError)
+    end
+
+    it "should not fail for a returned function that passes the contract" do
+      expect { @o.lambda_with_correct_return().("hello") }.to_not raise_error
+    end
   end
 
   describe "default args to functions" do
