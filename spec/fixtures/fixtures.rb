@@ -267,6 +267,16 @@ class GenericExample
     end
   end
 
+  Contract None => Func[String => Num]
+  def lambda_with_wrong_return
+    lambda { |x| x }
+  end
+
+  Contract None => Func[String => Num]
+  def lambda_with_correct_return
+    lambda { |x| x.length }
+  end
+
   Contract Num => Num
   def default_args(x = 1)
     2
