@@ -250,7 +250,6 @@ RSpec.describe "Contracts:" do
     let(:mod) do
       Module.new do
         include Contracts
-        include Contracts::Modules
 
         Contract String => String
         def greeting(name)

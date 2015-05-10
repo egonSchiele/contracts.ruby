@@ -1,12 +1,12 @@
 require "contracts/builtin_contracts"
 require "contracts/decorators"
-require "contracts/eigenclass"
 require "contracts/errors"
 require "contracts/formatters"
 require "contracts/invariants"
 require "contracts/method_reference"
-require "contracts/modules"
 require "contracts/support"
+require "contracts/engine"
+require "contracts/method_handler"
 
 module Contracts
   def self.included(base)
@@ -18,15 +18,13 @@ module Contracts
   end
 
   def self.common(base)
-    Eigenclass.lift(base)
-
     return if base.respond_to?(:Contract)
 
     base.extend(MethodDecorators)
 
     base.instance_eval do
       def functype(funcname)
-        contracts = decorated_methods[:class_methods][funcname]
+        contracts = Engine.fetch_from(self).decorated_methods_for(:class_methods, funcname)
         if contracts.nil?
           "No contract for #{self}.#{funcname}"
         else
@@ -36,22 +34,14 @@ module Contracts
     end
 
     base.class_eval do
-      unless base.instance_of?(Module)
-        def Contract(*args)
-          return if ENV["NO_CONTRACTS"]
-          if self.class == Module
-            puts %{
-Warning: You have added a Contract on a module function
-without including Contracts::Modules. Your Contract will
-just be ignored. Please include Contracts::Modules into
-your module.}
-          end
-          self.class.Contract(*args)
-        end
+      # TODO: deprecate
+      # Required when contracts are included in global scope
+      def Contract(*args)
+        self.class.Contract(*args)
       end
 
       def functype(funcname)
-        contracts = self.class.decorated_methods[:instance_methods][funcname]
+        contracts = Engine.fetch_from(self.class).decorated_methods_for(:instance_methods, funcname)
         if contracts.nil?
           "No contract for #{self.class}.#{funcname}"
         else

@@ -543,10 +543,7 @@ with_enabled_no_contracts do
 end
 
 module ModuleExample
-  # This inclusion is required to actually override `method_added`
-  # hooks for module.
   include Contracts
-  include Contracts::Modules
 
   Contract Num, Num => Num
   def plus(a, b)
