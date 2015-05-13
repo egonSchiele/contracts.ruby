@@ -29,14 +29,14 @@ module Contracts
   # Check that an argument is a positive number.
   class Pos
     def self.valid? val
-      val > 0
+      val && val > 0
     end
   end
 
   # Check that an argument is a negative number.
   class Neg
     def self.valid? val
-      val < 0
+      val && val < 0
     end
   end
 
