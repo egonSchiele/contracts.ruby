@@ -266,6 +266,14 @@ RSpec.describe "Contracts:" do
     end
   end
 
+  describe "Opt:" do
+    it "can't be used outside of OptHash" do
+      expect do
+        BareOptContractUsed.new.something(3, 5)
+      end.to raise_error(ArgumentError, Contracts::Opt::UNABLE_TO_USE_OUTSIDE_OF_OPT_HASH)
+    end
+  end
+
   describe "HashOf:" do
     it "doesn't allow to specify multiple key-value pairs with pretty syntax" do
       expect do

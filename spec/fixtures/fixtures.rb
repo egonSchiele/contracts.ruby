@@ -579,3 +579,12 @@ end
 
 class SingletonInheritanceExampleSubclass < SingletonInheritanceExample
 end
+
+class BareOptContractUsed
+  include Contracts
+
+  Contract Num, Opt[Num] => nil
+  def something(a, b)
+    nil
+  end
+end

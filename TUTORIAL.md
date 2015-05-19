@@ -81,6 +81,8 @@ contracts.ruby comes with a lot of built-in contracts, including the following:
 * [`ArrayOf`](http://www.rubydoc.info/gems/contracts/Contracts/ArrayOf) – checks that the argument is an array, and all elements pass the given contract, e.g. `ArrayOf[Num]`
 * [`SetOf`](http://www.rubydoc.info/gems/contracts/Contracts/SetOf) – checks that the argument is a set, and all elements pass the given contract, e.g. `SetOf[Num]`
 * [`HashOf`](http://www.rubydoc.info/gems/contracts/Contracts/HashOf) – checks that the argument is a hash, and all keys and values pass the given contract, e.g. `HashOf[Symbol => String]`
+* [`OptHash`](http://www.rubydoc.info/gems/contracts/Contracts/OptHash) – checks that the argument is an options hash, and all required keyword arguments are present, and all values pass their respective contracts, e.g. `OptHash[:number => Num, :description => Opt[String]]`
+* [`Opt`](http://www.rubydoc.info/gems/contracts/Contracts/Opt) – checks that the keyword argument is either not present or pass the given contract, can not be used outside of `OptHash` contract, e.g. `Opt[Num]`
 * [`Maybe`](http://www.rubydoc.info/gems/contracts/Contracts/Maybe) – passes if the argument is `nil`, or if the given contract passes
 * [`RespondTo`](http://www.rubydoc.info/gems/contracts/Contracts/RespondTo) – checks that the argument responds to all of the given methods, e.g. `RespondTo[:password, :credit_card]`
 * [`Send`](http://www.rubydoc.info/gems/contracts/Contracts/Send) – checks that all named methods return true, e.g. `Send[:valid?]`
@@ -238,6 +240,52 @@ give_largest_value(a: 1, b: 2, c: 3) # returns 3
 # fails
 give_largest_value("a" => 1, 2 => 2, c: 3)
 ```
+
+### Contracts On Keyword Arguments
+
+ruby 2.0+, but can be used for normal hashes too, when keyword arguments are
+not available
+
+Lets say you are writing a simple function and require a bunch of keyword arguments:
+
+```ruby
+def connect(host, port:, user:, password:)
+```
+
+You can of course put `Hash` contract on it:
+
+```ruby
+Contract String, { :port => Num, :user => String, :password => String } => Connection
+def connect(host, port:, user:, password:)
+```
+
+But this will not quite work if you want to have a default values:
+
+```ruby
+Contract String, { :port => Num, :user => String, :password => String } => Connection
+def connect(host, port: 5000, user:, password:)
+```
+
+```
+ContractError: Contract violation for argument 2 of 2:
+        Expected: {:port=>Num, :user=>String, :password=>String},
+        Actual: {:user=>"me", :password=>"none"}
+        Value guarded in: Object::connect
+        With Contract: String, Hash => Connection
+        At: (irb):12
+```
+
+This can be fixed with contract `{ :port => Maybe[Num], ... }`, but that will
+allow `nil` to be passed, which is not the original intent.
+
+So that is where `OptHash` and `Opt` contracts jump in:
+
+```ruby
+Contract String, OptHash[ :port => Opt[Num], :user => String, :password => String ] => Connection
+def connect(host, port: 5000, user:, password:)
+```
+
+It looks just like the hash contract, but wrapped in `OptHash` contract. Notice the usage of `Opt` contract - this way you specify that `:port` argument is optional. And it will not fail, when you omit this argument, but it will fail when you pass in `nil`.
 
 ### Contracts On Functions
 
