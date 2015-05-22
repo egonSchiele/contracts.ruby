@@ -345,6 +345,81 @@ module Contracts
     end
   end
 
+  # Use this for specifying contracts for keyword arguments
+  # Example: <tt>KeywordArgs[ e: Range, f: Optional[Num] ]</tt>
+  class KeywordArgs < CallableClass
+    def initialize(options)
+      @options = options
+    end
+
+    def valid?(hash)
+      options.all? do |key, contract|
+        Optional._valid?(hash, key, contract)
+      end
+    end
+
+    def to_s
+      "KeywordArgs[#{options}]"
+    end
+
+    def inspect
+      to_s
+    end
+
+    private
+
+    attr_reader :options
+  end
+
+  # Use this for specifying optional keyword argument
+  # Example: <tt>Optional[Num]</tt>
+  class Optional < CallableClass
+    UNABLE_TO_USE_OUTSIDE_OF_OPT_HASH =
+      "Unable to use Optional contract outside of KeywordArgs contract"
+
+    def self._valid?(hash, key, contract)
+      return Contract.valid?(hash[key], contract) unless contract.is_a?(Optional)
+      contract.within_opt_hash!
+      !hash.key?(key) || Contract.valid?(hash[key], contract)
+    end
+
+    def initialize(contract)
+      @contract = contract
+      @within_opt_hash = false
+    end
+
+    def within_opt_hash!
+      @within_opt_hash = true
+      self
+    end
+
+    def valid?(value)
+      ensure_within_opt_hash
+      Contract.valid?(value, contract)
+    end
+
+    def to_s
+      "Optional[#{formatted_contract}]"
+    end
+
+    def inspect
+      to_s
+    end
+
+    private
+
+    attr_reader :contract, :within_opt_hash
+
+    def ensure_within_opt_hash
+      return if within_opt_hash
+      fail ArgumentError, UNABLE_TO_USE_OUTSIDE_OF_OPT_HASH
+    end
+
+    def formatted_contract
+      Formatters::InspectWrapper.create(contract)
+    end
+  end
+
   # Takes a Contract.
   # The contract passes if the contract passes or the given value is nil.
   # Maybe(foo) is equivalent to Or[foo, nil].
