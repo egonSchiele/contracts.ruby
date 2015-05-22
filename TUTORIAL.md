@@ -264,7 +264,14 @@ But this will not quite work if you want to have a default values:
 ```ruby
 Contract String, { :port => Num, :user => String, :password => String } => Connection
 def connect(host, port: 5000, user:, password:)
+  # ...
+end
+
+# No value is passed for port
+connect("example.org", user: "me", password: "none")
 ```
+
+Results in:
 
 ```
 ContractError: Contract violation for argument 2 of 2:
@@ -276,7 +283,7 @@ ContractError: Contract violation for argument 2 of 2:
 ```
 
 This can be fixed with contract `{ :port => Maybe[Num], ... }`, but that will
-allow `nil` to be passed, which is not the original intent.
+allow `nil` to be passed in, which is not the original intent.
 
 So that is where `OptHash` and `Opt` contracts jump in:
 
