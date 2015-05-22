@@ -1,5 +1,5 @@
 class GenericExample
-  Contract String, Bool, Args[Symbol], Float, OptHash[e: Range, f: Opt[Num]], Proc =>
+  Contract String, Bool, Args[Symbol], Float, KeywordArgs[e: Range, f: Optional[Num]], Proc =>
            [Proc, Hash, Maybe[Num], Range, Float, ArrayOf[Symbol], Bool, String]
   def complicated(a, b = true, *c, d, e:, f:2, **g, &h)
     h.call [h, g, f, e, d, c, b, a]
@@ -56,7 +56,7 @@ RSpec.describe "Contracts:" do
           @o.complicated("a", true, :b, :c, 2.0, e: (1..5), f: nil, g: :d) do |x|
             x
           end
-        end.to raise_error(ContractError, /Expected: \(OptHash\[{:e=>Range, :f=>Opt\[Num\]}\]\)/)
+        end.to raise_error(ContractError, /Expected: \(KeywordArgs\[{:e=>Range, :f=>Optional\[Num\]}\]\)/)
       end
     end
   end

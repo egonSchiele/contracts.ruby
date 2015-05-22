@@ -346,20 +346,20 @@ module Contracts
   end
 
   # Use this for specifying contracts for keyword arguments
-  # Example: <tt>OptHash[ e: Range, f: Opt[Num] ]</tt>
-  class OptHash < CallableClass
+  # Example: <tt>KeywordArgs[ e: Range, f: Optional[Num] ]</tt>
+  class KeywordArgs < CallableClass
     def initialize(options)
       @options = options
     end
 
     def valid?(hash)
       options.all? do |key, contract|
-        Opt._valid?(hash, key, contract)
+        Optional._valid?(hash, key, contract)
       end
     end
 
     def to_s
-      "OptHash[#{options}]"
+      "KeywordArgs[#{options}]"
     end
 
     def inspect
@@ -372,13 +372,13 @@ module Contracts
   end
 
   # Use this for specifying optional keyword argument
-  # Example: <tt>Opt[Num]</tt>
-  class Opt < CallableClass
+  # Example: <tt>Optional[Num]</tt>
+  class Optional < CallableClass
     UNABLE_TO_USE_OUTSIDE_OF_OPT_HASH =
-      "Unable to use Opt contract outside of OptHash contract"
+      "Unable to use Optional contract outside of KeywordArgs contract"
 
     def self._valid?(hash, key, contract)
-      return Contract.valid?(hash[key], contract) unless contract.is_a?(Opt)
+      return Contract.valid?(hash[key], contract) unless contract.is_a?(Optional)
       contract.within_opt_hash!
       !hash.key?(key) || Contract.valid?(hash[key], contract)
     end
@@ -399,7 +399,7 @@ module Contracts
     end
 
     def to_s
-      "Opt[#{formatted_contract}]"
+      "Optional[#{formatted_contract}]"
     end
 
     def inspect

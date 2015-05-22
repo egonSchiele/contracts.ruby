@@ -580,10 +580,10 @@ end
 class SingletonInheritanceExampleSubclass < SingletonInheritanceExample
 end
 
-class BareOptContractUsed
+class BareOptionalContractUsed
   include Contracts
 
-  Contract Num, Opt[Num] => nil
+  Contract Num, Optional[Num] => nil
   def something(a, b)
     nil
   end
