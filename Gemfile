@@ -10,4 +10,5 @@ end
 group :development do
   gem "method_profiler"
   gem "ruby-prof"
+  gem "erubis"
 end

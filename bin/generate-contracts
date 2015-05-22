@@ -1,0 +1,9 @@
+#!/usr/bin/env ruby
+
+require 'erubis'
+require_relative '../lib/contracts/contracts_generator.rb'
+
+gemdir = File.dirname(__FILE__) + '/../'
+template = File.read(gemdir + 'templates/contracts.text.erb')
+text = Erubis::Eruby.new(template).evaluate({ validator_gen: Contracts::ContractsGenerator.new })
+File.write(gemdir + 'lib/contracts.rb', text)
