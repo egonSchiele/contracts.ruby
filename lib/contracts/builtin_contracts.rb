@@ -359,7 +359,7 @@ module Contracts
     end
 
     def to_s
-      "OptHash[#{options}]".gsub(/Contracts::/, "")
+      "OptHash[#{options}]"
     end
 
     def inspect
@@ -399,7 +399,7 @@ module Contracts
     end
 
     def to_s
-      "Opt[#{contract}]"
+      "Opt[#{formatted_contract}]"
     end
 
     def inspect
@@ -413,6 +413,10 @@ module Contracts
     def ensure_within_opt_hash
       return if within_opt_hash
       fail ArgumentError, UNABLE_TO_USE_OUTSIDE_OF_OPT_HASH
+    end
+
+    def formatted_contract
+      Formatters::InspectWrapper.create(contract)
     end
   end
 
