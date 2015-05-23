@@ -2,4 +2,4 @@
 
 require_relative '../lib/contracts/configure.rb'
 
-File.write(File.dirname(__FILE__) + '/../lib/contracts.rb', Contracts::ContractsGenerator.generate)
+File.write(File.dirname(__FILE__) + '/../lib/contracts/base.rb', Contracts::ContractsGenerator.generate)

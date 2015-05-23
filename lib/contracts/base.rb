@@ -204,7 +204,47 @@ class Contract < Contracts::Decorator
   # don't have to go through this decision tree every time.
   # Seems silly but it saves us a bunch of time (4.3sec vs 5.2sec)
   def self.make_validator(contract)
-<%= @validator_gen.make_validator -%>
+    # if is faster than case!
+    klass = contract.class
+    if klass == Proc
+      # e.g. lambda {true}
+      contract
+    elsif klass == Array
+      # e.g. [Num, String]
+      # TODO: account for these errors too
+      lambda do |arg|
+        return false unless arg.is_a?(Array) && arg.length == contract.length
+        arg.zip(contract).all? do |_arg, _contract|
+          Contract.valid?(_arg, _contract)
+        end
+      end
+    elsif klass == Hash
+      # e.g. { :a => Num, :b => String }
+      lambda do |arg|
+        return false unless arg.is_a?(Hash)
+        contract.keys.all? do |k|
+          Contract.valid?(arg[k], contract[k])
+        end
+      end
+    elsif klass == Contracts::Args
+      lambda do |arg|
+        Contract.valid?(arg, contract.contract)
+      end
+    elsif klass == Contracts::Func
+      lambda do |arg|
+        arg.is_a?(Method) || arg.is_a?(Proc)
+      end
+    else
+      # classes and everything else
+      # e.g. Fixnum, Num
+      if contract.respond_to? :valid?
+        lambda { |arg| contract.valid?(arg) }
+      elsif klass == Class || klass == Module
+        lambda { |arg| arg.is_a?(contract) }
+      else
+        lambda { |arg| contract == arg }
+      end
+    end
   end
 
   def [](*args, &blk)
