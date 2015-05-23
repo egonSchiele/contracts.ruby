@@ -1,14 +1,35 @@
+require_relative 'configure.rb'
+
 module Contracts
+  def self.load
+    if Contracts.config(:contracts_use_file)
+      require_relative '../contracts.rb'
+    else
+      eval(ContractsGenerator.generate)
+    end
+  end
+
   class ContractsGenerator
-    def initialize
+    def self.generate
+      require 'erubis'
+
+      gemdir = File.dirname(__FILE__) + '/../../'
+      template = File.read(gemdir + 'templates/contracts.text.erb')
+
+      Erubis::Eruby.new(template).evaluate({
+        :validator_gen => Contracts.config[:contracts_generator]
+      })
+    end
+
+    def initialize(validators)
       # Class names are strings rather than constants, because some classes may not exist yet
       @validators = {
-      'Proc' =>
+      'Proc' => validators['Proc'] ||
 
       '# e.g. lambda {true}
       contract',
 
-      'Array' =>
+      'Array' => validators['Array'] ||
 
       '# e.g. [Num, String]
       # TODO: account for these errors too
@@ -19,7 +40,7 @@ module Contracts
         end
       end',
 
-      'Hash' =>
+      'Hash' => validators['Hash'] ||
 
       '# e.g. { :a => Num, :b => String }
       lambda do |arg|
@@ -29,19 +50,19 @@ module Contracts
         end
       end',
 
-      'Contracts::Args' =>
+      'Contracts::Args' => validators['Contracts::Args'] ||
 
       'lambda do |arg|
         Contract.valid?(arg, contract.contract)
       end',
 
-      'Contracts::Func' =>
+      'Contracts::Func' => validators['Contracts::Func'] ||
 
       'lambda do |arg|
         arg.is_a?(Method) || arg.is_a?(Proc)
       end',
 
-      'Class' => 'lambda { |arg| arg.is_a?(contract) }'
+      'Class' => validators['Class'] || 'lambda { |arg| arg.is_a?(contract) }'
       }
     end
 
