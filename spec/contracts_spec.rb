@@ -569,13 +569,15 @@ RSpec.describe "Contracts:" do
 
   describe "module contracts" do
     it "passes for instance of class including module" do
-      expect(ModuleContractExample
-        .hello(ModuleContractExample::AClassWithModule.new)).to eq(:world)
+      expect(
+        ModuleContractExample.hello(ModuleContractExample::AClassWithModule.new)
+      ).to eq(:world)
     end
 
     it "passes for instance of class including inherited module" do
-      expect(ModuleContractExample
-        .hello(ModuleContractExample::AClassWithInheritedModule.new)).to eq(:world)
+      expect(
+        ModuleContractExample.hello(ModuleContractExample::AClassWithInheritedModule.new)
+      ).to eq(:world)
     end
 
     it "does not pass for instance of class not including module" do
@@ -591,8 +593,9 @@ RSpec.describe "Contracts:" do
     end
 
     it "passes for instance of class including both modules" do
-      expect(ModuleContractExample
-        .hello(ModuleContractExample::AClassWithBothModules.new)).to eq(:world)
+      expect(
+        ModuleContractExample.hello(ModuleContractExample::AClassWithBothModules.new)
+      ).to eq(:world)
     end
   end
 
