@@ -1,14 +1,4 @@
-require_relative 'configure.rb'
-
 module Contracts
-  def self.load
-    if Contracts.config(:contracts_use_file)
-      require_relative '../contracts.rb'
-    else
-      eval(ContractsGenerator.generate)
-    end
-  end
-
   class ContractsGenerator
     def self.generate
       require 'erubis'
@@ -99,4 +89,3 @@ VALIDATOR
     end
   end
 end
-

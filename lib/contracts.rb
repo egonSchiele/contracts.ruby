@@ -7,4 +7,9 @@ require "contracts/method_reference"
 require "contracts/support"
 require "contracts/engine"
 require "contracts/method_handler"
-require "contracts/base"
+require "contracts/contracts_generator"
+require "contracts/configure"
+
+if Contracts.load_on_require
+  Contracts.load
+end
