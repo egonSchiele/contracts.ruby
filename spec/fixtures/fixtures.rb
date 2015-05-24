@@ -588,3 +588,42 @@ class BareOptionalContractUsed
     nil
   end
 end
+
+module ModuleContractExample
+  include Contracts
+
+  module AModule
+  end
+
+  module AnotherModule
+  end
+
+  module InheritedModule
+    include AModule
+  end
+
+  class AClassWithModule
+    include AModule
+  end
+
+  class AClassWithoutModule
+  end
+
+  class AClassWithAnotherModule
+    include AnotherModule
+  end
+
+  class AClassWithInheritedModule
+    include InheritedModule
+  end
+
+  class AClassWithBothModules
+    include AModule
+    include AnotherModule
+  end
+
+  Contract AModule => Symbol
+  def self.hello(thing)
+    :world
+  end
+end

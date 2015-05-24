@@ -249,7 +249,7 @@ class Contract < Contracts::Decorator
       # e.g. Fixnum, Num
       if contract.respond_to? :valid?
         lambda { |arg| contract.valid?(arg) }
-      elsif klass == Class
+      elsif klass == Class || klass == Module
         lambda { |arg| arg.is_a?(contract) }
       else
         lambda { |arg| contract == arg }
