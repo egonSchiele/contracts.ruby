@@ -567,6 +567,38 @@ RSpec.describe "Contracts:" do
     end
   end
 
+  describe "module contracts" do
+    it "passes for instance of class including module" do
+      expect(
+        ModuleContractExample.hello(ModuleContractExample::AClassWithModule.new)
+      ).to eq(:world)
+    end
+
+    it "passes for instance of class including inherited module" do
+      expect(
+        ModuleContractExample.hello(ModuleContractExample::AClassWithInheritedModule.new)
+      ).to eq(:world)
+    end
+
+    it "does not pass for instance of class not including module" do
+      expect do
+        ModuleContractExample.hello(ModuleContractExample::AClassWithoutModule.new)
+      end.to raise_error(ContractError, /Expected: ModuleContractExample::AModule/)
+    end
+
+    it "does not pass for instance of class including another module" do
+      expect do
+        ModuleContractExample.hello(ModuleContractExample::AClassWithAnotherModule.new)
+      end.to raise_error(ContractError, /Expected: ModuleContractExample::AModule/)
+    end
+
+    it "passes for instance of class including both modules" do
+      expect(
+        ModuleContractExample.hello(ModuleContractExample::AClassWithBothModules.new)
+      ).to eq(:world)
+    end
+  end
+
   describe "Contracts to_s formatting in expected" do
     def not_s(match)
       Regexp.new "[^\"\']#{match}[^\"\']"
