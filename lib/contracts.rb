@@ -17,6 +17,10 @@ module Contracts
     common(base)
   end
 
+  def self.append_features(base)
+    base.include(BuiltinContracts)
+  end
+
   def self.common(base)
     return if base.respond_to?(:Contract)
 
