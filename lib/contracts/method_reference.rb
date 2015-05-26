@@ -13,7 +13,7 @@ module Contracts
 
     # Returns method_position, delegates to Support.method_position
     def method_position
-      Support.method_position(@method)
+      ContractsSupport.method_position(@method)
     end
 
     # Makes a method re-definition in proper way
@@ -76,7 +76,7 @@ module Contracts
     end
 
     def construct_unique_name
-      :"__contracts_ruby_original_#{name}_#{Support.unique_id}"
+      :"__contracts_ruby_original_#{name}_#{ContractsSupport.unique_id}"
     end
   end
 
@@ -94,7 +94,7 @@ module Contracts
 
     # Return alias target for singleton methods.
     def alias_target(this)
-      Support.eigenclass_of this
+      ContractsSupport.eigenclass_of this
     end
   end
 end

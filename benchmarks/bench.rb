@@ -44,7 +44,7 @@ def profile
   profilers << MethodProfiler.observe(Object)
   profilers << MethodProfiler.observe(Contracts::MethodDecorators)
   profilers << MethodProfiler.observe(Contracts::Decorator)
-  profilers << MethodProfiler.observe(Contracts::Support)
+  profilers << MethodProfiler.observe(Contracts::ContractsSupport)
   profilers << MethodProfiler.observe(UnboundMethod)
   10_000.times do |_|
     contracts_add(rand(1000), rand(1000))

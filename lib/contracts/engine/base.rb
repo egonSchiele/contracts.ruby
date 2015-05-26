@@ -117,7 +117,7 @@ module Contracts
       end
 
       def eigenclass
-        Support.eigenclass_of(klass)
+        ContractsSupport.eigenclass_of(klass)
       end
 
       def eigenclass_engine

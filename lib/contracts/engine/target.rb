@@ -57,11 +57,11 @@ module Contracts
       end
 
       def eigenclass
-        Support.eigenclass_of(target)
+        ContractsSupport.eigenclass_of(target)
       end
 
       def meaningless_eigenclass?
-        !Support.eigenclass?(target)
+        !ContractsSupport.eigenclass?(target)
       end
     end
   end
