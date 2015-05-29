@@ -1,0 +1,5 @@
+#!/usr/bin/env ruby
+
+require_relative "../lib/contracts.rb"
+
+File.write(File.dirname(__FILE__) + "/../lib/contracts/contract.rb", Contracts::ContractsGenerator.generate)

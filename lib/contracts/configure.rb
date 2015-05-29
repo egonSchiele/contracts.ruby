@@ -12,21 +12,21 @@ module Contracts
 
   def self.load
     if Contracts.config[:contracts_use_file]
-      require_relative 'contract'
+      require_relative "contract"
     else
-      Kernel::eval(Contracts::ContractsGenerator.generate, TOPLEVEL_BINDING)
+      Kernel.eval(ContractsGenerator.generate, TOPLEVEL_BINDING)
     end
   end
 
   def self.configure(opts = {})
     opts.each do |k, v|
-      @config[k.to_sym] = v if @config.has_key? k.to_sym
+      @config[k.to_sym] = v if @config.key? k.to_sym
     end
   end
 
   def self.configure_with(path_to_yaml_file)
     begin
-      opts = YAML::load(IO.read(path_to_yaml_file))
+      opts = YAML.load(IO.read(path_to_yaml_file))
     rescue Errno::ENOENT
       log(:warning, "YAML configuration file couldn't be found. Using defaults.")
       return

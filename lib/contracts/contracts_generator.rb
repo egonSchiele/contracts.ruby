@@ -1,58 +1,58 @@
 module Contracts
   class ContractsGenerator
     def self.generate
-      require 'erubis'
+      require "erubis"
 
-      gemdir = File.dirname(__FILE__) + '/../../'
-      template = File.read(gemdir + 'templates/contracts.text.erb')
+      gemdir = File.dirname(__FILE__) + "/../../"
+      template = File.read(gemdir + "templates/contracts.text.erb")
 
-      Erubis::Eruby.new(template).evaluate({
+      Erubis::Eruby.new(template).evaluate(
         :validator_gen => Contracts.config[:contracts_generator]
-      })
+      )
     end
 
     def initialize(validators)
       # Class names are strings rather than constants, because some classes may not exist yet
       @validators = {
-      'Proc' => validators['Proc'] ||
+      "Proc" => validators["Proc"] ||
 
-      '# e.g. lambda {true}
-      contract',
+      "# e.g. lambda {true}
+      contract",
 
-      'Array' => validators['Array'] ||
+      "Array" => validators["Array"] ||
 
-      '# e.g. [Num, String]
+      "# e.g. [Num, String]
       # TODO: account for these errors too
       lambda do |arg|
         return false unless arg.is_a?(Array) && arg.length == contract.length
         arg.zip(contract).all? do |_arg, _contract|
           Contract.valid?(_arg, _contract)
         end
-      end',
+      end",
 
-      'Hash' => validators['Hash'] ||
+      "Hash" => validators["Hash"] ||
 
-      '# e.g. { :a => Num, :b => String }
+      "# e.g. { :a => Num, :b => String }
       lambda do |arg|
         return false unless arg.is_a?(Hash)
         contract.keys.all? do |k|
           Contract.valid?(arg[k], contract[k])
         end
-      end',
+      end",
 
-      'Contracts::Args' => validators['Contracts::Args'] ||
+      "Contracts::Args" => validators["Contracts::Args"] ||
 
-      'lambda do |arg|
+      "lambda do |arg|
         Contract.valid?(arg, contract.contract)
-      end',
+      end",
 
-      'Contracts::Func' => validators['Contracts::Func'] ||
+      "Contracts::Func" => validators["Contracts::Func"] ||
 
-      'lambda do |arg|
+      "lambda do |arg|
         arg.is_a?(Method) || arg.is_a?(Proc)
-      end',
+      end",
 
-      'Class' => validators['Class'] || 'lambda { |arg| arg.is_a?(contract) }'
+      "Class" => validators["Class"] || "lambda { |arg| arg.is_a?(contract) }"
       }
     end
 

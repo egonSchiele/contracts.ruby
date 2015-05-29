@@ -10,6 +10,4 @@ require "contracts/method_handler"
 require "contracts/contracts_generator"
 require "contracts/configure"
 
-if Contracts.load_on_require
-  Contracts.load
-end
+Contracts.load if Contracts.load_on_require
