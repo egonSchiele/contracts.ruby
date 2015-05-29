@@ -12,6 +12,8 @@ module Contracts
     end
 
     def initialize(validators)
+      # rubocop:disable Style/MultilineOperationIndentation
+      # rubocop:disable Style/IndentHash
       # Class names are strings rather than constants, because some classes may not exist yet
       @validators = {
       "Proc" => validators["Proc"] ||
@@ -54,6 +56,8 @@ module Contracts
 
       "Class" => validators["Class"] || "lambda { |arg| arg.is_a?(contract) }"
       }
+      # rubocop:enable Style/MultilineOperationIndentation
+      # rubocop:enable Style/IndentHash
     end
 
     def set_validator(klass, func)
@@ -61,7 +65,7 @@ module Contracts
     end
 
     def make_validator
-    <<VALIDATOR
+      <<VALIDATOR
     # if is faster than case!
     klass = contract.class
     if klass == Proc
