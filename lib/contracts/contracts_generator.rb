@@ -79,7 +79,7 @@ module Contracts
       # e.g. Fixnum, Num
       if contract.respond_to? :valid?
         lambda { |arg| contract.valid?(arg) }
-      elsif klass == Class
+      elsif klass == Class || klass == Module
         #{@validators['Class']}
       else
         lambda { |arg| contract == arg }
