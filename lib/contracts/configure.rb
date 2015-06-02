@@ -12,7 +12,7 @@ module Contracts
 
   def self.load
     if Contracts.config[:contracts_use_file]
-      require_relative "contract"
+      super(File.join(File.dirname(__FILE__), "contract.rb"))
     else
       Kernel.eval(ContractsGenerator.generate, TOPLEVEL_BINDING)
     end
