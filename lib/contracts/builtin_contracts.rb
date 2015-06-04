@@ -441,4 +441,10 @@ module Contracts
       @contracts = contracts
     end
   end
+
+  class Receiver
+    def self.valid? val, context
+      val.is_a? context[:receiver].class
+    end
+  end
 end

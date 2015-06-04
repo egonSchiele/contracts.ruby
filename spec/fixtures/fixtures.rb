@@ -378,6 +378,21 @@ class GenericExample
   end
 end
 
+class ReceiverExample
+  include Contracts
+  attr_accessor :value
+
+  Contract Num => Any
+  def initialize(initial_value)
+    @value = initial_value
+  end
+
+  Contract Receiver => Receiver
+  def append(other)
+    self.class.new(value + other.value)
+  end
+end
+
 # pattern matching example with possible deep contract violation
 class PatternMatchingExample
   include Contracts
