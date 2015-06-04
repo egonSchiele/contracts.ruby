@@ -339,6 +339,12 @@ p map([1, 2, 3], lambda { |x| x + 1 }) # works
 p map([1, 2, 3], lambda { |x| "oops" }) # fails, the lambda returns a string.
 ```
 
+The above examples showed a method accepting a `Proc` as the last argument, but the same contract works on methods that accept a block:
+
+```ruby
+def map(arr, &block)
+```
+
 NOTE: This is not valid:
 
 ```ruby
