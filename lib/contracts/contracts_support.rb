@@ -1,5 +1,5 @@
 module Contracts
-  module Support
+  module ContractsSupport
     class << self
       def method_position(method)
         return method.method_position if method.is_a?(MethodReference)

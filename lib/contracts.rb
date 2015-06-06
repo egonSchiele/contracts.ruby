@@ -4,7 +4,7 @@ require "contracts/errors"
 require "contracts/formatters"
 require "contracts/invariants"
 require "contracts/method_reference"
-require "contracts/support"
+require "contracts/contracts_support"
 require "contracts/engine"
 require "contracts/method_handler"
 
@@ -136,8 +136,8 @@ class Contract < Contracts::Decorator
   # and uses the hash passed into the failure_callback method.
   def self.failure_msg(data)
     expected = Contracts::Formatters::Expected.new(data[:contract]).contract
-    position = Contracts::Support.method_position(data[:method])
-    method_name = Contracts::Support.method_name(data[:method])
+    position = Contracts::ContractsSupport.method_position(data[:method])
+    method_name = Contracts::ContractsSupport.method_name(data[:method])
 
     header = if data[:return_value]
                "Contract violation for return value:"

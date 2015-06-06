@@ -60,7 +60,7 @@ def profile
   profilers = []
   profilers << MethodProfiler.observe(Contract)
   profilers << MethodProfiler.observe(Object)
-  profilers << MethodProfiler.observe(Contracts::Support)
+  profilers << MethodProfiler.observe(Contracts::ContractsSupport)
   profilers << MethodProfiler.observe(Contracts::Invariants)
   profilers << MethodProfiler.observe(Contracts::Invariants::InvariantExtension)
   profilers << MethodProfiler.observe(UnboundMethod)
