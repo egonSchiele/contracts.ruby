@@ -67,4 +67,3 @@ end
 benchmark
 profile
 ruby_prof if ENV["FULL_BENCH"] # takes some time
-
