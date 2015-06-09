@@ -509,6 +509,36 @@ end
 
 If your failure callback returns `false`, the method that the contract is guarding will not be called (the default behaviour).
 
+## Providing your own custom validators
+
+This can be done with `Contract.override_validator`:
+
+```ruby
+# Make contracts accept all RSpec doubles
+Contract.override_validator(:class) do |contract|
+  lambda do |arg|
+    arg.is_a?(RSpec::Mocks::Double) ||
+      arg.is_a?(contract)
+  end
+end
+```
+
+The block you provide should always return lambda accepting one argument - validated argument. Block itself accepts contract as an argument.
+
+Possible validator overrides:
+
+- `override_validator(MyCustomContract)` - allows to add some special behaviour for custom contracts,
+- `override_validator(Proc)` - e.g. `lambda { true }`,
+- `override_validator(Array)` - e.g. `[Num, String]`,
+- `override_validator(Hash)` - e.g. `{ :a => Num, :b => String }`,
+- `override_validator(Contracts::Args)` - e.g. `Args[Num]`,
+- `override_validator(Contracts::Func)` - e.g. `Func[Num => Num]`,
+- `override_validator(:valid)` - allows to override how contracts that respond to `:valid?` are handled,
+- `override_validator(:class)` - allows to override how class/module contract constants are handled,
+- `override_validator(:default)` - otherwise, raw value contracts.
+
+Default validators can be found here: [lib/contracts/validators.rb](https://github.com/egonSchiele/contracts.ruby/blob/master/lib/contracts/validators.rb).
+
 ## Disabling contracts
 
 If you want to disable contracts, set the `NO_CONTRACTS` environment variable. This will disable contracts and you won't have a performance hit. Pattern matching will still work if you disable contracts in this way! With NO_CONTRACTS only pattern-matching contracts are defined.
