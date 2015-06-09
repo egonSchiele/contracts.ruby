@@ -7,6 +7,8 @@ require "contracts/method_reference"
 require "contracts/support"
 require "contracts/engine"
 require "contracts/method_handler"
+require "contracts/validators"
+require "contracts/call_with"
 
 module Contracts
   def self.included(base)
@@ -58,7 +60,15 @@ end
 #   Contract [contract names] => return_value
 #
 # This class also provides useful callbacks and a validation method.
+#
+# For #make_validator and related logic see file
+# lib/contracts/validators.rb
+# For #call_with and related logic see file
+# lib/contracts/call_with.rb
 class Contract < Contracts::Decorator
+  extend Contracts::Validators
+  include Contracts::CallWith
+
   # Default implementation of failure_callback. Provided as a block to be able
   # to monkey patch #failure_callback only temporary and then switch it back.
   # First important usage - for specs.
@@ -209,54 +219,6 @@ class Contract < Contracts::Decorator
     make_validator(contract)[arg]
   end
 
-  # This is a little weird. For each contract
-  # we pre-make a proc to validate it so we
-  # don't have to go through this decision tree every time.
-  # Seems silly but it saves us a bunch of time (4.3sec vs 5.2sec)
-  def self.make_validator(contract)
-    # if is faster than case!
-    klass = contract.class
-    if klass == Proc
-      # e.g. lambda {true}
-      contract
-    elsif klass == Array
-      # e.g. [Num, String]
-      # TODO: account for these errors too
-      lambda do |arg|
-        return false unless arg.is_a?(Array) && arg.length == contract.length
-        arg.zip(contract).all? do |_arg, _contract|
-          Contract.valid?(_arg, _contract)
-        end
-      end
-    elsif klass == Hash
-      # e.g. { :a => Num, :b => String }
-      lambda do |arg|
-        return false unless arg.is_a?(Hash)
-        contract.keys.all? do |k|
-          Contract.valid?(arg[k], contract[k])
-        end
-      end
-    elsif klass == Contracts::Args
-      lambda do |arg|
-        Contract.valid?(arg, contract.contract)
-      end
-    elsif klass == Contracts::Func
-      lambda do |arg|
-        arg.is_a?(Method) || arg.is_a?(Proc)
-      end
-    else
-      # classes and everything else
-      # e.g. Fixnum, Num
-      if contract.respond_to? :valid?
-        lambda { |arg| contract.valid?(arg) }
-      elsif klass == Class || klass == Module
-        lambda { |arg| arg.is_a?(contract) }
-      else
-        lambda { |arg| contract == arg }
-      end
-    end
-  end
-
   def [](*args, &blk)
     call(*args, &blk)
   end
@@ -285,99 +247,6 @@ class Contract < Contracts::Decorator
     elsif args_contracts[-1].is_a?(Hash) && !args[-1].is_a?(Hash)
       args << {}
     end
-  end
-
-  def call_with(this, *args, &blk)
-    args << blk if blk
-
-    # Explicitly append blk=nil if nil != Proc contract violation anticipated
-    maybe_append_block!(args, blk)
-
-    # Explicitly append options={} if Hash contract is present
-    maybe_append_options!(args, blk)
-
-    # Loop forward validating the arguments up to the splat (if there is one)
-    (@args_contract_index || args.size).times do |i|
-      contract = args_contracts[i]
-      arg = args[i]
-      validator = @args_validators[i]
-
-      unless validator && validator[arg]
-        return unless Contract.failure_callback(:arg => arg,
-                                                :contract => contract,
-                                                :class => klass,
-                                                :method => method,
-                                                :contracts => self,
-                                                :arg_pos => i+1,
-                                                :total_args => args.size,
-                                                :return_value => false)
-      end
-
-      if contract.is_a?(Contracts::Func)
-        args[i] = Contract.new(klass, arg, *contract.contracts)
-      end
-    end
-
-    # If there is a splat loop backwards to the lower index of the splat
-    # Once we hit the splat in this direction set its upper index
-    # Keep validating but use this upper index to get the splat validator.
-    if @args_contract_index
-      splat_upper_index = @args_contract_index
-      (args.size - @args_contract_index).times do |i|
-        arg = args[args.size - 1 - i]
-
-        if args_contracts[args_contracts.size - 1 - i].is_a?(Contracts::Args)
-          splat_upper_index = i
-        end
-
-        # Each arg after the spat is found must use the splat validator
-        j = i < splat_upper_index ? i : splat_upper_index
-        contract = args_contracts[args_contracts.size - 1 - j]
-        validator = @args_validators[args_contracts.size - 1 - j]
-
-        unless validator && validator[arg]
-          return unless Contract.failure_callback(:arg => arg,
-                                                  :contract => contract,
-                                                  :class => klass,
-                                                  :method => method,
-                                                  :contracts => self,
-                                                  :arg_pos => i-1,
-                                                  :total_args => args.size,
-                                                  :return_value => false)
-        end
-
-        if contract.is_a?(Contracts::Func)
-          args[args.size - 1 - i] = Contract.new(klass, arg, *contract.contracts)
-        end
-      end
-    end
-
-    # If we put the block into args for validating, restore the args
-    args.slice!(-1) if blk
-    result = if method.respond_to?(:call)
-               # proc, block, lambda, etc
-               method.call(*args, &blk)
-             else
-               # original method name referrence
-               method.send_to(this, *args, &blk)
-             end
-
-    unless @ret_validator[result]
-      Contract.failure_callback(:arg => result,
-                                :contract => ret_contract,
-                                :class => klass,
-                                :method => method,
-                                :contracts => self,
-                                :return_value => true)
-    end
-
-    this.verify_invariants!(method) if this.respond_to?(:verify_invariants!)
-
-    if ret_contract.is_a?(Contracts::Func)
-      result = Contract.new(klass, result, *ret_contract.contracts)
-    end
-
-    result
   end
 
   # Used to determine type of failure exception this contract should raise in case of failure
