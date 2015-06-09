@@ -71,7 +71,7 @@ module Contracts
     # we pre-make a proc to validate it so we
     # don't have to go through this decision tree every time.
     # Seems silly but it saves us a bunch of time (4.3sec vs 5.2sec)
-    def make_validator(contract)
+    def make_validator!(contract)
       klass = contract.class
       key = if validator_strategies.key?(klass)
               klass
@@ -88,6 +88,22 @@ module Contracts
       validator_strategies[key].call(contract)
     end
 
+    def make_validator(contract)
+      contract_id = Support.contract_id(contract)
+
+      if memoized_validators.key?(contract_id)
+        return memoized_validators[contract_id]
+      end
+
+      memoized_validators[contract_id] = make_validator!(contract)
+    end
+
+    # @private
+    def reset_validators
+      clean_memoized_validators
+      restore_validators
+    end
+
     # @private
     def validator_strategies
       @_validator_strategies ||= restore_validators
@@ -96,6 +112,16 @@ module Contracts
     # @private
     def restore_validators
       @_validator_strategies = DEFAULT_VALIDATOR_STRATEGIES.dup
+    end
+
+    # @private
+    def memoized_validators
+      @_memoized_validators ||= clean_memoized_validators
+    end
+
+    # @private
+    def clean_memoized_validators
+      @_memoized_validators = {}
     end
   end
 end

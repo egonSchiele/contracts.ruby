@@ -29,6 +29,10 @@ module Contracts
         (Time.now.to_f * 1000).to_i.to_s(36) + rand(1_000_000).to_s(36)
       end
 
+      def contract_id(contract)
+        contract.object_id
+      end
+
       def eigenclass_hierarchy_supported?
         return false if RUBY_PLATFORM == "java" && RUBY_VERSION.to_f < 2.0
         RUBY_VERSION.to_f > 1.8

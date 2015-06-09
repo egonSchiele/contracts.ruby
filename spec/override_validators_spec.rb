@@ -1,9 +1,9 @@
 RSpec.describe Contract do
   describe ".override_validator" do
     around do |example|
-      Contract.restore_validators
+      Contract.reset_validators
       example.run
-      Contract.restore_validators
+      Contract.reset_validators
     end
 
     it "allows to override simple validators" do
