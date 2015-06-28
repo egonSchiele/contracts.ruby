@@ -315,7 +315,7 @@ This says that the second argument should be a `Proc`. You can call the function
 p map([1, 2, 3], lambda { |x| x + 1 }) # works
 ```
 
-But suppose you want to have a contract on the Proc too! Suppose you want to make sure that the Proc returns a number. Use the `Func` contract. `Func` takes a contract as it's argument, and uses that contract on the function that you pass in.
+But suppose you want to have a contract on the Proc too! Suppose you want to make sure that the Proc returns a number. Use the `Func` contract. `Func` takes a contract as its argument, and uses that contract on the function that you pass in.
 
 Here's a `map` function that requires an array of numbers, and a function that takes a number and returns a number:
 
