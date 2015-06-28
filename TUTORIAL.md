@@ -652,6 +652,17 @@ If you run it, last line will generate invariant violation:
 
 Which means, that after `#silly_next_day!` all checks specified in `invariant` statement will be verified, and if at least one fail, then invariant violation error will be raised.
 
+## Using contracts within your own code
+
+contracts.ruby is obviously designed to check method parameters and return values. But if you want to check whether some other data obeys a contract, you can use `Contract.valid?(value, contract)`. For instance:
+
+```ruby
+data = parse(user_input)
+unless Contract.valid?(data, HashOf[String,Nat])
+  raise UserInputError.new(user_input)
+end
+```
+
 ## Auto-generate documentation using contracts
 
 If you are generating documentation for your code with [YARD](http://yardoc.org/), check out [yard-contracts](https://github.com/sfcgeorge/yard-contracts). It will automatically annotate your functions with contracts information. Instead of documenting each parameter for a function yourself, you can just add a contract and yard-contracts will generate the documentation for you!
