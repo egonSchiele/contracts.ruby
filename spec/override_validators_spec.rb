@@ -120,7 +120,7 @@ RSpec.describe Contract do
       end.to raise_error(ContractError)
 
       expect(obj.greet(double("name"))).to match(
-        /hello, #\[RSpec::Mocks::Double.+@name="name"\]/
+        /hello, #\[Double "name"\]/
       )
     end
 
