@@ -310,6 +310,24 @@ module Contracts
     end
   end
 
+  # Use this to specify a Range object of a particular datatype.
+  # Example: <tt>RangeOf[Nat]</tt>, <tt>RangeOf[Date]</tt>, ...
+  class RangeOf < CallableClass
+    def initialize(contract)
+      @contract = contract
+    end
+
+    def valid?(val)
+      val.is_a? Range and
+        Contract.valid?(val.first, @contract) and
+        Contract.valid?(val.last,  @contract)
+    end
+
+    def to_s
+      "a range of #{@contract}"
+    end
+  end
+
   # Use this to specify the Hash characteristics. Takes two contracts,
   # one for hash keys and one for hash values.
   # Example: <tt>HashOf[Symbol, String]</tt>

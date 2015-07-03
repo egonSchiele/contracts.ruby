@@ -1,3 +1,5 @@
+require 'date'
+
 class A
   include Contracts
 
@@ -222,6 +224,16 @@ class GenericExample
     vals.inject(1) do |acc, x|
       acc * x
     end
+  end
+
+  Contract RangeOf[Num] => Num
+  def first_in_range_num(r)
+    r.first
+  end
+
+  Contract RangeOf[Date] => Date
+  def first_in_range_date(r)
+    r.first
   end
 
   Contract Bool => nil
