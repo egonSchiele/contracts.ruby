@@ -12,14 +12,18 @@ RSpec.describe "Contracts:" do
       expect { @o.double(2.2) }.to_not raise_error
     end
 
-    it "should fail for Strings" do
-      expect { @o.double("bad") }.to raise_error(ContractError)
+    it "should fail for nil and other data types" do
+      expect { @o.double(nil) }.to raise_error(ContractError)
+      expect { @o.double(:x) }.to raise_error(ContractError)
+      expect { @o.double('x') }.to raise_error(ContractError)
+      expect { @o.double(/x/) }.to raise_error(ContractError)
     end
   end
 
   describe "Pos:" do
     it "should pass for positive numbers" do
       expect { @o.pos_test(1) }.to_not raise_error
+      expect { @o.pos_test(1.6) }.to_not raise_error
     end
 
     it "should fail for 0" do
@@ -28,16 +32,21 @@ RSpec.describe "Contracts:" do
 
     it "should fail for negative numbers" do
       expect { @o.pos_test(-1) }.to raise_error(ContractError)
+      expect { @o.pos_test(-1.6) }.to raise_error(ContractError)
     end
 
-    it "should fail for nil" do
+    it "should fail for nil and other data types" do
       expect { @o.pos_test(nil) }.to raise_error(ContractError)
+      expect { @o.pos_test(:x) }.to raise_error(ContractError)
+      expect { @o.pos_test('x') }.to raise_error(ContractError)
+      expect { @o.pos_test(/x/) }.to raise_error(ContractError)
     end
   end
 
   describe "Neg:" do
     it "should pass for negative numbers" do
       expect { @o.neg_test(-1) }.to_not raise_error
+      expect { @o.neg_test(-1.6) }.to_not raise_error
     end
 
     it "should fail for 0" do
@@ -46,10 +55,14 @@ RSpec.describe "Contracts:" do
 
     it "should fail for positive numbers" do
       expect { @o.neg_test(1) }.to raise_error(ContractError)
+      expect { @o.neg_test(1.6) }.to raise_error(ContractError)
     end
 
-    it "should fail for nil" do
+    it "should fail for nil and other data types" do
       expect { @o.neg_test(nil) }.to raise_error(ContractError)
+      expect { @o.neg_test(:x) }.to raise_error(ContractError)
+      expect { @o.neg_test('x') }.to raise_error(ContractError)
+      expect { @o.neg_test(/x/) }.to raise_error(ContractError)
     end
   end
 
@@ -68,10 +81,14 @@ RSpec.describe "Contracts:" do
 
     it "should fail for negative numbers" do
       expect { @o.nat_test(-1) }.to raise_error(ContractError)
+      expect { @o.nat_test(-1.6) }.to raise_error(ContractError)
     end
 
-    it "should fail for nil" do
+    it "should fail for nil and other data types" do
       expect { @o.nat_test(nil) }.to raise_error(ContractError)
+      expect { @o.nat_test(:x) }.to raise_error(ContractError)
+      expect { @o.nat_test('x') }.to raise_error(ContractError)
+      expect { @o.nat_test(/x/) }.to raise_error(ContractError)
     end
   end
 
