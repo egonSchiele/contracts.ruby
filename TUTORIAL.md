@@ -88,6 +88,8 @@ contracts.ruby comes with a lot of built-in contracts, including the following:
 * [`RespondTo`](http://www.rubydoc.info/gems/contracts/Contracts/RespondTo) – checks that the argument responds to all of the given methods, e.g. `RespondTo[:password, :credit_card]`
 * [`Send`](http://www.rubydoc.info/gems/contracts/Contracts/Send) – checks that all named methods return true, e.g. `Send[:valid?]`
 * [`Exactly`](http://www.rubydoc.info/gems/contracts/Contracts/Exactly) – checks that the argument has the given type, not accepting sub-classes, e.g. `Exactly[Numeric]`.
+* [`Eq`](http://www.rubydoc.info/gems/contracts/Contracts/Eq) – checks that the argument is precisely equal to the given value, e.g. `Eq[String]` matches the class `String` and not a string instance.
+* [`Func`](http://www.rubydoc.info/gems/contracts/Contracts/Func) – specifies the contract for a proc/lambda e.g. `Contract ArrayOf[Num], Func[Num => Num] => ArrayOf[Num]`. See section "Contracts On Functions".
 
 To see all the built-in contracts and their full descriptions, check out the [RDoc](http://rubydoc.info/gems/contracts/Contracts).
 
