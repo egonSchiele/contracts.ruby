@@ -318,8 +318,8 @@ module Contracts
     end
 
     def valid?(val)
-      val.is_a? Range and
-        Contract.valid?(val.first, @contract) and
+      val.is_a? Range &&
+        Contract.valid?(val.first, @contract) &&
         Contract.valid?(val.last,  @contract)
     end
 
