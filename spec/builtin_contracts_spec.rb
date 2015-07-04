@@ -228,7 +228,7 @@ RSpec.describe "Contracts:" do
   end
 
   describe "RangeOf:" do
-    require 'date'
+    require "date"
     it "should pass for a range of nums" do
       expect { @o.first_in_range_num(3..10) }.to_not raise_error
     end
@@ -240,14 +240,14 @@ RSpec.describe "Contracts:" do
     end
 
     it "should fail for a non-range" do
-      expect { @o.first_in_range_num('foo') }.to raise_error(ContractError)
+      expect { @o.first_in_range_num("foo") }.to raise_error(ContractError)
       expect { @o.first_in_range_num(:foo) }.to raise_error(ContractError)
       expect { @o.first_in_range_num(5) }.to raise_error(ContractError)
       expect { @o.first_in_range_num(nil) }.to raise_error(ContractError)
     end
 
     it "should fail for a range with incorrect data type" do
-      expect { @o.first_in_range_num('a'..'z') }.to raise_error(ContractError)
+      expect { @o.first_in_range_num("a".."z") }.to raise_error(ContractError)
     end
 
     it "should fail for a badly-defined range" do
