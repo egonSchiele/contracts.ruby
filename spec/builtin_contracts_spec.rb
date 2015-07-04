@@ -261,6 +261,7 @@ RSpec.describe "Contracts:" do
         expect { @o.first_in_range_num(d1..10).to raise_error(ContractError) }
       rescue ArgumentError
         # If Ruby doesn't like the range, we ignore the test.
+        :nop
       end
     end
   end
