@@ -87,6 +87,7 @@ contracts.ruby comes with a lot of built-in contracts, including the following:
   * [`ArrayOf`](http://www.rubydoc.info/gems/contracts/Contracts/ArrayOf) – checks that the argument is an array, and all elements pass the given contract, e.g. `ArrayOf[Num]`
   * [`SetOf`](http://www.rubydoc.info/gems/contracts/Contracts/SetOf) – checks that the argument is a set, and all elements pass the given contract, e.g. `SetOf[Num]`
   * [`HashOf`](http://www.rubydoc.info/gems/contracts/Contracts/HashOf) – checks that the argument is a hash, and all keys and values pass the given contract, e.g. `HashOf[Symbol => String]` or `HashOf[Symbol,String]`
+  * [`RangeOf`](http://www.rubydoc.info/gems/contracts/Contracts/RangeOf) – checks that the argument is a range whose elements (#first and #last) pass the given contract, e.g. `RangeOf[Date]`
 
 * Keyword arguments
   * [`KeywordArgs`](http://www.rubydoc.info/gems/contracts/Contracts/KeywordArgs) – checks that the argument is an options hash, and all required keyword arguments are present, and all values pass their respective contracts, e.g. `KeywordArgs[:number => Num, :description => Optional[String]]`
