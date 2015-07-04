@@ -316,7 +316,7 @@ This says that the second argument should be a `Proc`. You can call the function
 p map([1, 2, 3], lambda { |x| x + 1 }) # works
 ```
 
-But suppose you want to have a contract on the Proc too! Suppose you want to make sure that the Proc returns a number. Use the `Func` contract. `Func` takes a contract as it's argument, and uses that contract on the function that you pass in.
+But suppose you want to have a contract on the Proc too! Suppose you want to make sure that the Proc returns a number. Use the `Func` contract. `Func` takes a contract as its argument, and uses that contract on the function that you pass in.
 
 Here's a `map` function that requires an array of numbers, and a function that takes a number and returns a number:
 
@@ -652,6 +652,17 @@ If you run it, last line will generate invariant violation:
 ```
 
 Which means, that after `#silly_next_day!` all checks specified in `invariant` statement will be verified, and if at least one fail, then invariant violation error will be raised.
+
+## Using contracts within your own code
+
+contracts.ruby is obviously designed to check method parameters and return values. But if you want to check whether some other data obeys a contract, you can use `Contract.valid?(value, contract)`. For instance:
+
+```ruby
+data = parse(user_input)
+unless Contract.valid?(data, HashOf[String,Nat])
+  raise UserInputError.new(user_input)
+end
+```
 
 ## Auto-generate documentation using contracts
 
