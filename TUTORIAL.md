@@ -92,7 +92,7 @@ contracts.ruby comes with a lot of built-in contracts, including the following:
   * [`KeywordArgs`](http://www.rubydoc.info/gems/contracts/Contracts/KeywordArgs) – checks that the argument is an options hash, and all required keyword arguments are present, and all values pass their respective contracts, e.g. `KeywordArgs[:number => Num, :description => Optional[String]]`
   * [`Optional`](http://www.rubydoc.info/gems/contracts/Contracts/Optional) – checks that the keyword argument is either not present or pass the given contract, can not be used outside of `KeywordArgs` contract, e.g. `Optional[Num]`
 
-* Validators
+* Duck typing
   * [`RespondTo`](http://www.rubydoc.info/gems/contracts/Contracts/RespondTo) – checks that the argument responds to all of the given methods, e.g. `RespondTo[:password, :credit_card]`
   * [`Send`](http://www.rubydoc.info/gems/contracts/Contracts/Send) – checks that all named methods return a truthy value, e.g. `Send[:valid?]`
 
