@@ -244,6 +244,45 @@ RSpec.describe "Contracts:" do
     end
   end
 
+  describe "RangeOf:" do
+    require "date"
+    it "should pass for a range of nums" do
+      expect { @o.first_in_range_num(3..10) }.to_not raise_error
+    end
+
+    it "should pass for a range of dates" do
+      d1 = Date.today
+      d2 = d1 + 18
+      expect { @o.first_in_range_date(d1..d2) }.to_not raise_error
+    end
+
+    it "should fail for a non-range" do
+      expect { @o.first_in_range_num("foo") }.to raise_error(ContractError)
+      expect { @o.first_in_range_num(:foo) }.to raise_error(ContractError)
+      expect { @o.first_in_range_num(5) }.to raise_error(ContractError)
+      expect { @o.first_in_range_num(nil) }.to raise_error(ContractError)
+    end
+
+    it "should fail for a range with incorrect data type" do
+      expect { @o.first_in_range_num("a".."z") }.to raise_error(ContractError)
+    end
+
+    it "should fail for a badly-defined range" do
+      # For some reason, Ruby 2.0.0 allows (date .. number) as a range.
+      # Perhaps other Ruby versions do too.
+      # Note that (date .. string) gives ArgumentError.
+      # This test guards against ranges with inconsistent data types.
+      begin
+        d1 = Date.today
+        expect { @o.first_in_range_date(d1..10).to raise_error(ContractError) }
+        expect { @o.first_in_range_num(d1..10).to raise_error(ContractError) }
+      rescue ArgumentError
+        # If Ruby doesn't like the range, we ignore the test.
+        :nop
+      end
+    end
+  end
+
   describe "SetOf:" do
     it "should pass for a set of nums" do
       expect { @o.product_from_set(Set.new([1, 2, 3])) }.to_not raise_error
