@@ -29,21 +29,21 @@ module Contracts
   # Check that an argument is a positive number.
   class Pos
     def self.valid? val
-      val && val > 0
+      val && val.is_a?(Numeric) && val > 0
     end
   end
 
   # Check that an argument is a negative number.
   class Neg
     def self.valid? val
-      val && val < 0
+      val && val.is_a?(Numeric) && val < 0
     end
   end
 
   # Check that an argument is a natural number.
   class Nat
     def self.valid? val
-      val && val >= 0 && val.integer?
+      val && val.is_a?(Integer) && val >= 0
     end
   end
 
