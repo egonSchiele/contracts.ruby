@@ -200,6 +200,10 @@ class GenericExample
   def and_test(x)
   end
 
+  Contract Enum[:a, :b, :c] => nil
+  def enum_test(x)
+  end
+
   Contract RespondTo[:good] => nil
   def responds_test(x)
   end

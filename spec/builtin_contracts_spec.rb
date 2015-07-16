@@ -164,6 +164,16 @@ RSpec.describe "Contracts:" do
     end
   end
 
+  describe "Enum:" do
+    it "should pass for an object that is included" do
+      expect { @o.enum_test(:a) }.to_not raise_error
+    end
+
+    it "should fail for an object that is not included" do
+      expect { @o.enum_test(:z) }.to raise_error(ContractError)
+    end
+  end
+
   describe "RespondTo:" do
     it "should pass for an object that responds to :good" do
       expect { @o.responds_test(A.new) }.to_not raise_error
