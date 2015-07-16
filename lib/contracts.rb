@@ -110,6 +110,8 @@ class Contract < Contracts::Decorator
 
     @ret_validator = Contract.make_validator(ret_contract)
 
+    @pattern_match = false
+
     # == @has_proc_contract
     last_contract = args_contracts.last
     is_a_proc = last_contract.is_a?(Class) && (last_contract <= Proc || last_contract <= Method)
@@ -251,7 +253,7 @@ class Contract < Contracts::Decorator
 
   # Used to determine type of failure exception this contract should raise in case of failure
   def failure_exception
-    if @pattern_match
+    if pattern_match?
       PatternMatchingError
     else
       ParamContractError
@@ -266,6 +268,6 @@ class Contract < Contracts::Decorator
 
   # Used to determine if contract is a pattern matching contract
   def pattern_match?
-    @pattern_match
+    @pattern_match == true
   end
 end
