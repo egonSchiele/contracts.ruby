@@ -201,6 +201,20 @@ module Contracts
     end
   end
 
+  # Takes a list of values, e.g. +[:a, :b, :c]+. If argument is included in
+  # the list, the contract passes.
+  #
+  # Example: <tt>Enum[:a, :b, :c]</tt>?
+  class Enum < CallableClass
+    def initialize(*vals)
+      @vals = vals
+    end
+
+    def valid?(val)
+      @vals.include? val
+    end
+  end
+
   # Takes a value +v+. If the argument is +.equal+ to +v+, the contract passes,
   # otherwise the contract fails.
   # Example: <tt>Eq[Class]</tt>
