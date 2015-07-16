@@ -1,3 +1,7 @@
+## v0.10.1
+
+- Enhancement: make `@pattern_match` instance variable not render ruby warning. Required to use new aruba versions in rspec tests - [Dennis Günnewig](https://github.com/dg-ratiodata) [#179](https://github.com/egonSchiele/contracts.ruby/pull/179)
+
 ## v0.10
 
 - Bugfix: make `Maybe[Proc]` work correctly - [Simon George](https://github.com/sfcgeorge) [#142](https://github.com/egonSchiele/contracts.ruby/pull/142)
