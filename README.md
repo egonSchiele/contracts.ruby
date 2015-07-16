@@ -53,6 +53,18 @@ Check out [this awesome tutorial](http://egonschiele.github.com/contracts.ruby).
 
 Check out [this screencast](https://vimeo.com/85883356).
 
+## Development
+
+To get started do the following:
+
+1. Install required gems for development
+
+  `bundle install`
+
+2. Run our test suite
+
+  `bundle exec rake`
+
 ## Performance
 
 Using contracts.ruby results in very little slowdown. Check out [this blog post](http://adit.io/posts/2013-03-04-How-I-Made-My-Ruby-Project-10x-Faster.html#seconds-6) for more info.
