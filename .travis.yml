@@ -9,7 +9,11 @@ rvm:
   - jruby-18mode # JRuby in 1.8 mode
   - jruby-19mode # JRuby in 1.9 mode
 
+before_install:
+  - gem install bundler
+
 script:
   - bundle exec rspec
   - ruby script/rubocop.rb
+
 bundler_args: --without development
