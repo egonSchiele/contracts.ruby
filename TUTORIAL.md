@@ -99,6 +99,7 @@ contracts.ruby comes with a lot of built-in contracts, including the following:
 
 * Miscellaneous
   * [`Exactly`](http://www.rubydoc.info/gems/contracts/Contracts/Exactly) – checks that the argument has the given type, not accepting sub-classes, e.g. `Exactly[Numeric]`.
+  * [`IsA`](http://www.rubydoc.info/gems/contracts/Contracts/IsA) – checks that the argument is of given class or sub-class of given class, e.g. `IsA[Numeric]`
   * [`Eq`](http://www.rubydoc.info/gems/contracts/Contracts/Eq) – checks that the argument is precisely equal to the given value, e.g. `Eq[String]` matches the class `String` and not a string instance.
   * [`Func`](http://www.rubydoc.info/gems/contracts/Contracts/Func) – specifies the contract for a proc/lambda e.g. `Contract ArrayOf[Num], Func[Num => Num] => ArrayOf[Num]`. See section "Contracts On Functions".
 
