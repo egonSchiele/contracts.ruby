@@ -208,6 +208,12 @@ class GenericExample
   def responds_test(x)
   end
 
+  # rubocop:disable Style/PredicateName
+  Contract IsA[Numeric] => nil
+  def is_a_test(x)
+  end
+  # rubocop:enable Style/PredicateName
+
   Contract Send[:good] => nil
   def send_test(x)
   end

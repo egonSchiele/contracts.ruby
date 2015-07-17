@@ -208,6 +208,16 @@ RSpec.describe "Contracts:" do
     end
   end
 
+  describe "IsA:" do
+    it "should pass for a integer" do
+      expect { @o.is_a_test(1) }
+    end
+
+    it "should pass for a float" do
+      expect { @o.is_a_test(1.1) }
+    end
+  end
+
   describe "Eq:" do
     it "should pass for a class" do
       expect { @o.eq_class_test(Foo) }

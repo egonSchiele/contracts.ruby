@@ -76,6 +76,22 @@ module Contracts
     end
   end
 
+  require "contracts"
+
+  # Takes an object and check if object is of class or sub-class. The contracts
+  # if given object is a class/sub-class.
+  #
+  # Example: <tt>IsA[Numeric]</tt>
+  class IsA < CallableClass
+    def initialize(*vals)
+      @vals = vals
+    end
+
+    def valid?(val)
+      vals.any? { |v| val.is_a? v }
+    end
+  end
+
   # Takes a variable number of contracts.
   # The contract passes if any of the contracts pass.
   # Example: <tt>Or[Fixnum, Float]</tt>

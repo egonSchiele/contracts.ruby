@@ -1,3 +1,6 @@
+AllCops:
+  DisplayCopNames: true
+
 # forces method defs to have params in parens
 Style/MethodDefParentheses:
   Enabled: false
