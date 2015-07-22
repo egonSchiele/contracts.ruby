@@ -17,7 +17,7 @@ contracts.ruby brings code contracts to the Ruby language. Code contracts allow 
 A simple example:
 
 ```ruby
-Contract Num, Num => Num
+Contract Contracts::Num, Contracts::Num => Contracts::Num
 def add(a, b)
   a + b
 end
@@ -31,9 +31,9 @@ Copy this code into a file and run it:
 require 'contracts'
 
 class Math
-  include Contracts
+  include Contracts::Core
 
-  Contract Num, Num => Num
+  Contract Contracts::Num, Contracts::Num => Contracts::Num
   def self.add(a, b)
     a + b
   end
@@ -105,6 +105,21 @@ contracts.ruby comes with a lot of built-in contracts, including the following:
 
 To see all the built-in contracts and their full descriptions, check out the [RDoc](http://rubydoc.info/gems/contracts/Contracts).
 
+It is recommended to use shortcut for referring builtin contracts:
+
+```ruby
+# define shortcut somewhere at the top level of your codebase:
+C = Contracts
+
+# and use it:
+Contract C::Maybe[C::Num], String => C::Num
+```
+
+Shortcut name should not be necessary `C`, can be anything that you are comfort
+with while typing and anything that does not conflict with libraries you use.
+
+All examples after this point assume you have chosen a shortcut as `C::`.
+
 ## More Examples
 
 ### Hello, World
@@ -127,7 +142,7 @@ You always need to specify a contract for the return value. In this example, `he
 ### A Double Function
 
 ```ruby
-Contract Or[Fixnum, Float] => Or[Fixnum, Float]
+Contract C::Or[Fixnum, Float] => C::Or[Fixnum, Float]
 def double(x)
   2 * x
 end
@@ -137,19 +152,19 @@ Sometimes you want to be able to choose between a few contracts. `Or` takes a va
 This introduces some new syntax. One of the valid values for a contract is an instance of a class that responds to the `valid?` method. This is what `Or[Fixnum, Float]` is. The longer way to write it would have been:
 
 ```ruby
-Contract Or.new(Fixnum, Float) => Or.new(Fixnum, Float)
+Contract C::Or.new(Fixnum, Float) => C::Or.new(Fixnum, Float)
 ```
 
 All the built-in contracts have overridden the square brackets (`[]`) to give the same functionality. So you could write
 
 ```ruby
-Contract Or[Fixnum, Float] => Or[Fixnum, Float]
+Contract C::Or[Fixnum, Float] => C::Or[Fixnum, Float]
 ```
 
 or
 
 ```ruby
-Contract Or.new(Fixnum, Float) => Or.new(Fixnum, Float)
+Contract C::Or.new(Fixnum, Float) => C::Or.new(Fixnum, Float)
 ```
 
 whichever you prefer. They both mean the same thing here: make a new instance of `Or` with `Fixnum` and `Float`. Use that instance to validate the argument.
@@ -157,7 +172,7 @@ whichever you prefer. They both mean the same thing here: make a new instance of
 ### A Product Function
 
 ```ruby
-Contract ArrayOf[Num] => Num
+Contract C::ArrayOf[C::Num] => C::Num
 def product(vals)
   total = 1
   vals.each do |val|
@@ -180,7 +195,7 @@ product([1, 2, 3, "foo"])
 ### Another Product Function
 
 ```ruby
-Contract Args[Num] => Num
+Contract C::Args[C::Num] => C::Num
 def product(*vals)
   total = 1
   vals.each do |val|
@@ -204,7 +219,7 @@ If an array is one of the arguments and you know how many elements it's going to
 
 ```ruby
 # a function that takes an array of two elements...a person's age and a person's name.
-Contract [Num, String] => nil
+Contract [C::Num, String] => nil
 def person(data)
   p data
 end
@@ -218,7 +233,7 @@ Here's a contract that requires a Hash. We can put contracts on each of the keys
 
 ```ruby
 # note the parentheses around the hash; without those you would get a syntax error
-Contract ({ :age => Num, :name => String }) => nil
+Contract ({ :age => C::Num, :name => String }) => nil
 def person(data)
   p data
 end
@@ -242,7 +257,7 @@ even though we don't specify a type for `:foo`.
 Peruse this contract on the keys and values of a Hash.
 
 ```ruby
-Contract HashOf[Symbol, Num] => Num
+Contract C::HashOf[Symbol, C::Num] => C::Num
 def give_largest_value(hsh)
   hsh.values.max
 end
@@ -270,14 +285,14 @@ def connect(host, port:, user:, password:)
 You can of course put `Hash` contract on it:
 
 ```ruby
-Contract String, { :port => Num, :user => String, :password => String } => Connection
+Contract String, { :port => C::Num, :user => String, :password => String } => Connection
 def connect(host, port:, user:, password:)
 ```
 
 But this will not quite work if you want to have a default values:
 
 ```ruby
-Contract String, { :port => Num, :user => String, :password => String } => Connection
+Contract String, { :port => C::Num, :user => String, :password => String } => Connection
 def connect(host, port: 5000, user:, password:)
   # ...
 end
@@ -297,13 +312,13 @@ ContractError: Contract violation for argument 2 of 2:
         At: (irb):12
 ```
 
-This can be fixed with contract `{ :port => Maybe[Num], ... }`, but that will
+This can be fixed with contract `{ :port => C::Maybe[C::Num], ... }`, but that will
 allow `nil` to be passed in, which is not the original intent.
 
 So that is where `KeywordArgs` and `Optional` contracts jump in:
 
 ```ruby
-Contract String, KeywordArgs[ :port => Optional[Num], :user => String, :password => String ] => Connection
+Contract String, C::KeywordArgs[ :port => C::Optional[C::Num], :user => String, :password => String ] => Connection
 def connect(host, port: 5000, user:, password:)
 ```
 
@@ -320,7 +335,7 @@ def map(arr, func)
 `map` takes an array, and a function. Suppose you want to add a contract to this function. You could try this:
 
 ```ruby
-Contract ArrayOf[Any], Proc => ArrayOf[Any]
+Contract C::ArrayOf[C::Any], Proc => C::ArrayOf[C::Any]
 def map(arr, func)
 ```
 
@@ -335,7 +350,7 @@ But suppose you want to have a contract on the Proc too! Suppose you want to mak
 Here's a `map` function that requires an array of numbers, and a function that takes a number and returns a number:
 
 ```ruby
-Contract ArrayOf[Num], Func[Num => Num] => ArrayOf[Num]
+Contract C::ArrayOf[C::Num], C::Func[C::Num => C::Num] => C::ArrayOf[C::Num]
 def map(arr, func)
   ret = []
   arr.each do |x|
@@ -363,7 +378,7 @@ def map(arr, &block)
 NOTE: This is not valid:
 
 ```ruby
-Contract ArrayOf[Num], Func => ArrayOf[Num]
+Contract C::ArrayOf[C::Num], C::Func => C::ArrayOf[C::Num]
 def map(arr, &func)
 ```
 
@@ -373,7 +388,7 @@ Here I am using `Func` without specifying a contract, like `Func[Num => Num]`. T
 Treat the return value as an array. For example, here's a function that returns two numbers:
 
 ```ruby
-Contract Num => [Num, Num]
+Contract C::Num => [C::Num, C::Num]
 def mult(x)
   return x, x+1
 end
@@ -384,7 +399,7 @@ end
 If you use a contract a lot, it's a good idea to give it a meaningful synonym that tells the reader more about what your code returns. For example, suppose you have many functions that return a `Hash` or `nil`. If a `Hash` is returned, it contains information about a person. Your contact might look like this:
 
 ```ruby
-Contract String => Or[Hash, nil]
+Contract String => C::Or[Hash, nil]
 def some_func(str)
 ```
 
@@ -416,7 +431,7 @@ The first two don't need any extra work to define: you can just use any constant
 ### A Proc
 
 ```ruby
-Contract lambda { |x| x.is_a? Numeric } => Num
+Contract lambda { |x| x.is_a? Numeric } => C::Num
 def double(x)
 ```
 
@@ -461,7 +476,7 @@ The `Or` contract takes a sequence of contracts, and passes if any of them pass.
 This class inherits from `CallableClass`, which allows us to use `[]` when using the class:
 
 ```ruby
-Contract Or[Fixnum, Float] => Num
+Contract C::Or[Fixnum, Float] => C::Num
 def double(x)
   2 * x
 end
@@ -470,7 +485,7 @@ end
 Without `CallableClass`, we would have to use `.new` instead:
 
 ```ruby
-Contract Or.new(Fixnum, Float) => Num
+Contract C::Or.new(Fixnum, Float) => C::Num
 def double(x)
 # etc
 ```
@@ -544,11 +559,11 @@ Possible validator overrides:
 
 - `override_validator(MyCustomContract)` - allows to add some special behaviour for custom contracts,
 - `override_validator(Proc)` - e.g. `lambda { true }`,
-- `override_validator(Array)` - e.g. `[Num, String]`,
-- `override_validator(Hash)` - e.g. `{ :a => Num, :b => String }`,
+- `override_validator(Array)` - e.g. `[C::Num, String]`,
+- `override_validator(Hash)` - e.g. `{ :a => C::Num, :b => String }`,
 - `override_validator(Range)` - e.g. `(1..10)`,
-- `override_validator(Contracts::Args)` - e.g. `Args[Num]`,
-- `override_validator(Contracts::Func)` - e.g. `Func[Num => Num]`,
+- `override_validator(Contracts::Args)` - e.g. `C::Args[C::Num]`,
+- `override_validator(Contracts::Func)` - e.g. `C::Func[C::Num => C::Num]`,
 - `override_validator(:valid)` - allows to override how contracts that respond to `:valid?` are handled,
 - `override_validator(:class)` - allows to override how class/module contract constants are handled,
 - `override_validator(:default)` - otherwise, raw value contracts.
@@ -566,7 +581,7 @@ You can use contracts for method overloading! This is commonly called "pattern m
 For example, here's a factorial function without method overloading:
 
 ```ruby
-Contract Num => Num
+Contract C::Num => C::Num
 def fact x
   if x == 1
     x
@@ -584,7 +599,7 @@ def fact x
   x
 end
 
-Contract Num => Num
+Contract C::Num => C::Num
 def fact x
   x * fact(x - 1)
 end
@@ -610,7 +625,7 @@ end
 Note that the second `get_ticket` contract above could have been simplified to:
 
 ```ruby
-Contract Num => Ticket
+Contract C::Num => Ticket
 ```
 
 This is because the first contract eliminated the possibility of `age` being less than 12. However, the simpler contract is less explicit; you may want to "spell out" the age condition for clarity, especially if the method is overloaded with many contracts.
@@ -621,7 +636,7 @@ Usage is the same as contracts in classes:
 
 ```ruby
 module M
-  include Contracts
+  include Contracts::Core
 
   Contract String => String
   def self.parse
@@ -640,13 +655,13 @@ A simple example:
 
 ```ruby
 class MyBirthday < Struct.new(:day, :month)
-  include Contracts
+  include Contracts::Core
   include Contracts::Invariants
 
   invariant(:day) { 1 <= day && day <= 31 }
   invariant(:month) { 1 <= month && month <= 12 }
 
-  Contract None => Fixnum
+  Contract C::None => Fixnum
   def silly_next_day!
     self.day += 1
   end
