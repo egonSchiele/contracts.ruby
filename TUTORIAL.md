@@ -546,6 +546,7 @@ Possible validator overrides:
 - `override_validator(Proc)` - e.g. `lambda { true }`,
 - `override_validator(Array)` - e.g. `[Num, String]`,
 - `override_validator(Hash)` - e.g. `{ :a => Num, :b => String }`,
+- `override_validator(Range)` - e.g. `(1..10)`,
 - `override_validator(Contracts::Args)` - e.g. `Args[Num]`,
 - `override_validator(Contracts::Func)` - e.g. `Func[Num => Num]`,
 - `override_validator(:valid)` - allows to override how contracts that respond to `:valid?` are handled,

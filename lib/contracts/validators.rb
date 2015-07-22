@@ -25,6 +25,12 @@ module Contracts
         end
       end,
 
+      Range => lambda do |contract|
+        lambda do |arg|
+          contract.include?(arg)
+        end
+      end,
+
       Contracts::Args => lambda do |contract|
         lambda do |arg|
           Contract.valid?(arg, contract.contract)

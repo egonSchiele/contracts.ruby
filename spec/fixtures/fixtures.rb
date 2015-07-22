@@ -322,6 +322,10 @@ class GenericExample
     a
   end
 
+  Contract (1..10) => nil
+  def method_with_range_contract(x)
+  end
+
   Contract String
   def a_private_method
     "works"
