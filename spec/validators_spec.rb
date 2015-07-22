@@ -15,5 +15,11 @@ module Contracts
         o.method_with_range_contract(300)
       end.to raise_error(ContractError, /Expected: 1\.\.10/)
     end
+
+    it "fails when value is incorrect" do
+      expect do
+        o.method_with_range_contract("hello world")
+      end.to raise_error(ContractError, /Expected: 1\.\.10.*Actual: "hello world"/m)
+    end
   end
 end
