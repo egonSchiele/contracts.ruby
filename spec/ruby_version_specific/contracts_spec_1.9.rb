@@ -1,11 +1,11 @@
 class GenericExample
-  Contract Args[String], Num => ArrayOf[String]
+  Contract C::Args[String], C::Num => C::ArrayOf[String]
   def splat_then_arg(*vals, n)
     vals.map { |v| v * n }
   end
 
   if ruby_version <= 1.9
-    Contract ({:foo => Nat}) => nil
+    Contract ({:foo => C::Nat}) => nil
     def nat_test_with_kwarg(a_hash)
     end
   end

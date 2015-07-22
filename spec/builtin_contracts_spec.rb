@@ -150,7 +150,7 @@ RSpec.describe "Contracts:" do
     end
 
     it "should fail for an object with both methods :good and :bad" do
-      expect { @o.xor_test(C.new) }.to raise_error(ContractError)
+      expect { @o.xor_test(F.new) }.to raise_error(ContractError)
     end
   end
 
@@ -160,7 +160,7 @@ RSpec.describe "Contracts:" do
     end
 
     it "should fail for an object that has a method :good but isn't of class A" do
-      expect { @o.and_test(C.new) }.to raise_error(ContractError)
+      expect { @o.and_test(F.new) }.to raise_error(ContractError)
     end
   end
 
@@ -190,7 +190,7 @@ RSpec.describe "Contracts:" do
     end
 
     it "should fail for an object that returns false for method :good" do
-      expect { @o.send_test(C.new) }.to raise_error(ContractError)
+      expect { @o.send_test(F.new) }.to raise_error(ContractError)
     end
   end
 
@@ -364,7 +364,7 @@ RSpec.describe "Contracts:" do
     it "doesn't allow to specify multiple key-value pairs with pretty syntax" do
       expect do
         Class.new do
-          include Contracts
+          include Contracts::Core
 
           Contract Contracts::HashOf[Symbol => String, Contracts::Num => Contracts::Num] => nil
           def something(hash)

@@ -1,7 +1,7 @@
 module Mod
-  include Contracts
+  include Contracts::Core
 
-  Contract Num => Num
+  Contract C::Num => C::Num
   def self.a_module_method a
     a + 1
   end

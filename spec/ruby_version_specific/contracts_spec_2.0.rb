@@ -1,10 +1,10 @@
 class GenericExample
-  Contract Args[String], { repeat: Maybe[Num] } => ArrayOf[String]
+  Contract C::Args[String], { repeat: C::Maybe[C::Num] } => C::ArrayOf[String]
   def splat_then_optional_named(*vals, repeat: 2)
     vals.map { |v| v * repeat }
   end
 
-  Contract ({foo: Nat}) => nil
+  Contract ({foo: C::Nat}) => nil
   def nat_test_with_kwarg(foo: 10)
   end
 end
