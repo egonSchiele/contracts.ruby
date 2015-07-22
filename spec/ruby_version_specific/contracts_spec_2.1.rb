@@ -1,5 +1,5 @@
 class GenericExample
-  Contract String, Bool, Args[Symbol], Float, KeywordArgs[e: Range, f: Optional[Num]], Proc =>
+  Contract String, Bool, Args[Symbol], Float, KeywordArgs[e: Range, f: Optional[Num], g: Symbol], Proc =>
            [Proc, Hash, Maybe[Num], Range, Float, ArrayOf[Symbol], Bool, String]
   def complicated(a, b = true, *c, d, e:, f:2, **g, &h)
     h.call [h, g, f, e, d, c, b, a]
@@ -15,7 +15,7 @@ RSpec.describe "Contracts:" do
     describe "really complicated method signature" do
       it "should work with default named args used" do
         expect do
-          @o.complicated("a", false, :b, 2.0, e: (1..5)) { |x| x }
+          @o.complicated("a", false, :b, 2.0, e: (1..5), g: :d) { |x| x }
         end.to_not raise_error
       end
 
@@ -56,7 +56,7 @@ RSpec.describe "Contracts:" do
           @o.complicated("a", true, :b, :c, 2.0, e: (1..5), f: nil, g: :d) do |x|
             x
           end
-        end.to raise_error(ContractError, /Expected: \(KeywordArgs\[{:e=>Range, :f=>Optional\[Num\]}\]\)/)
+        end.to raise_error(ContractError, /Expected: \(KeywordArgs\[{:e=>Range, :f=>Optional\[Num\], :g=>Symbol}\]\)/)
       end
     end
   end
