@@ -113,6 +113,10 @@ class GenericExample
   def nested_hash_complex_contracts(data)
   end
 
+  Contract KeywordArgs[:name => String, :age => Fixnum] => nil
+  def person_keywordargs(data)
+  end
+
   Contract [Or[TrueClass, FalseClass]] => nil
   def array_complex_contracts(data)
   end

@@ -332,6 +332,24 @@ RSpec.describe "Contracts:" do
     end
   end
 
+  describe "KeywordArgs:" do
+    it "should pass for exact correct input" do
+      expect { @o.person_keywordargs(:name => "calvin", :age => 10) }.to_not raise_error
+    end
+
+    it "should fail if some keys don't have contracts" do
+      expect { @o.person_keywordargs(:name => "calvin", :age => 10, :foo => "bar") }.to raise_error(ContractError)
+    end
+
+    it "should fail if a key with a contract on it isn't provided" do
+      expect { @o.person_keywordargs(:name => "calvin") }.to raise_error(ContractError)
+    end
+
+    it "should fail for incorrect input" do
+      expect { @o.person_keywordargs(:name => 50, :age => 10) }.to raise_error(ContractError)
+    end
+  end
+
   describe "Optional:" do
     it "can't be used outside of KeywordArgs" do
       expect do

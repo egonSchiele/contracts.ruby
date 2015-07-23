@@ -385,6 +385,7 @@ module Contracts
     end
 
     def valid?(hash)
+      return false unless hash.keys - options.keys == []
       options.all? do |key, contract|
         Optional._valid?(hash, key, contract)
       end
