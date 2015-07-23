@@ -4,7 +4,7 @@ module Contracts
       args << blk if blk
 
       # Explicitly append blk=nil if nil != Proc contract violation anticipated
-      maybe_append_block!(args, blk)
+      nil_block_appended = maybe_append_block!(args, blk)
 
       # Explicitly append options={} if Hash contract is present
       maybe_append_options!(args, blk)
@@ -66,7 +66,8 @@ module Contracts
       end
 
       # If we put the block into args for validating, restore the args
-      args.slice!(-1) if blk
+      # OR if we added a fake nil at the end because a block wasn't passed in.
+      args.slice!(-1) if blk || nil_block_appended
       result = if method.respond_to?(:call)
                  # proc, block, lambda, etc
                  method.call(*args, &blk)

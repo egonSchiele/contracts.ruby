@@ -133,6 +133,7 @@ class GenericExample
   Contract Args[Num], Maybe[Proc] => Any
   def maybe_call(*vals, &block)
     block.call if block
+    vals
   end
 
   Contract Args[Num] => Num
