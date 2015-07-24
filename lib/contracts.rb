@@ -118,6 +118,7 @@ class Contract < Contracts::Decorator
     maybe_a_proc = last_contract.is_a?(Contracts::Maybe) && last_contract.include_proc?
 
     @has_proc_contract = is_a_proc || maybe_a_proc || last_contract.is_a?(Contracts::Func)
+
     # ====
 
     # == @has_options_contract
@@ -235,20 +236,24 @@ class Contract < Contracts::Decorator
 
   # a better way to handle this might be to take this into account
   # before throwing a "mismatched # of args" error.
+  # returns true if it appended nil
   def maybe_append_block! args, blk
-    return unless @has_proc_contract && !blk &&
+    return false unless @has_proc_contract && !blk &&
         (@args_contract_index || args.size < args_contracts.size)
     args << nil
+    true
   end
 
   # Same thing for when we have named params but didn't pass any in.
+  # returns true if it appended nil
   def maybe_append_options! args, blk
-    return unless @has_options_contract
+    return false unless @has_options_contract
     if @has_proc_contract && args_contracts[-2].is_a?(Hash) && !args[-2].is_a?(Hash)
       args.insert(-2, {})
     elsif args_contracts[-1].is_a?(Hash) && !args[-1].is_a?(Hash)
       args << {}
     end
+    true
   end
 
   # Used to determine type of failure exception this contract should raise in case of failure

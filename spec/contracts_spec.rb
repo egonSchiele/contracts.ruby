@@ -423,6 +423,16 @@ RSpec.describe "Contracts:" do
         @o.maybe_call("bad")
       end.to raise_error(ContractError)
     end
+
+    describe "varargs are given with a maybe block" do
+      it "when a block is passed in, varargs should be correct" do
+        expect(@o.maybe_call(1, 2, 3) { 1 + 1 }).to eq([1, 2, 3])
+      end
+
+      it "when a block is NOT passed in, varargs should still be correct" do
+        expect(@o.maybe_call(1, 2, 3)).to eq([1, 2, 3])
+      end
+    end
   end
 
   describe "varargs" do
