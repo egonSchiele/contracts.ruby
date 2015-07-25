@@ -347,6 +347,8 @@ RSpec.describe "Contracts:" do
 
     it "should fail for incorrect input" do
       expect { @o.person_keywordargs(:name => 50, :age => 10) }.to raise_error(ContractError)
+      expect { @o.hash_keywordargs(:hash => nil) }.to raise_error(ContractError)
+      expect { @o.hash_keywordargs(:hash => 1) }.to raise_error(ContractError)
     end
   end
 
@@ -379,6 +381,8 @@ RSpec.describe "Contracts:" do
 
     context "given an unfulfilled contract" do
       it { expect { @o.gives_max_value(:panda => "1", :bamboo => "2") }.to raise_error(ContractError) }
+      it { expect { @o.gives_max_value(nil) }.to raise_error(ContractError) }
+      it { expect { @o.gives_max_value(1) }.to raise_error(ContractError) }
       it { expect { @o.pretty_gives_max_value(:panda => "1", :bamboo => "2") }.to raise_error(ContractError) }
     end
 

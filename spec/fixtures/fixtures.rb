@@ -117,6 +117,10 @@ class GenericExample
   def person_keywordargs(data)
   end
 
+  Contract KeywordArgs[:hash => HashOf[Symbol, Num]] => nil
+  def hash_keywordargs(data)
+  end
+
   Contract [Or[TrueClass, FalseClass]] => nil
   def array_complex_contracts(data)
   end
