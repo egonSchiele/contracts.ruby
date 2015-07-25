@@ -360,6 +360,7 @@ module Contracts
     end
 
     def valid?(hash)
+      return false unless hash.is_a?(Hash)
       keys_match = hash.keys.map { |k| Contract.valid?(k, @key) }.all?
       vals_match = hash.values.map { |v| Contract.valid?(v, @value) }.all?
 
