@@ -226,7 +226,7 @@ RSpec.describe "Contracts:" do
   describe "anonymous classes" do
     let(:klass) do
       Class.new do
-        include Contracts
+        include Contracts::Core
 
         Contract String => String
         def greeting(name)
@@ -249,7 +249,7 @@ RSpec.describe "Contracts:" do
   describe "anonymous modules" do
     let(:mod) do
       Module.new do
-        include Contracts
+        include Contracts::Core
 
         Contract String => String
         def greeting(name)

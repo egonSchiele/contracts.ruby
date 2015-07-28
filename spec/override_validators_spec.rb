@@ -19,7 +19,7 @@ RSpec.describe Contract do
       end
 
       klass = Class.new do
-        include Contracts
+        include Contracts::Core
 
         Contract ({ :a => Contracts::Num, :b => String }) => nil
         def something(opts)
@@ -70,7 +70,7 @@ RSpec.describe Contract do
       end
 
       klass = Class.new do
-        include Contracts
+        include Contracts::Core
 
         Contract stateful_contract[Contracts::Num] => Contracts::Num
         def only_three_times(x)
@@ -103,7 +103,7 @@ RSpec.describe Contract do
       end
 
       klass = Class.new do
-        include Contracts
+        include Contracts::Core
 
         Contract String => String
         def greet(name)
@@ -135,7 +135,7 @@ RSpec.describe Contract do
       end
 
       klass = Class.new do
-        include Contracts
+        include Contracts::Core
 
         Contract 1, Contracts::Num => Contracts::Num
         def gcd(_, b)
