@@ -8,15 +8,15 @@ require "open-uri"
 include Contracts
 
 def download url
-  open("https://www.#{url}/").read
+  open("http://www.#{url}/").read
 end
 
 Contract String => String
 def contracts_download url
-  open("https://www.#{url}").read
+  open("http://www.#{url}").read
 end
 
-@urls = %w{facebook.com google.com bing.com}
+@urls = %w{google.com bing.com}
 
 def benchmark
   Benchmark.bm 30 do |x|
