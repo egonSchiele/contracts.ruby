@@ -1,3 +1,11 @@
+## v0.11.0
+- Enhancement: add `include Contracts::Core` that doesn't pollute the namespace as much as `include Contracts` - [Oleksii Federov](https://github.com/waterlink) [#185](https://github.com/egonSchiele/contracts.ruby/pull/185)
+- Bugfix: fail if a non-hash is provided to a `HashOf` contract - [Abe Voelker](https://github.com/abevoelker) [#190](https://github.com/egonSchiele/contracts.ruby/pull/190)
+- Bugfix: bugfix for using varargs and `Maybe[Proc]` together - [Adit Bhargava](https://github.com/egonSchiele) [#188](https://github.com/egonSchiele/contracts.ruby/pull/188)
+- Bugfix: make KeywordArgs fail if unexpected keys are passed in - [Abe Voelker](https://github.com/abevoelker) [#187](https://github.com/egonSchiele/contracts.ruby/pull/187)
+- Feature: range contract added - [Oleksii Fedorov](https://github.com/waterlink) [#184](https://github.com/egonSchiele/contracts.ruby/pull/184)
+- Feature: enum contract added - [Dennis Günnewig](https://github.com/dg-ratiodata) [#181](https://github.com/egonSchiele/contracts.ruby/pull/181)
+
 ## v0.10.1
 
 - Enhancement: make `@pattern_match` instance variable not render ruby warning. Required to use new aruba versions in rspec tests - [Dennis Günnewig](https://github.com/dg-ratiodata) [#179](https://github.com/egonSchiele/contracts.ruby/pull/179)
@@ -18,7 +26,7 @@
 - MAJOR fix in pattern-matching: If the return contract for a pattern-matched function fails, it should NOT try the next pattern-match function. Pattern-matching is only for params, not return values.
 - raise an error if multiple defns have the same contract for pattern matching.
 
-- New syntax for functions with no input params (the old style still works)  
+- New syntax for functions with no input params (the old style still works)
   Old way:
   ```ruby
   Contract nil => 1
