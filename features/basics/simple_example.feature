@@ -1,4 +1,4 @@
-Feature: Simple example
+Feature: Simple examples and Contract violations
 
   Contracts.ruby allows specification of contracts on per-method basis, where
   method arguments and return value will be validated upon method call.
@@ -25,6 +25,31 @@ Feature: Simple example
   - [Class method](#class-method),
 
   - [Singleton method](#singleton-method).
+
+  Whenever invalid argument is passed to a contracted method, corresponding
+  `ContractError` will be raised. That happens right after bad value got into
+  system protected by contracts and prevents error propagation: first
+  non-contracts library frame in exception's backtrace is a culprit for passing
+  an invalid argument - you do not need to verify 20-30 frames to find a
+  culprit! Example of such error: [instance method contract
+  violation](#instance-method-contract-violation).
+
+  Whenever invalid return value is returned from a contracted method,
+  corresponding `ContractError` will be raised. That happens right after method
+  returned this value and prevents error propagation: `At: your_filename.rb:17`
+  part of error message points directly to a culprit method. Example of such
+  error: [return value contract
+  violation](#singleton-method-return-value-contract-violation).
+
+  Contract violation error consists of such parts:
+  - Violation type:
+    - `Contract violation for argument X of Y: (ParamContractError)`,
+    - `Contract violation for return value (ReturnContractError)`.
+  - Expected contract, example: `Expected: Num`.
+  - Actual value, example: `Actual: "foo"`.
+  - Location of violated contract, example: `Value guarded in: Example::add`.
+  - Full contract, example: `With Contract: Num, Num => Num`.
+  - Source code location of contracted method, example: `At: lib/your_library/some_class.rb:17`.
 
   Scenario: Instance method
     Given a file named "instance_method.rb" with:
