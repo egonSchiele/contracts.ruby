@@ -20,6 +20,10 @@ Feature: Simple example
   `Contract arg_contracts... => return_contract` affects next defined instance,
   class or singleton method, meaning that all of these work:
 
+  - [Instance method](#instance-method);
+  - [Class method](#class-method);
+  - [Singleton method](#singleton-method).
+
   Scenario: Instance method
     Given a file named "instance_method.rb" with:
     """ruby
