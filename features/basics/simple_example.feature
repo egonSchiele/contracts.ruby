@@ -41,13 +41,11 @@ Feature: Simple example
       end
     end
 
-    puts Example.new.functype(:add)
     puts Example.new.add(2, 2)
     """
     When I run `ruby instance_method.rb`
     Then the output should contain:
     """
-    add :: Num, Num => Num
     4
     """
 
@@ -94,13 +92,11 @@ Feature: Simple example
       end
     end
 
-    puts Example.functype(:add)
     puts Example.add(2, 2)
     """
     When I run `ruby class_method.rb`
     Then the output should contain:
     """
-    add :: Num, Num => Num
     4
     """
 
@@ -149,13 +145,11 @@ Feature: Simple example
       end
     end
 
-    puts Example.functype(:add)
     puts Example.add(2, 2)
     """
     When I run `ruby singleton_method.rb`
     Then the output should contain:
     """
-    add :: Num, Num => Num
     4
     """
 
