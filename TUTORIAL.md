@@ -271,6 +271,22 @@ give_largest_value(a: 1, b: 2, c: 3) # returns 3
 give_largest_value("a" => 1, 2 => 2, c: 3)
 ```
 
+### Contracts On Strings
+
+When you want a contract to match not just any string (i.e. `Contract String => nil`), you can use regular expressions:
+```ruby
+Contract /World|Mars/i => nil
+def greet(name)
+  puts "Hello #{name}!"
+end
+```
+
+Using logical combinations you can combine existing definitions, instead of writing 1 big regular expression:
+```ruby
+Contract C::And[default_mail_regexp, /#{AppConfig.domain}\z/] => nil
+def send_admin_invite(email)
+```
+
 ### Contracts On Keyword Arguments
 
 ruby 2.0+, but can be used for normal hashes too, when keyword arguments are
@@ -562,6 +578,7 @@ Possible validator overrides:
 - `override_validator(Array)` - e.g. `[C::Num, String]`,
 - `override_validator(Hash)` - e.g. `{ :a => C::Num, :b => String }`,
 - `override_validator(Range)` - e.g. `(1..10)`,
+- `override_validator(Regexp)` - e.g. `/foo/`,
 - `override_validator(Contracts::Args)` - e.g. `C::Args[C::Num]`,
 - `override_validator(Contracts::Func)` - e.g. `C::Func[C::Num => C::Num]`,
 - `override_validator(:valid)` - allows to override how contracts that respond to `:valid?` are handled,

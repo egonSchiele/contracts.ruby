@@ -123,6 +123,18 @@ class GenericExample
   def hash_keywordargs(data)
   end
 
+  Contract (/foo/) => nil
+  def should_contain_foo(s)
+  end
+
+  Contract ({ :host => /foo/ }) => nil
+  def hash_containing_foo(s)
+  end
+
+  Contract C::ArrayOf[/foo/] => nil
+  def array_containing_foo(s)
+  end
+
   Contract [C::Or[TrueClass, FalseClass]] => nil
   def array_complex_contracts(data)
   end
