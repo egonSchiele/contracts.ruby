@@ -14,7 +14,7 @@ before_install:
 
 script:
   - bundle exec rspec
-  - bundle exec cucumber
+  - script/cucumber
   - ruby script/rubocop.rb
 
 bundler_args: --without development
