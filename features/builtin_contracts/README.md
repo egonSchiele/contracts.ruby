@@ -17,3 +17,6 @@ this is deprecated and not recommended.
 
 *NOTE: in the future it will be possible to do `include Contracts::Builtin`
 instead.*
+
+*NOTE: all contracts marked as (TODO) have their documentaion `.feature` file
+as stub. Contributions to those are warmly welcome!*
