@@ -26,14 +26,9 @@ Feature: Fetching contracted function type
       end
 
       class << self
-        Contract C::Num => String
-        def th(number)
-          suffix = {
-            1 => "st",
-            2 => "nd",
-            3 => "rd"
-          }.fetch(x % 10, "th")
-          "#{number}#{suffix}"
+        Contract C::Num => C::Num
+        def increment(number)
+          number + 1
         end
       end
     end
@@ -67,10 +62,10 @@ Feature: Fetching contracted function type
     Given a file named "singleton_method_functype.rb" with:
     """ruby
     require "./example"
-    puts Example.functype(:th)
+    puts Example.functype(:increment)
     """
     When I run `ruby singleton_method_functype.rb`
     Then the output should contain:
     """
-    th :: Num => String
+    increment :: Num => Num
     """
