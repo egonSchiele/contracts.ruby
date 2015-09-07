@@ -31,6 +31,12 @@ module Contracts
         end
       end,
 
+      Regexp => lambda do |contract|
+        lambda do |arg|
+          arg =~ contract
+        end
+      end,
+
       Contracts::Args => lambda do |contract|
         lambda do |arg|
           Contract.valid?(arg, contract.contract)
