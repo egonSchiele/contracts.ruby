@@ -2,3 +2,4 @@
 *.swo
 .*
 Gemfile.lock
+tmp/aruba
