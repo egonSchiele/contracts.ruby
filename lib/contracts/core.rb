@@ -28,7 +28,11 @@ module Contracts
         # TODO: deprecate
         # Required when contracts are included in global scope
         def Contract(*args)
-          self.class.Contract(*args)
+          if defined?(super)
+            super
+          else
+            self.class.Contract(*args)
+          end
         end
 
         def functype(funcname)
