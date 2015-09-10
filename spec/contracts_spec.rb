@@ -717,4 +717,33 @@ RSpec.describe "Contracts:" do
       expect { c.double("asd") }.to raise_error
     end
   end
+
+  describe "classes with extended modules" do
+    let(:klass) do
+      m = Module.new do
+        include Contracts::Core
+      end
+
+      Class.new do
+        include Contracts::Core
+        extend m
+
+        Contract String => nil
+        def foo(x)
+        end
+      end
+    end
+
+    it "is possible to define it" do
+      expect { klass }.not_to raise_error
+    end
+
+    it "works correctly with methods with passing contracts" do
+      expect { klass.new.foo("bar") }.not_to raise_error
+    end
+
+    it "works correctly with methods with passing contracts" do
+      expect { klass.new.foo(42) }.to raise_error(ContractError, /Expected: String/)
+    end
+  end
 end
