@@ -392,7 +392,7 @@ RSpec.describe "Contracts:" do
       end
 
       context "given String => Num" do
-        it { expect(Contracts::HashOf[String, Contracts::Num].to_s).to eq("Hash<String, Contracts::Num>") }
+        it { expect(Contracts::HashOf[String, Contracts::Num].to_s).to eq("Hash<String, Contracts::Builtin::Num>") }
       end
     end
   end

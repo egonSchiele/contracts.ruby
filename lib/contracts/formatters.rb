@@ -90,7 +90,7 @@ module Contracts
 
       def plain?
         # Not a type of contract that can have a custom to_s defined
-        !@value.is_a?(CallableClass) && @value.class != Class
+        !@value.is_a?(Builtin::CallableClass) && @value.class != Class
       end
 
       def useful_to_s?
