@@ -1,4 +1,12 @@
+## v0.12.0
+
+- Feature: add `Regexp` validator - [Gert Goet](https://github.com/eval) [#196](https://github.com/egonSchiele/contracts.ruby/pull/196)
+- Docs: bootstrap cucumber/aruba/relish setup - [Oleksii Fedorov](https://github.com/waterlink) [#195](https://github.com/egonSchiele/contracts.ruby/pull/195)
+- Bugfix: allow to `extend` module, that has `Contracts` or `Contracts::Core` included without harming current module/class `Contracts` functionality, see: [#176](https://github.com/egonSchiele/contracts.ruby/issues/176) - [Oleksii Fedorov](https://github.com/waterlink) [#198](https://github.com/egonSchiele/contracts.ruby/pull/198)
+- Enhancement: add `include Contracts::Builtin` to allow users to use builtin contracts without `Contracts::` prefix together with `include Contracts::Core` - [PikachuEXE](https://github.com/PikachuEXE) [#199](https://github.com/egonSchiele/contracts.ruby/pull/199)
+
 ## v0.11.0
+
 - Enhancement: add `include Contracts::Core` that doesn't pollute the namespace as much as `include Contracts` - [Oleksii Federov](https://github.com/waterlink) [#185](https://github.com/egonSchiele/contracts.ruby/pull/185)
 - Bugfix: fail if a non-hash is provided to a `HashOf` contract - [Abe Voelker](https://github.com/abevoelker) [#190](https://github.com/egonSchiele/contracts.ruby/pull/190)
 - Bugfix: bugfix for using varargs and `Maybe[Proc]` together - [Adit Bhargava](https://github.com/egonSchiele) [#188](https://github.com/egonSchiele/contracts.ruby/pull/188)
