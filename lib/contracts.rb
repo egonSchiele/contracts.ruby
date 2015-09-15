@@ -108,7 +108,7 @@ class Contract < Contracts::Decorator
   def to_s
     args = args_contracts.map { |c| pretty_contract(c) }.join(", ")
     ret = pretty_contract(ret_contract)
-    ("#{args} => #{ret}").gsub("Contracts::", "")
+    ("#{args} => #{ret}").gsub("Contracts::Builtin::", "")
   end
 
   # Given a hash, prints out a failure message.
