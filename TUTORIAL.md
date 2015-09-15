@@ -120,6 +120,22 @@ with while typing and anything that does not conflict with libraries you use.
 
 All examples after this point assume you have chosen a shortcut as `C::`.
 
+If you are sure, that builtin contracts will not nameclash with your own code
+and libraries you may use, then you can include all builtin contracts in your
+class/module:
+
+```ruby
+class Example
+  include Contracts::Core
+  include Contracts::Builtin
+
+  Contract Maybe[Num], Or[Float, String] => Bool
+  def complicated_algorithm(a, b)
+    # ...
+  end
+end
+```
+
 ## More Examples
 
 ### Hello, World
