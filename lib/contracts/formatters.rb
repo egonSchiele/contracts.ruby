@@ -103,7 +103,7 @@ module Contracts
       end
 
       def strip_prefix(val)
-        val.gsub(/^Contracts::/, "")
+        val.gsub(/^Contracts::Builtin::/, "")
       end
     end
 
