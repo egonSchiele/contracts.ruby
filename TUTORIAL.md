@@ -63,7 +63,7 @@ This can be useful if you're in a REPL and want to figure out how a function sho
 
 ## Built-in Contracts
 
-`Num` is one of the built-in contracts that contracts.ruby comes with. The built-in contracts are in the `Contracts` namespace. The easiest way to use them is to include the `Contracts` module in your class/module.
+`Num` is one of the built-in contracts that contracts.ruby comes with. The built-in contracts are in the `Contracts` namespace. The easiest way to use them is to include the `Contracts::Builtin` module in your class/module.
 
 contracts.ruby comes with a lot of built-in contracts, including the following:
 
