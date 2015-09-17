@@ -63,7 +63,7 @@ This can be useful if you're in a REPL and want to figure out how a function sho
 
 ## Built-in Contracts
 
-`Num` is one of the built-in contracts that contracts.ruby comes with. The built-in contracts are in the `Contracts` namespace. The easiest way to use them is to include the `Contracts` module in your class/module.
+`Num` is one of the built-in contracts that contracts.ruby comes with. The built-in contracts are in the `Contracts` namespace. The easiest way to use them is to include the `Contracts::Builtin` module in your class/module.
 
 contracts.ruby comes with a lot of built-in contracts, including the following:
 
@@ -119,6 +119,22 @@ Shortcut name should not be necessary `C`, can be anything that you are comfort
 with while typing and anything that does not conflict with libraries you use.
 
 All examples after this point assume you have chosen a shortcut as `C::`.
+
+If you are sure, that builtin contracts will not nameclash with your own code
+and libraries you may use, then you can include all builtin contracts in your
+class/module:
+
+```ruby
+class Example
+  include Contracts::Core
+  include Contracts::Builtin
+
+  Contract Maybe[Num], Or[Float, String] => Bool
+  def complicated_algorithm(a, b)
+    # ...
+  end
+end
+```
 
 ## More Examples
 
