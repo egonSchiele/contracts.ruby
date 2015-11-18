@@ -176,6 +176,23 @@ RSpec.describe "Contracts:" do
     end
   end
 
+  describe "usage in the singleton class of a subclass" do
+    subject {
+      Class.new(GenericExample) do
+        class << self
+          Contract Integer => Integer
+          def num(int)
+            int
+          end
+        end
+      end
+    }
+
+    it "should work with a valid contract on a singleton method" do
+      expect(subject.num(1)).to eq(1)
+    end
+  end
+
   describe "no contracts feature" do
     it "disables normal contract checks" do
       object = NoContractsSimpleExample.new
