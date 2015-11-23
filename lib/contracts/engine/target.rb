@@ -53,7 +53,7 @@ module Contracts
 
         self.class.new(eigenclass).apply(Eigenclass)
         eigenclass.extend(MethodDecorators)
-        eigenclass.send(:include, Contracts)
+        eigenclass.send(:include, Contracts::Core)
       end
 
       def eigenclass

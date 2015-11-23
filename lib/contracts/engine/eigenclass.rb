@@ -18,6 +18,8 @@ module Contracts
         return Engine.fetch_from(eigenclass) if Engine.applied?(eigenclass)
 
         Target.new(eigenclass).apply(Eigenclass)
+        eigenclass.extend(MethodDecorators)
+        eigenclass.send(:include, Contracts::Core)
         Engine.fetch_from(owner).set_eigenclass_owner
         Engine.fetch_from(eigenclass)
       end
