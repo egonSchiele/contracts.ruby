@@ -7,7 +7,7 @@ RSpec.describe "Contract validators" do
     it "passes when value is in range" do
       expect do
         o.method_with_range_contract(5)
-      end.not_to raise_error(ContractError)
+      end.not_to raise_error
     end
 
     it "fails when value is not in range" do
