@@ -141,32 +141,6 @@ RSpec.describe "Contracts:" do
       end.to raise_error(ContractError, /Expected: String/)
     end
 
-    context "when owner class does not include Contracts" do
-      let(:error) do
-        # NOTE Unable to support this user-friendly error for ruby
-        # 1.8.7 and jruby 1.8, 1.9 it has much less support for
-        # singleton inheritance hierarchy
-        if Contracts::Support.eigenclass_hierarchy_supported?
-          [Contracts::ContractsNotIncluded, Contracts::ContractsNotIncluded::DEFAULT_MESSAGE]
-        else
-          [NoMethodError, /undefined method `Contract'/]
-        end
-      end
-
-      it "fails with descriptive error" do
-        expect do
-          Class.new(GenericExample) do
-            class << self
-              Contract String => String
-              def hoge(name)
-                "super#{name}"
-              end
-            end
-          end
-        end.to raise_error(*error)
-      end
-    end
-
     describe "builtin contracts usage" do
       it "allows to use builtin contracts without namespacing and redundant Contracts inclusion" do
         expect do
