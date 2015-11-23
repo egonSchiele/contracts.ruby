@@ -151,7 +151,7 @@ RSpec.describe "Contracts:" do
   end
 
   describe "usage in the singleton class of a subclass" do
-    subject {
+    subject do
       Class.new(GenericExample) do
         class << self
           Contract Integer => Integer
@@ -160,7 +160,7 @@ RSpec.describe "Contracts:" do
           end
         end
       end
-    }
+    end
 
     it "should work with a valid contract on a singleton method" do
       expect(subject.num(1)).to eq(1)
