@@ -53,7 +53,9 @@ module Contracts
 
         self.class.new(eigenclass).apply(Eigenclass)
         eigenclass.extend(MethodDecorators)
-        eigenclass.send(:include, Contracts::Core)
+        # FIXME; this should detect what user uses `include Contracts` or
+        # `include Contracts;;Core`
+        eigenclass.send(:include, Contracts)
       end
 
       def eigenclass
