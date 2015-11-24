@@ -4,6 +4,10 @@ module Contracts
       Engine.apply(klass)
     end
 
+    def inherited(subclass)
+      Engine.fetch_from(subclass).set_eigenclass_owner
+    end
+
     def method_added(name)
       MethodHandler.new(name, false, self).handle
       super

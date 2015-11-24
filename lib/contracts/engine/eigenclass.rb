@@ -18,6 +18,10 @@ module Contracts
         return Engine.fetch_from(eigenclass) if Engine.applied?(eigenclass)
 
         Target.new(eigenclass).apply(Eigenclass)
+        eigenclass.extend(MethodDecorators)
+        # FIXME; this should detect what user uses `include Contracts` or
+        # `include Contracts;;Core`
+        eigenclass.send(:include, Contracts)
         Engine.fetch_from(owner).set_eigenclass_owner
         Engine.fetch_from(eigenclass)
       end

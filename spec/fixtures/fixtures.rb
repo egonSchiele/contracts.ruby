@@ -621,6 +621,12 @@ class SingletonInheritanceExample
 end
 
 class SingletonInheritanceExampleSubclass < SingletonInheritanceExample
+  class << self
+    Contract Integer => Integer
+    def num(int)
+      int
+    end
+  end
 end
 
 class BareOptionalContractUsed
