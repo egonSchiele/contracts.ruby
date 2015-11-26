@@ -68,44 +68,44 @@ This can be useful if you're in a REPL and want to figure out how a function sho
 contracts.ruby comes with a lot of built-in contracts, including the following:
 
 * Basic types
-  * [`Num`](http://www.rubydoc.info/gems/contracts/Contracts/Num) – checks that the argument is `Numeric`
-  * [`Pos`](http://www.rubydoc.info/gems/contracts/Contracts/Pos) – checks that the argument is a positive number
-  * [`Neg`](http://www.rubydoc.info/gems/contracts/Contracts/Neg) – checks that the argument is a negative number
-  * [`Int`](http://www.rubydoc.info/gems/contracts/Contracts/Int) – checks that the argument is an integer
-  * [`Nat`](http://www.rubydoc.info/gems/contracts/Contracts/Nat) – checks that the argument is a natural number (>= 0)
-  * [`NatPos`](http://www.rubydoc.info/gems/contracts/Contracts/NatPos) – checks that the argument is a positive natural number (> 0)
-  * [`Bool`](http://www.rubydoc.info/gems/contracts/Contracts/Bool) – checks that the argument is `true` or `false`
-  * [`Any`](http://www.rubydoc.info/gems/contracts/Contracts/Any) – Passes for any argument. Use when the argument has no constraints.
-  * [`None`](http://www.rubydoc.info/gems/contracts/Contracts/None) – Fails for any argument. Use when the method takes no arguments.
+  * [`Num`](http://www.rubydoc.info/gems/contracts/Contracts/Builtin/Num) – checks that the argument is `Numeric`
+  * [`Pos`](http://www.rubydoc.info/gems/contracts/Contracts/Builtin/Pos) – checks that the argument is a positive number
+  * [`Neg`](http://www.rubydoc.info/gems/contracts/Contracts/Builtin/Neg) – checks that the argument is a negative number
+  * [`Int`](http://www.rubydoc.info/gems/contracts/Contracts/Builtin/Int) – checks that the argument is an integer
+  * [`Nat`](http://www.rubydoc.info/gems/contracts/Contracts/Builtin/Nat) – checks that the argument is a natural number (>= 0)
+  * [`NatPos`](http://www.rubydoc.info/gems/contracts/Contracts/Builtin/NatPos) – checks that the argument is a positive natural number (> 0)
+  * [`Bool`](http://www.rubydoc.info/gems/contracts/Contracts/Builtin/Bool) – checks that the argument is `true` or `false`
+  * [`Any`](http://www.rubydoc.info/gems/contracts/Contracts/Builtin/Any) – Passes for any argument. Use when the argument has no constraints.
+  * [`None`](http://www.rubydoc.info/gems/contracts/Contracts/Builtin/None) – Fails for any argument. Use when the method takes no arguments.
 
 * Logical combinations
-  * [`Maybe`](http://www.rubydoc.info/gems/contracts/Contracts/Maybe) – specifies that a value _may be_ nil, e.g. `Maybe[String]` (equivalent to `Or[String,nil]`)
-  * [`Or`](http://www.rubydoc.info/gems/contracts/Contracts/Or) – passes if any of the given contracts pass, e.g. `Or[Fixnum, Float]`
-  * [`Xor`](http://www.rubydoc.info/gems/contracts/Contracts/Xor) – passes if exactly one of the given contracts pass, e.g. `Xor[Fixnum, Float]`
-  * [`And`](http://www.rubydoc.info/gems/contracts/Contracts/And) – passes if all contracts pass, e.g. `And[Nat, -> (n) { n.even? }]`
-  * [`Not`](http://www.rubydoc.info/gems/contracts/Contracts/Not) – passes if all contracts fail for the given argument, e.g. `Not[nil]`
+  * [`Maybe`](http://www.rubydoc.info/gems/contracts/Contracts/Builtin/Maybe) – specifies that a value _may be_ nil, e.g. `Maybe[String]` (equivalent to `Or[String,nil]`)
+  * [`Or`](http://www.rubydoc.info/gems/contracts/Contracts/Builtin/Or) – passes if any of the given contracts pass, e.g. `Or[Fixnum, Float]`
+  * [`Xor`](http://www.rubydoc.info/gems/contracts/Contracts/Builtin/Xor) – passes if exactly one of the given contracts pass, e.g. `Xor[Fixnum, Float]`
+  * [`And`](http://www.rubydoc.info/gems/contracts/Contracts/Builtin/And) – passes if all contracts pass, e.g. `And[Nat, -> (n) { n.even? }]`
+  * [`Not`](http://www.rubydoc.info/gems/contracts/Contracts/Builtin/Not) – passes if all contracts fail for the given argument, e.g. `Not[nil]`
 
 * Collections
-  * [`ArrayOf`](http://www.rubydoc.info/gems/contracts/Contracts/ArrayOf) – checks that the argument is an array, and all elements pass the given contract, e.g. `ArrayOf[Num]`
-  * [`SetOf`](http://www.rubydoc.info/gems/contracts/Contracts/SetOf) – checks that the argument is a set, and all elements pass the given contract, e.g. `SetOf[Num]`
-  * [`HashOf`](http://www.rubydoc.info/gems/contracts/Contracts/HashOf) – checks that the argument is a hash, and all keys and values pass the given contract, e.g. `HashOf[Symbol => String]` or `HashOf[Symbol,String]`
-  * [`RangeOf`](http://www.rubydoc.info/gems/contracts/Contracts/RangeOf) – checks that the argument is a range whose elements (#first and #last) pass the given contract, e.g. `RangeOf[Date]`
-  * [`Enum`](http://www.rubydoc.info/gems/contracts/Contracts/Enum) – checks that the argument is part of a given collection of objects, e.g. `Enum[:a, :b, :c]`
+  * [`ArrayOf`](http://www.rubydoc.info/gems/contracts/Contracts/Builtin/ArrayOf) – checks that the argument is an array, and all elements pass the given contract, e.g. `ArrayOf[Num]`
+  * [`SetOf`](http://www.rubydoc.info/gems/contracts/Contracts/Builtin/SetOf) – checks that the argument is a set, and all elements pass the given contract, e.g. `SetOf[Num]`
+  * [`HashOf`](http://www.rubydoc.info/gems/contracts/Contracts/Builtin/HashOf) – checks that the argument is a hash, and all keys and values pass the given contract, e.g. `HashOf[Symbol => String]` or `HashOf[Symbol,String]`
+  * [`RangeOf`](http://www.rubydoc.info/gems/contracts/Contracts/Builtin/RangeOf) – checks that the argument is a range whose elements (#first and #last) pass the given contract, e.g. `RangeOf[Date]`
+  * [`Enum`](http://www.rubydoc.info/gems/contracts/Contracts/Builtin/Enum) – checks that the argument is part of a given collection of objects, e.g. `Enum[:a, :b, :c]`
 
 * Keyword arguments
-  * [`KeywordArgs`](http://www.rubydoc.info/gems/contracts/Contracts/KeywordArgs) – checks that the argument is an options hash, and all required keyword arguments are present, and all values pass their respective contracts, e.g. `KeywordArgs[:number => Num, :description => Optional[String]]`
-  * [`Optional`](http://www.rubydoc.info/gems/contracts/Contracts/Optional) – checks that the keyword argument is either not present or pass the given contract, can not be used outside of `KeywordArgs` contract, e.g. `Optional[Num]`
+  * [`KeywordArgs`](http://www.rubydoc.info/gems/contracts/Contracts/Builtin/KeywordArgs) – checks that the argument is an options hash, and all required keyword arguments are present, and all values pass their respective contracts, e.g. `KeywordArgs[:number => Num, :description => Optional[String]]`
+  * [`Optional`](http://www.rubydoc.info/gems/contracts/Contracts/Builtin/Optional) – checks that the keyword argument is either not present or pass the given contract, can not be used outside of `KeywordArgs` contract, e.g. `Optional[Num]`
 
 * Duck typing
-  * [`RespondTo`](http://www.rubydoc.info/gems/contracts/Contracts/RespondTo) – checks that the argument responds to all of the given methods, e.g. `RespondTo[:password, :credit_card]`
-  * [`Send`](http://www.rubydoc.info/gems/contracts/Contracts/Send) – checks that all named methods return a truthy value, e.g. `Send[:valid?]`
+  * [`RespondTo`](http://www.rubydoc.info/gems/contracts/Contracts/Builtin/RespondTo) – checks that the argument responds to all of the given methods, e.g. `RespondTo[:password, :credit_card]`
+  * [`Send`](http://www.rubydoc.info/gems/contracts/Contracts/Builtin/Send) – checks that all named methods return a truthy value, e.g. `Send[:valid?]`
 
 * Miscellaneous
-  * [`Exactly`](http://www.rubydoc.info/gems/contracts/Contracts/Exactly) – checks that the argument has the given type, not accepting sub-classes, e.g. `Exactly[Numeric]`.
-  * [`Eq`](http://www.rubydoc.info/gems/contracts/Contracts/Eq) – checks that the argument is precisely equal to the given value, e.g. `Eq[String]` matches the class `String` and not a string instance.
-  * [`Func`](http://www.rubydoc.info/gems/contracts/Contracts/Func) – specifies the contract for a proc/lambda e.g. `Contract ArrayOf[Num], Func[Num => Num] => ArrayOf[Num]`. See section "Contracts On Functions".
+  * [`Exactly`](http://www.rubydoc.info/gems/contracts/Contracts/Builtin/Exactly) – checks that the argument has the given type, not accepting sub-classes, e.g. `Exactly[Numeric]`.
+  * [`Eq`](http://www.rubydoc.info/gems/contracts/Contracts/Builtin/Eq) – checks that the argument is precisely equal to the given value, e.g. `Eq[String]` matches the class `String` and not a string instance.
+  * [`Func`](http://www.rubydoc.info/gems/contracts/Contracts/Builtin/Func) – specifies the contract for a proc/lambda e.g. `Contract ArrayOf[Num], Func[Num => Num] => ArrayOf[Num]`. See section "Contracts On Functions".
 
-To see all the built-in contracts and their full descriptions, check out the [RDoc](http://rubydoc.info/gems/contracts/Contracts).
+To see all the built-in contracts and their full descriptions, check out the [RDoc](http://rubydoc.info/gems/contracts/Contracts/Builtin).
 
 It is recommended to use shortcut for referring builtin contracts:
 
