@@ -41,10 +41,24 @@ module Contracts
       end
     end
 
-    # Check that an argument is a natural number.
+    # Check that an argument is an +Integer+.
+    class Int
+      def self.valid? val
+        val && val.is_a?(Integer)
+      end
+    end
+
+    # Check that an argument is a natural number (includes zero).
     class Nat
       def self.valid? val
         val && val.is_a?(Integer) && val >= 0
+      end
+    end
+
+    # Check that an argument is a positive natural number (excludes zero).
+    class NatPos
+      def self.valid? val
+        val && val.is_a?(Integer) && val > 0
       end
     end
 
