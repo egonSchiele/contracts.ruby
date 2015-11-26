@@ -71,7 +71,9 @@ contracts.ruby comes with a lot of built-in contracts, including the following:
   * [`Num`](http://www.rubydoc.info/gems/contracts/Contracts/Num) – checks that the argument is `Numeric`
   * [`Pos`](http://www.rubydoc.info/gems/contracts/Contracts/Pos) – checks that the argument is a positive number
   * [`Neg`](http://www.rubydoc.info/gems/contracts/Contracts/Neg) – checks that the argument is a negative number
+  * [`Int`](http://www.rubydoc.info/gems/contracts/Contracts/Int) – checks that the argument is an integer
   * [`Nat`](http://www.rubydoc.info/gems/contracts/Contracts/Nat) – checks that the argument is a natural number (>= 0)
+  * [`NatPos`](http://www.rubydoc.info/gems/contracts/Contracts/NatPos) – checks that the argument is a positive natural number (> 0)
   * [`Bool`](http://www.rubydoc.info/gems/contracts/Contracts/Bool) – checks that the argument is `true` or `false`
   * [`Any`](http://www.rubydoc.info/gems/contracts/Contracts/Any) – Passes for any argument. Use when the argument has no constraints.
   * [`None`](http://www.rubydoc.info/gems/contracts/Contracts/None) – Fails for any argument. Use when the method takes no arguments.
