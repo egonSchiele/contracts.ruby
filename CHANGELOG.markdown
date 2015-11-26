@@ -1,3 +1,8 @@
+## v0.13.0
+
+- Enhancement: Added Int, Nat and NatPos builtin contracts - [Simon George](https://github.com/sfcgeorge) [#212](https://github.com/egonSchiele/contracts.ruby/pull/212)
+- Bugfix: Allow contracts on singleton of subclass - [Oleksii Federov](https://github.com/waterlink) [#211](https://github.com/egonSchiele/contracts.ruby/pull/211)
+
 ## v0.12.0
 
 - Feature: add `Regexp` validator - [Gert Goet](https://github.com/eval) [#196](https://github.com/egonSchiele/contracts.ruby/pull/196)
