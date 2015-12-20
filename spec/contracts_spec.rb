@@ -386,6 +386,30 @@ RSpec.describe "Contracts:" do
       end.to raise_error(ContractError, /Actual: nil/)
     end
 
+    it "should fail for lack of block when default used" do
+      expect do
+        @o.default_with_block
+      end.to raise_error(ContractError, /Actual: nil/)
+    end
+
+    it "should fail for lack of block when default overidden" do
+      expect do
+        @o.default_with_block(:arg)
+      end.to raise_error(ContractError, /Actual: nil/)
+    end
+
+    it "should succeed when default used and block given" do
+      expect do
+        @o.default_with_block() {}
+      end.to_not raise_error
+    end
+
+    it "should succeed when default overidden and block given" do
+      expect do
+        @o.default_with_block(:arg) {}
+      end.to_not raise_error
+    end
+
     it "should succeed for maybe proc with no proc" do
       expect do
         @o.maybe_call(5)
