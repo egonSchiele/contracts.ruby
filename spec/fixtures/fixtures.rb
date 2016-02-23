@@ -263,6 +263,10 @@ class GenericExample
     r.first
   end
 
+  Contract C::DescendantOf[Enumerable] => nil
+  def enumerable_descendant_test(enum)
+  end
+
   Contract C::Bool => nil
   def bool_test(x)
   end
