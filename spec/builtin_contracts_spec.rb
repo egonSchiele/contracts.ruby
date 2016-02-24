@@ -3,6 +3,24 @@ RSpec.describe "Contracts:" do
     @o = GenericExample.new
   end
 
+  describe "DescendantOf:" do
+    it "should pass for Array" do
+      expect { @o.enumerable_descendant_test(Array) }.to_not raise_error
+    end
+
+    it "should pass for a hash" do
+      expect { @o.enumerable_descendant_test(Hash) }.to_not raise_error
+    end
+
+    it "should fail for a number class" do
+      expect { @o.enumerable_descendant_test(Integer) }.to raise_error(ContractError)
+    end
+
+    it "should fail for a non-class" do
+      expect { @o.enumerable_descendant_test(1) }.to raise_error(ContractError)
+    end
+  end
+
   describe "Num:" do
     it "should pass for Fixnums" do
       expect { @o.double(2) }.to_not raise_error

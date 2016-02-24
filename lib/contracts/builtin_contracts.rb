@@ -420,6 +420,30 @@ module Contracts
       attr_reader :options
     end
 
+    # Use this for specifying contracts for class arguments
+    # Example: <tt>Descendant[ e: Range, f: Optional[Num] ]</tt>
+    class DescendantOf < CallableClass
+      def initialize(parent_class)
+        @parent_class = parent_class
+      end
+
+      def valid?(given_class)
+        given_class.is_a?(Class) && given_class.ancestors.include?(parent_class)
+      end
+
+      def to_s
+        "DescendantOf[#{parent_class}]"
+      end
+
+      def inspect
+        to_s
+      end
+
+      private
+
+      attr_reader :parent_class
+    end
+
     # Use this for specifying optional keyword argument
     # Example: <tt>Optional[Num]</tt>
     class Optional < CallableClass
