@@ -1,3 +1,6 @@
+## v0.14.0
+- Enhancement: Add DescendantOf contract - [Miguel Palhas](https://github.com/naps62) [#227](https://github.com/egonSchiele/contracts.ruby/pull/227)
+
 ## v0.13.0
 
 - Enhancement: Add support for Ruby 2.3 - [Oleksii Fedorov](https://github.com/waterlink) [#216](https://github.com/egonSchiele/contracts.ruby/pull/216)
