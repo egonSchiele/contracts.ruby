@@ -123,11 +123,6 @@ class GenericExample
   def hash_keywordargs(data)
   end
 
-  Contract C::KeywordArgs[name: C::Optional[String]], C::Func[String => String] => String
-  def keyword_args_hello(name: "Adit", &block)
-    "Hey, #{yield name}!"
-  end
-
   Contract (/foo/) => nil
   def should_contain_foo(s)
   end

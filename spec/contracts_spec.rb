@@ -521,16 +521,6 @@ RSpec.describe "Contracts:" do
     end
   end
 
-  describe "keyword args with defaults, with a block" do
-    it "should work when both keyword args and a block is given" do
-      expect(@o.keyword_args_hello(name: "maggie", &:upcase)).to eq("Hey, MAGGIE!")
-    end
-
-    it "should work even when keyword args aren't given" do
-      expect(@o.keyword_args_hello(&:upcase)).to eq("Hey, ADIT!")
-    end
-  end
-
   describe "classes" do
     it "should not fail for an object that is the exact type as the contract" do
       p = Parent.new
