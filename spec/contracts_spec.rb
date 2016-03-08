@@ -727,5 +727,22 @@ RSpec.describe "Contracts:" do
     it "works correctly with methods with passing contracts" do
       expect { klass.new.foo(42) }.to raise_error(ContractError, /Expected: String/)
     end
+
+    # See the discussion on this issue:
+    # https://github.com/egonSchiele/contracts.ruby/issues/229
+    it "should not fail with 'undefined method 'Contract''" do
+      expect do
+        class ModuleThenContracts
+          include ModuleWithContracts
+          include Contracts::Core
+
+          # fails on this line
+          Contract C::Num => C::Num
+          def double(x)
+            x * 2
+          end
+        end
+      end.to_not raise_error
+    end
   end
 end

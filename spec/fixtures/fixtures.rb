@@ -680,3 +680,18 @@ module ModuleContractExample
     :world
   end
 end
+
+module ModuleWithContracts
+  def self.included(base)
+    base.extend ClassMethods
+  end
+
+  module ClassMethods
+    include Contracts::Core
+
+    Contract C::None => String
+    def foo
+      "bar"
+    end
+  end
+end
