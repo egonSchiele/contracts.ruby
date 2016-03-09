@@ -7,6 +7,11 @@ class GenericExample
   Contract ({foo: C::Nat}) => nil
   def nat_test_with_kwarg(foo: 10)
   end
+
+  Contract C::KeywordArgs[name: C::Optional[String]], C::Func[String => String] => String
+  def keyword_args_hello(name: "Adit", &block)
+    "Hey, #{yield name}!"
+  end
 end
 
 RSpec.describe "Contracts:" do
@@ -35,6 +40,16 @@ RSpec.describe "Contracts:" do
 
     it "should fail with a ContractError for no input" do
       expect { @o.nat_test_with_kwarg }.to raise_error(ContractError)
+    end
+  end
+
+  describe "keyword args with defaults, with a block" do
+    it "should work when both keyword args and a block is given" do
+      expect(@o.keyword_args_hello(name: "maggie", &:upcase)).to eq("Hey, MAGGIE!")
+    end
+
+    it "should work even when keyword args aren't given" do
+      expect(@o.keyword_args_hello(&:upcase)).to eq("Hey, ADIT!")
     end
   end
 end

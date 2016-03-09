@@ -92,9 +92,9 @@ class Contract < Contracts::Decorator
     last_contract = args_contracts.last
     penultimate_contract = args_contracts[-2]
     @has_options_contract = if @has_proc_contract
-                              penultimate_contract.is_a?(Hash)
+                              penultimate_contract.is_a?(Hash) || penultimate_contract.is_a?(Contracts::Builtin::KeywordArgs)
                             else
-                              last_contract.is_a?(Hash)
+                              last_contract.is_a?(Hash) || last_contract.is_a?(Contracts::Builtin::KeywordArgs)
                             end
     # ===
 
@@ -215,9 +215,9 @@ class Contract < Contracts::Decorator
   # returns true if it appended nil
   def maybe_append_options! args, blk
     return false unless @has_options_contract
-    if @has_proc_contract && args_contracts[-2].is_a?(Hash) && !args[-2].is_a?(Hash)
+    if @has_proc_contract && (args_contracts[-2].is_a?(Hash) || args_contracts[-2].is_a?(Contracts::Builtin::KeywordArgs)) && !args[-2].is_a?(Hash)
       args.insert(-2, {})
-    elsif args_contracts[-1].is_a?(Hash) && !args[-1].is_a?(Hash)
+    elsif (args_contracts[-1].is_a?(Hash) || args_contracts[-1].is_a?(Contracts::Builtin::KeywordArgs)) && !args[-1].is_a?(Hash)
       args << {}
     end
     true
