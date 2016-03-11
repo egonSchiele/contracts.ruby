@@ -9,4 +9,5 @@ Gem::Specification.new do |s|
   s.email       = "bluemangroupie@gmail.com"
   s.files       = `git ls-files`.split("\n")
   s.homepage    = "http://github.com/egonSchiele/contracts.ruby"
+  s.license     = "BSD-2-Clause"
 end
