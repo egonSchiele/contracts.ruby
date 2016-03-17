@@ -368,6 +368,10 @@ RSpec.describe "Contracts:" do
       expect { @o.hash_keywordargs(:hash => nil) }.to raise_error(ContractError)
       expect { @o.hash_keywordargs(:hash => 1) }.to raise_error(ContractError)
     end
+
+    it "should pass if a method is overloaded with non-KeywordArgs" do
+      expect { @o.person_keywordargs("name", 10) }.to_not raise_error
+    end
   end
 
   describe "Optional:" do
