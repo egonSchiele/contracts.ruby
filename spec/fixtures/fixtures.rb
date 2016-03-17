@@ -119,6 +119,11 @@ class GenericExample
   def person_keywordargs(data)
   end
 
+  # Testing overloaded method
+  Contract String, Fixnum => nil
+  def person_keywordargs(name, age)
+  end
+
   Contract C::KeywordArgs[:hash => C::HashOf[Symbol, C::Num]] => nil
   def hash_keywordargs(data)
   end
