@@ -89,6 +89,7 @@ contracts.ruby comes with a lot of built-in contracts, including the following:
   * [`ArrayOf`](http://www.rubydoc.info/gems/contracts/Contracts/Builtin/ArrayOf) – checks that the argument is an array, and all elements pass the given contract, e.g. `ArrayOf[Num]`
   * [`SetOf`](http://www.rubydoc.info/gems/contracts/Contracts/Builtin/SetOf) – checks that the argument is a set, and all elements pass the given contract, e.g. `SetOf[Num]`
   * [`HashOf`](http://www.rubydoc.info/gems/contracts/Contracts/Builtin/HashOf) – checks that the argument is a hash, and all keys and values pass the given contract, e.g. `HashOf[Symbol => String]` or `HashOf[Symbol,String]`
+  * [`StrictHash`](http://www.rubydoc.info/gems/contracts/Contracts/Builtin/StrictHash) – checks that the argument is a hash, and every key passed is present in the given contract, e.g. `StrictHash[{ :description => String, :number => Fixnum }]`
   * [`RangeOf`](http://www.rubydoc.info/gems/contracts/Contracts/Builtin/RangeOf) – checks that the argument is a range whose elements (#first and #last) pass the given contract, e.g. `RangeOf[Date]`
   * [`Enum`](http://www.rubydoc.info/gems/contracts/Contracts/Builtin/Enum) – checks that the argument is part of a given collection of objects, e.g. `Enum[:a, :b, :c]`
 
@@ -270,7 +271,7 @@ You don't need to put a contract on every key. So this call would succeed:
 person({:name => "Adit", :age => 42, :foo => "bar"})
 ```
 
-even though we don't specify a type for `:foo`.
+even though we don't specify a type for `:foo`. If you need this check though, use `StrictHash` instead.
 
 Peruse this contract on the keys and values of a Hash.
 

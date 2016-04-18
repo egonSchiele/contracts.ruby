@@ -104,6 +104,10 @@ class GenericExample
   def person(data)
   end
 
+  Contract C::StrictHash[{ :name => String, :age => Fixnum }] => nil
+  def strict_person(data)
+  end
+
   Contract ({ :rigged => C::Or[TrueClass, FalseClass] }) => nil
   def hash_complex_contracts(data)
   end
