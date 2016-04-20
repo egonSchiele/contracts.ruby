@@ -1,4 +1,5 @@
 ## v0.14.0
+- Enhancement: Add StrictHash contract - [Fyodor](https://github.com/cbrwizard) [#236](https://github.com/egonSchiele/contracts.ruby/pull/236)
 - Enhancement: Add DescendantOf contract - [Miguel Palhas](https://github.com/naps62) [#227](https://github.com/egonSchiele/contracts.ruby/pull/227)
 
 ## v0.13.0
