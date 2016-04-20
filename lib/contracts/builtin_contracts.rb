@@ -393,6 +393,25 @@ module Contracts
       end
     end
 
+    # Use this to specify the Hash characteristics. This contracts fails
+    # if there are any extra keys that don't have contracts on them.
+    # Example: <tt>StrictHash[{ a: String, b: Bool }]</tt>
+    class StrictHash < CallableClass
+      attr_reader :contract_hash
+
+      def initialize(contract_hash)
+        @contract_hash = contract_hash
+      end
+
+      def valid?(arg)
+        return false unless arg.is_a?(Hash)
+
+        contract_hash.all? do |key, _v|
+          contract_hash.key?(key) && Contract.valid?(arg[key], contract_hash[key])
+        end
+      end
+    end
+
     # Use this for specifying contracts for keyword arguments
     # Example: <tt>KeywordArgs[ e: Range, f: Optional[Num] ]</tt>
     class KeywordArgs < CallableClass

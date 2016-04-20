@@ -418,4 +418,44 @@ RSpec.describe "Contracts:" do
       end
     end
   end
+
+  describe "StrictHash:" do
+    context "when given an exact correct input" do
+      it "does not raise an error" do
+        expect do
+          @o.strict_person(:name => "calvin", :age => 10)
+        end.to_not raise_error
+      end
+    end
+
+    context "when given an input with correct keys but wrong types" do
+      it "raises an error" do
+        expect do
+          @o.strict_person(:name => "calvin", :age => "10")
+        end.to raise_error(ContractError)
+      end
+    end
+
+    context "when given an input with missing keys" do
+      it "raises an error" do
+        expect do
+          @o.strict_person(:name => "calvin")
+        end.to raise_error(ContractError)
+      end
+    end
+
+    context "when given an input with extra keys" do
+      it "raises an error" do
+        expect do
+          @o.strict_person(:name => "calvin", :age => "10", :soft => true)
+        end.to raise_error(ContractError)
+      end
+    end
+
+    context "when given not a hash" do
+      it "raises an error" do
+        expect { @o.strict_person(1337) }.to raise_error(ContractError)
+      end
+    end
+  end
 end
