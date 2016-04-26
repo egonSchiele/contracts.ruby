@@ -1,5 +1,9 @@
 ## v0.14.0
 - Enhancement: Add StrictHash contract - [Fyodor](https://github.com/cbrwizard) [#236](https://github.com/egonSchiele/contracts.ruby/pull/236)
+- Bugfix: dont fail if something other than a hash is passed to a KeywordArgs - [Dan Padilha](https://github.com/dpad) [#234](https://github.com/egonSchiele/contracts.ruby/pull/234)
+- LICENSE ADDED: Simplified BSD (same as what is specified in the readme) - [Charles Dale](https://github.com/chuckd) [#233](https://github.com/egonSchiele/contracts.ruby/pull/233)
+- Bugfix: fix constant looking when including a module that includes contracts (requires removing the check to see if contracts is already included) - [Aditya Bhargava](https://github.com/egonSchiele) [#232](https://github.com/egonSchiele/contracts.ruby/pull/232)
+- Bugfix for err case when KeywordArgs and Proc are used together - [Aditya Bhargava](https://github.com/egonSchiele) [#230](https://github.com/egonSchiele/contracts.ruby/pull/230)
 - Enhancement: Add DescendantOf contract - [Miguel Palhas](https://github.com/naps62) [#227](https://github.com/egonSchiele/contracts.ruby/pull/227)
 
 ## v0.13.0
