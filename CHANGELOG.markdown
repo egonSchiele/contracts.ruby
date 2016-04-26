@@ -1,3 +1,5 @@
+## v0.15.0
+
 ## v0.14.0
 - Enhancement: Add StrictHash contract - [Fyodor](https://github.com/cbrwizard) [#236](https://github.com/egonSchiele/contracts.ruby/pull/236)
 - Bugfix: dont fail if something other than a hash is passed to a KeywordArgs - [Dan Padilha](https://github.com/dpad) [#234](https://github.com/egonSchiele/contracts.ruby/pull/234)
