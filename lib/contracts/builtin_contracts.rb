@@ -441,7 +441,7 @@ module Contracts
     end
 
     # Use this for specifying contracts for class arguments
-    # Example: <tt>Descendant[ e: Range, f: Optional[Num] ]</tt>
+    # Example: <tt>DescendantOf[ e: Range, f: Optional[Num] ]</tt>
     class DescendantOf < CallableClass
       def initialize(parent_class)
         @parent_class = parent_class
