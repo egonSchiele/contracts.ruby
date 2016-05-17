@@ -6,6 +6,7 @@ module Contracts
 
     def inherited(subclass)
       Engine.fetch_from(subclass).set_eigenclass_owner
+      super
     end
 
     def method_added(name)
