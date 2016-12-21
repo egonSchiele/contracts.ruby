@@ -19,36 +19,38 @@ RSpec.describe "Contracts::ErrorFormatters" do
     end
   end
 
-  describe "self.failure_msg" do
-    it "includes normal information" do
-      msg = %{Contract violation for argument 1 of 1:
-                            Expected: (KeywordArgs[{:name=>String, :age=>Fixnum}])
-                            Actual: {:age=>"2", :invalid_third=>1}
-                            Missing Contract: {:invalid_third=>1}
-                            Invalid Args: [{:age=>"2", :contract=>Fixnum}]
-                            Missing Args: {:name=>String}
-                            Value guarded in: GenericExample::simple_keywordargs
-                            With Contract: KeywordArgs => NilClass}
-      fails msg do
-        @o.simple_keywordargs(:age => "2", :invalid_third => 1)
+  if ruby_version > 1.8
+    describe "self.failure_msg" do
+      it "includes normal information" do
+        msg = %{Contract violation for argument 1 of 1:
+                              Expected: (KeywordArgs[{:name=>String, :age=>Fixnum}])
+                              Actual: {:age=>"2", :invalid_third=>1}
+                              Missing Contract: {:invalid_third=>1}
+                              Invalid Args: [{:age=>"2", :contract=>Fixnum}]
+                              Missing Args: {:name=>String}
+                              Value guarded in: GenericExample::simple_keywordargs
+                              With Contract: KeywordArgs => NilClass}
+        fails msg do
+          @o.simple_keywordargs(:age => "2", :invalid_third => 1)
+        end
       end
-    end
 
-    it "includes Missing Contract information" do
-      fails %{Missing Contract: {:invalid_third=>1, :invalid_fourth=>1}} do
-        @o.simple_keywordargs(:age => "2", :invalid_third => 1, :invalid_fourth => 1)
+      it "includes Missing Contract information" do
+        fails %{Missing Contract: {:invalid_third=>1, :invalid_fourth=>1}} do
+          @o.simple_keywordargs(:age => "2", :invalid_third => 1, :invalid_fourth => 1)
+        end
       end
-    end
 
-    it "includes Invalid Args information" do
-      fails %{Invalid Args: [{:age=>"2", :contract=>Fixnum}]} do
-        @o.simple_keywordargs(:age => "2", :invalid_third => 1)
+      it "includes Invalid Args information" do
+        fails %{Invalid Args: [{:age=>"2", :contract=>Fixnum}]} do
+          @o.simple_keywordargs(:age => "2", :invalid_third => 1)
+        end
       end
-    end
 
-    it "includes Missing Args information" do
-      fails %{Missing Args: {:name=>String}} do
-        @o.simple_keywordargs(:age => "2", :invalid_third => 1)
+      it "includes Missing Args information" do
+        fails %{Missing Args: {:name=>String}} do
+          @o.simple_keywordargs(:age => "2", :invalid_third => 1)
+        end
       end
     end
   end
