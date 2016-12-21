@@ -30,25 +30,25 @@ RSpec.describe "Contracts::ErrorFormatters" do
                             Value guarded in: GenericExample::simple_keywordargs
                             With Contract: KeywordArgs => NilClass}
       fails msg do
-        @o.simple_keywordargs(age: "2", invalid_third: 1)
+        @o.simple_keywordargs(:age => "2", :invalid_third => 1)
       end
     end
 
     it "includes Missing Contract information" do
       fails %{Missing Contract: {:invalid_third=>1, :invalid_fourth=>1}} do
-        @o.simple_keywordargs(age: "2", invalid_third: 1, invalid_fourth: 1)
+        @o.simple_keywordargs(:age => "2", :invalid_third => 1, :invalid_fourth => 1)
       end
     end
 
     it "includes Invalid Args information" do
       fails %{Invalid Args: [{:age=>"2", :contract=>Fixnum}]} do
-        @o.simple_keywordargs(age: "2", invalid_third: 1)
+        @o.simple_keywordargs(:age => "2", :invalid_third => 1)
       end
     end
 
     it "includes Missing Args information" do
       fails %{Missing Args: {:name=>String}} do
-        @o.simple_keywordargs(age: "2", invalid_third: 1)
+        @o.simple_keywordargs(:age => "2", :invalid_third => 1)
       end
     end
   end
