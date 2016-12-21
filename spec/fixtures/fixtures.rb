@@ -132,6 +132,11 @@ class GenericExample
   def hash_keywordargs(data)
   end
 
+  Contract C::KeywordArgs[:name => String, :age => Fixnum] => nil
+  def simple_keywordargs(name:, age:)
+  end
+
+
   Contract (/foo/) => nil
   def should_contain_foo(s)
   end

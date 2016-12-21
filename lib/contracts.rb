@@ -1,6 +1,7 @@
 require "contracts/builtin_contracts"
 require "contracts/decorators"
 require "contracts/errors"
+require "contracts/error_formatter"
 require "contracts/formatters"
 require "contracts/invariants"
 require "contracts/method_reference"
@@ -115,22 +116,7 @@ class Contract < Contracts::Decorator
   # This function is used by the default #failure_callback method
   # and uses the hash passed into the failure_callback method.
   def self.failure_msg(data)
-    expected = Contracts::Formatters::Expected.new(data[:contract]).contract
-    position = Contracts::Support.method_position(data[:method])
-    method_name = Contracts::Support.method_name(data[:method])
-
-    header = if data[:return_value]
-               "Contract violation for return value:"
-             else
-               "Contract violation for argument #{data[:arg_pos]} of #{data[:total_args]}:"
-             end
-
-    %{#{header}
-        Expected: #{expected},
-        Actual: #{data[:arg].inspect}
-        Value guarded in: #{data[:class]}::#{method_name}
-        With Contract: #{data[:contracts]}
-        At: #{position} }
+    Contracts::ErrorFormatters.failure_msg(data)
   end
 
   # Callback for when a contract fails. By default it raises
