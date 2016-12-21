@@ -136,7 +136,6 @@ class GenericExample
   def simple_keywordargs(data)
   end
 
-
   Contract (/foo/) => nil
   def should_contain_foo(s)
   end
