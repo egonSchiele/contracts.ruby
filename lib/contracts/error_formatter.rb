@@ -21,12 +21,15 @@ module Contracts
     end
 
     def message
-      %{#{header}
-        Expected: #{expected},
-        Actual: #{data[:arg].inspect}
-        Value guarded in: #{data[:class]}::#{method_name}
-        With Contract: #{data[:contracts]}
-        At: #{green(position)} }
+      s = []
+      s << header
+      s << "Expected: #{expected}"
+      s << "Actual: #{data[:arg].inspect}"
+      s << "Value guarded in: #{data[:class]}::#{method_name}"
+      s << "With Contract: #{data[:contracts]}"
+      s << "At: #{position}"
+
+      s.join("\n")
     end
 
   private
