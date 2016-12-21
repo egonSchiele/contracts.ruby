@@ -133,7 +133,7 @@ class GenericExample
   end
 
   Contract C::KeywordArgs[:name => String, :age => Fixnum] => nil
-  def simple_keywordargs(name:, age:)
+  def simple_keywordargs(data)
   end
 
 
