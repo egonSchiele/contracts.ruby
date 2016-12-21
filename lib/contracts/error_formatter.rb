@@ -5,11 +5,11 @@ module Contracts
     end
 
     def self.class_for(data)
-      return Contracts::KeywordArgsErrorFormatter if is_keysword_args?(data)
-      return DefaultErrorFormatter
+      return Contracts::KeywordArgsErrorFormatter if keysword_args?(data)
+      DefaultErrorFormatter
     end
 
-    def self.is_keysword_args?(data)
+    def self.keysword_args?(data)
       data[:contract].is_a?(Contracts::Builtin::KeywordArgs) && data[:arg].is_a?(Hash)
     end
   end
@@ -29,13 +29,14 @@ module Contracts
         At: #{position} }
     end
 
-  private
+    private
+
     def header
       if data[:return_value]
-         "Contract violation for return value:"
-       else
-         "Contract violation for argument #{data[:arg_pos]} of #{data[:total_args]}:"
-       end
+        "Contract violation for return value:"
+      else
+        "Contract violation for argument #{data[:arg_pos]} of #{data[:total_args]}:"
+      end
     end
 
     def expected
@@ -57,9 +58,9 @@ module Contracts
       s << "#{header}"
       s << "        Expected: #{expected}"
       s << "        Actual: #{data[:arg].inspect}"
-      s << "        Missing Contract: #{missing_contract_info}" if !missing_contract_info.empty?
-      s << "        Invalid Args: #{invalid_args_info}"         if !invalid_args_info.empty?
-      s << "        Missing Args: #{missing_args_info}"         if !missing_args_info.empty?
+      s << "        Missing Contract: #{missing_contract_info}" unless missing_contract_info.empty?
+      s << "        Invalid Args: #{invalid_args_info}"         unless invalid_args_info.empty?
+      s << "        Missing Args: #{missing_args_info}"         unless missing_args_info.empty?
       s << "        Value guarded in: #{data[:class]}::#{method_name}"
       s << "        With Contract: #{data[:contracts]}"
       s << "        At: #{position} "
@@ -72,7 +73,7 @@ module Contracts
     def missing_args_info
       @missing_args_info ||= begin
         missing_keys = contract_options.keys - arg.keys
-        contract_options.select do |key, value|
+        contract_options.select do |key, _value|
           missing_keys.include?(key)
         end
       end
@@ -81,7 +82,7 @@ module Contracts
     def missing_contract_info
       @missing_contract_info ||= begin
         contract_keys = contract_options.keys
-        arg.select{|key, value| !contract_keys.include?(key)}
+        arg.select { |key, _value| !contract_keys.include?(key) }
       end
     end
 
@@ -89,11 +90,9 @@ module Contracts
       @invalid_args_info ||= begin
         invalid_keys = []
         arg.each do |key, value|
-          if contract = contract_options[key]
-            if !(check_contract(contract, value))
-              invalid_keys.push(key)
-            end
-          end
+          contract = contract_options[key]
+          next unless contract
+          invalid_keys.push(key) unless check_contract(contract, value)
         end
         invalid_keys.map do |key|
           {key => arg[key], :contract => contract_options[key] }
@@ -110,7 +109,6 @@ module Contracts
     rescue
       false
     end
-
 
     def contract_options
       @contract_options ||= data[:contract].send(:options)
