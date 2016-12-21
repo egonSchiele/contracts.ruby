@@ -21,15 +21,12 @@ module Contracts
     end
 
     def message
-      s = []
-      s << header
-      s << "Expected: #{expected}"
-      s << "Actual: #{data[:arg].inspect}"
-      s << "Value guarded in: #{data[:class]}::#{method_name}"
-      s << "With Contract: #{data[:contracts]}"
-      s << "At: #{position}"
-
-      s.join("\n")
+      %{#{header}
+        Expected: #{expected},
+        Actual: #{data[:arg].inspect}
+        Value guarded in: #{data[:class]}::#{method_name}
+        With Contract: #{data[:contracts]}
+        At: #{position} }
     end
 
   private
@@ -57,15 +54,15 @@ module Contracts
   class KeywordArgsErrorFormatter < DefaultErrorFormatter
     def message
       s = []
-      s << header
-      s << "Expected: #{expected}"
-      s << "Actual: #{data[:arg].inspect}"
-      s << "Missing Contract: #{missing_contract_info}" if !missing_contract_info.empty?
-      s << "Invalid Args: #{invalid_args_info}"         if !invalid_args_info.empty?
-      s << "Missing Args: #{missing_args_info}"         if !missing_args_info.empty?
-      s << "Value guarded in: #{data[:class]}::#{method_name}"
-      s << "With Contract: #{data[:contracts]}"
-      s << "At: #{position}"
+      s << "#{header}"
+      s << "        Expected: #{expected}"
+      s << "        Actual: #{data[:arg].inspect}"
+      s << "        Missing Contract: #{missing_contract_info}" if !missing_contract_info.empty?
+      s << "        Invalid Args: #{invalid_args_info}"         if !invalid_args_info.empty?
+      s << "        Missing Args: #{missing_args_info}"         if !missing_args_info.empty?
+      s << "        Value guarded in: #{data[:class]}::#{method_name}"
+      s << "        With Contract: #{data[:contracts]}"
+      s << "        At: #{position} "
 
       s.join("\n")
     end
