@@ -2,9 +2,20 @@ RSpec.describe "Contracts::ErrorFormatters" do
   before :all do
     @o = GenericExample.new
   end
+  C = Contracts::Builtin
 
   describe "self.class_for" do
-    it "returns the right formatter for passed in data" do
+    let(:keywordargs_contract) {C::KeywordArgs[:name => String, :age => Fixnum]}
+    let(:other_contract) {[C::Num, C::Num, C::Num]}
+
+    it "returns KeywordArgsErrorFormatter for KeywordArgs contract" do
+      data_keywordargs = {:contract => keywordargs_contract, :arg => {:b => 2}}
+      expect(Contracts::ErrorFormatters.class_for(data_keywordargs)).to eq(Contracts::KeywordArgsErrorFormatter)
+    end
+
+    it "returns Contracts::DefaultErrorFormatter for other contracts" do
+      data_default = {:contract => other_contract, :arg => {:b => 2}}
+      expect(Contracts::ErrorFormatters.class_for(data_default)).to eq(Contracts::DefaultErrorFormatter)
     end
   end
 
