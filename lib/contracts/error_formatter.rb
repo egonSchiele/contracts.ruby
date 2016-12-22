@@ -5,11 +5,11 @@ module Contracts
     end
 
     def self.class_for(data)
-      return Contracts::KeywordArgsErrorFormatter if keysword_args?(data)
+      return Contracts::KeywordArgsErrorFormatter if keyword_args?(data)
       DefaultErrorFormatter
     end
 
-    def self.keysword_args?(data)
+    def self.keyword_args?(data)
       data[:contract].is_a?(Contracts::Builtin::KeywordArgs) && data[:arg].is_a?(Hash)
     end
   end
