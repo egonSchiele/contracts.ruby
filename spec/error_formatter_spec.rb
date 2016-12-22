@@ -5,8 +5,8 @@ RSpec.describe "Contracts::ErrorFormatters" do
   C = Contracts::Builtin
 
   describe "self.class_for" do
-    let(:keywordargs_contract) {C::KeywordArgs[:name => String, :age => Fixnum]}
-    let(:other_contract) {[C::Num, C::Num, C::Num]}
+    let(:keywordargs_contract) { C::KeywordArgs[:name => String, :age => Fixnum] }
+    let(:other_contract) { [C::Num, C::Num, C::Num] }
 
     it "returns KeywordArgsErrorFormatter for KeywordArgs contract" do
       data_keywordargs = {:contract => keywordargs_contract, :arg => {:b => 2}}
