@@ -73,7 +73,7 @@ module Contracts
     def missing_args_info
       @missing_args_info ||= begin
         missing_keys = contract_options.keys - arg.keys
-        contract_options.select do |key, _value|
+        contract_options.select do |key, _|
           missing_keys.include?(key)
         end
       end
@@ -82,7 +82,7 @@ module Contracts
     def missing_contract_info
       @missing_contract_info ||= begin
         contract_keys = contract_options.keys
-        arg.select { |key, _value| !contract_keys.include?(key) }
+        arg.select { |key, _| !contract_keys.include?(key) }
       end
     end
 
