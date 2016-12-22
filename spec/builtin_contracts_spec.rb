@@ -6,6 +6,7 @@ RSpec.describe "Contracts:" do
   def fails(&some)
     expect { some.call }.to raise_error(ContractError)
   end
+
   def passes(&some)
     expect { some.call }.to_not raise_error
   end
