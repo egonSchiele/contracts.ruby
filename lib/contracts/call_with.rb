@@ -26,10 +26,10 @@ module Contracts
                                                   :return_value => false)
         end
 
-        if contract.is_a?(Contracts::Func) && (!blk || nil_block_appended)
-          args[i] = Contract.new(klass, arg, *contract.contracts)
-        elsif contract.is_a?(Contracts::Func)
+        if contract.is_a?(Contracts::Func) && blk && !nil_block_appended
           blk = Contract.new(klass, arg, *contract.contracts)
+        elsif contract.is_a?(Contracts::Func)
+          args[i] = Contract.new(klass, arg, *contract.contracts)
         end
       end
 
