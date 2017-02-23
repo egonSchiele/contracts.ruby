@@ -75,7 +75,8 @@ module Contracts
                  method.call(*args, &blk)
                else
                  # original method name referrence
-                 method.send_to(this, *args, &blk)
+                 added_block = blk ? lambda { |*params| blk.call(*params) } : nil
+                 method.send_to(this, *args, &added_block)
                end
 
       unless @ret_validator[result]
