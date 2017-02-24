@@ -69,8 +69,12 @@ To get started do the following:
 
 2. Run our test suite
 
-  `bundle exec rake`
-
+  `bundle exec rspec`
+  
+3. Run our code style checks
+  
+  `bundle exec rubocop`
+  
 ## Performance
 
 Using contracts.ruby results in very little slowdown. Check out [this blog post](http://adit.io/posts/2013-03-04-How-I-Made-My-Ruby-Project-10x-Faster.html#seconds-6) for more info.
