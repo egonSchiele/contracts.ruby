@@ -26,7 +26,9 @@ module Contracts
                                                   :return_value => false)
         end
 
-        if contract.is_a?(Contracts::Func)
+        if contract.is_a?(Contracts::Func) && blk && !nil_block_appended
+          blk = Contract.new(klass, arg, *contract.contracts)
+        elsif contract.is_a?(Contracts::Func)
           args[i] = Contract.new(klass, arg, *contract.contracts)
         end
       end
@@ -73,7 +75,8 @@ module Contracts
                  method.call(*args, &blk)
                else
                  # original method name referrence
-                 method.send_to(this, *args, &blk)
+                 added_block = blk ? lambda { |*params| blk.call(*params) } : nil
+                 method.send_to(this, *args, &added_block)
                end
 
       unless @ret_validator[result]
