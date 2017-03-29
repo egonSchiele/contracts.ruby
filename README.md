@@ -97,7 +97,7 @@ Michael Tomer
 
 ## Credits
 
-Inspired by [contracts.coffee](http://disnetdev.com/contracts.coffee/).
+Inspired by [contracts.coffee](http://disnet.github.io/contracts.coffee/).
 
 Copyright 2012-2015 [Aditya Bhargava](http://adit.io).
 Major improvements by [Alexey Fedorov](https://github.com/waterlink).
