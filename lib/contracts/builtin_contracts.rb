@@ -405,6 +405,7 @@ module Contracts
 
       def valid?(arg)
         return false unless arg.is_a?(Hash)
+        return false unless arg.keys.sort.eql?(contract_hash.keys.sort)
 
         contract_hash.all? do |key, _v|
           contract_hash.key?(key) && Contract.valid?(arg[key], contract_hash[key])

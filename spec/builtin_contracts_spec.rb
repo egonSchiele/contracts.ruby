@@ -448,7 +448,7 @@ RSpec.describe "Contracts:" do
 
     context "when given an input with extra keys" do
       it "raises an error" do
-        fails { @o.strict_person(:name => "calvin", :age => "10", :soft => true) }
+        fails { @o.strict_person(:name => "calvin", :age => 10, :soft => true) }
       end
     end
 
