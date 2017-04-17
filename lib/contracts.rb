@@ -1,3 +1,4 @@
+require "contracts/attrs"
 require "contracts/builtin_contracts"
 require "contracts/decorators"
 require "contracts/errors"
