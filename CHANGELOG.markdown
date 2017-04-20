@@ -1,3 +1,7 @@
+## v0.16.0 (unreleased)
+
+- Support for Ruby 1.8 has been discontinued - [#256](https://github.com/egonSchiele/contracts.ruby/pull/256)
+
 ## v0.15.0
 - Bugfix: Func contract's return value isn't enforced with blocks - [Piotr Szmielew](https://github.com/esse) [#251](https://github.com/egonSchiele/contracts.ruby/pull/251)
 - Bugfx: Fix contracts used in AR-models - [Gert Goet](https://github.com/eval) [#237](https://github.com/egonSchiele/contracts.ruby/pull/237)
