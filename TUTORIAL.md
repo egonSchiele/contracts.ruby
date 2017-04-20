@@ -606,6 +606,32 @@ Possible validator overrides:
 
 Default validators can be found here: [lib/contracts/validators.rb](https://github.com/egonSchiele/contracts.ruby/blob/master/lib/contracts/validators.rb).
 
+## Contracts with attributes
+
+You can include the `Contracts::Attrs` module in your class/module to get access to attribute utilities:
+
+- `attr_reader_with_contract <symbol>..., <contract>`
+  - Wraps `attr_reader`, validates contract upon 'getting'
+- `attr_writer_with_contract <symbol>..., <contract>`
+  - Wraps `attr_writer`, validates contract upon 'setting'
+- `attr_accessor_with_contract <symbol>..., <contract>`
+  - Wraps `attr_accessor`, validates contract upon 'getting' or 'setting'
+
+### Example
+
+```ruby
+class Person
+  include Contracts::Core
+  include Contracts::Attrs
+
+  attr_accessor_with_contract :name, String
+end
+
+person = Person.new
+person.name = 'Jane'
+person.name = 1.4 # This results in a contract error!
+```
+
 ## Disabling contracts
 
 If you want to disable contracts, set the `NO_CONTRACTS` environment variable. This will disable contracts and you won't have a performance hit. Pattern matching will still work if you disable contracts in this way! With NO_CONTRACTS only pattern-matching contracts are defined.
