@@ -5,7 +5,11 @@ module Contracts
         return method.method_position if method.is_a?(MethodReference)
 
         file, line = method.source_location
-        file + ":" + line.to_s
+        if file.nil? || line.nil?
+          ""
+        else
+          file + ":" + line.to_s
+        end
       end
 
       def method_name(method)
