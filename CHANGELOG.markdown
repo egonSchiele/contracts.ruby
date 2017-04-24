@@ -1,8 +1,8 @@
-## v0.16.0 (unreleased)
+## v0.16.0
 
-- Support for Ruby 1.8 has been discontinued - [#256](https://github.com/egonSchiele/contracts.ruby/pull/256)
-- Add a `Contracts::Attrs` module containing attribute w/ contracts utilities - [#255](https://github.com/egonSchiele/contracts.ruby/pull/255)
-- Fix StrictHash contract for extra keys - [#254](https://github.com/egonSchiele/contracts.ruby/pull/254)
+- **Support for Ruby 1.8 has been discontinued** - [Corey Farwell](https://github.com/frewsxcv) [#256](https://github.com/egonSchiele/contracts.ruby/pull/256)
+- Enhancement: Add a `Contracts::Attrs` module containing attribute w/ contracts utilities - [Corey Farwell](https://github.com/frewsxcv) [#255](https://github.com/egonSchiele/contracts.ruby/pull/255)
+- Bugfix: Fix StrictHash contract for extra keys - [Maciej Malecki](https://github.com/smt116) [#254](https://github.com/egonSchiele/contracts.ruby/pull/254)
 
 ## v0.15.0
 - Bugfix: Func contract's return value isn't enforced with blocks - [Piotr Szmielew](https://github.com/esse) [#251](https://github.com/egonSchiele/contracts.ruby/pull/251)
