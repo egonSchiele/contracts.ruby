@@ -15,6 +15,4 @@ module Contracts
       attr_writer_with_contract(*names, contract)
     end
   end
-
-  include Attrs
 end
