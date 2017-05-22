@@ -1,13 +1,17 @@
 module Contracts
   module Attrs
     def attr_reader_with_contract(*names, contract)
-      Contract Contracts::None => contract
-      attr_reader(*names)
+      names.each do |name|
+        Contract Contracts::None => contract
+        attr_reader(name)
+      end
     end
 
     def attr_writer_with_contract(*names, contract)
-      Contract contract => contract
-      attr_writer(*names)
+      names.each do |name|
+        Contract contract => contract
+        attr_writer(name)
+      end
     end
 
     def attr_accessor_with_contract(*names, contract)
