@@ -38,7 +38,7 @@ RSpec.describe "Contracts:" do
 
       it "getting invalid type for second val" do
         expect { Person.new(1.3).name_r_2 }
-        .to(raise_error(ReturnContractError))
+          .to(raise_error(ReturnContractError))
       end
 
       it "setting" do
