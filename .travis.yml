@@ -2,6 +2,7 @@ dist: trusty
 
 language: ruby
 rvm:
+  - "1.9.2"
   - "1.9.3"
   - "2.0.0"
   - "2.1"
@@ -20,7 +21,5 @@ bundler_args: --without development
 
 matrix:
   include:
-    - rvm: "1.9.2"
-      dist: precise
     - rvm: jruby-19mode # JRuby in 1.9 mode
       dist: precise
