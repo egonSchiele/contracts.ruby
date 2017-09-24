@@ -22,12 +22,14 @@ rvm:
   - "2.2.8"
   - "2.3.5"
   - "2.4.2"
-  - "jruby-1.7.27"
 
 bundler_args: --without development
 
 jobs:
   include:
+    - stage: test
+      env: TEST_SUITE=rspec
+      rvm: "jruby-1.7.27"
     - stage: codestyle
       env: TEST_SUITE=none
       script: bundle exec rubocop
