@@ -5,6 +5,9 @@ language: ruby
 before_install:
   - gem install bundler
 
+cache:
+  bundler: true
+
 env:
   - TEST_SUITE=rspec
   - TEST_SUITE=cucumber
