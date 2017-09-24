@@ -13,14 +13,12 @@ rvm:
   - "2.2.8"
   - "2.3.5"
   - "2.4.2"
+  - "jruby-1.7.27"
 
 bundler_args: --without development
 
 matrix:
   fast_finish: true
-  include:
-    - rvm: jruby-19mode # JRuby in 1.9 mode
-      dist: precise
 
 stages:
   - codestyle
