@@ -1,6 +1,7 @@
 AllCops:
   Exclude:
     - "tmp/**/*"
+    - "vendor/**/*"
 
 # forces method defs to have params in parens
 Style/MethodDefParentheses:
