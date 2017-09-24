@@ -1,14 +1,22 @@
-## v0.16.0
+## [v0.16.0] - 2017-04-24
+
+[v0.16.0]: https://github.com/egonSchiele/contracts.ruby/compare/v0.15.0...98cad25741b2dc0462229a417e3c6660e563cd84
 
 - **Support for Ruby 1.8 has been discontinued** - [Corey Farwell](https://github.com/frewsxcv) [#256](https://github.com/egonSchiele/contracts.ruby/pull/256)
 - Enhancement: Add a `Contracts::Attrs` module containing attribute w/ contracts utilities - [Corey Farwell](https://github.com/frewsxcv) [#255](https://github.com/egonSchiele/contracts.ruby/pull/255)
 - Bugfix: Fix StrictHash contract for extra keys - [Maciej Malecki](https://github.com/smt116) [#254](https://github.com/egonSchiele/contracts.ruby/pull/254)
 
-## v0.15.0
+## [v0.15.0] - 2017-02-24
+
+[v0.15.0]: https://github.com/egonSchiele/contracts.ruby/compare/v0.14.0...v0.15.0
+
 - Bugfix: Func contract's return value isn't enforced with blocks - [Piotr Szmielew](https://github.com/esse) [#251](https://github.com/egonSchiele/contracts.ruby/pull/251)
 - Bugfx: Fix contracts used in AR-models - [Gert Goet](https://github.com/eval) [#237](https://github.com/egonSchiele/contracts.ruby/pull/237)
 
-## v0.14.0
+## [v0.14.0] - 2016-04-26
+
+[v0.14.0]: https://github.com/egonSchiele/contracts.ruby/compare/v0.13.0...v0.14.0
+
 - Enhancement: Add StrictHash contract - [Fyodor](https://github.com/cbrwizard) [#236](https://github.com/egonSchiele/contracts.ruby/pull/236)
 - Bugfix: dont fail if something other than a hash is passed to a KeywordArgs - [Dan Padilha](https://github.com/dpad) [#234](https://github.com/egonSchiele/contracts.ruby/pull/234)
 - LICENSE ADDED: Simplified BSD (same as what is specified in the readme) - [Charles Dale](https://github.com/chuckd) [#233](https://github.com/egonSchiele/contracts.ruby/pull/233)
@@ -16,20 +24,26 @@
 - Bugfix for err case when KeywordArgs and Proc are used together - [Aditya Bhargava](https://github.com/egonSchiele) [#230](https://github.com/egonSchiele/contracts.ruby/pull/230)
 - Enhancement: Add DescendantOf contract - [Miguel Palhas](https://github.com/naps62) [#227](https://github.com/egonSchiele/contracts.ruby/pull/227)
 
-## v0.13.0
+## [v0.13.0] - 2016-01-25
+
+[v0.13.0]: https://github.com/egonSchiele/contracts.ruby/compare/v0.12.0...v0.13.0
 
 - Enhancement: Add support for Ruby 2.3 - [Oleksii Fedorov](https://github.com/waterlink) [#216](https://github.com/egonSchiele/contracts.ruby/pull/216)
 - Enhancement: Added Int, Nat and NatPos builtin contracts - [Simon George](https://github.com/sfcgeorge) [#212](https://github.com/egonSchiele/contracts.ruby/pull/212)
 - Bugfix: Allow contracts on singleton of subclass - [Oleksii Federov](https://github.com/waterlink) [#211](https://github.com/egonSchiele/contracts.ruby/pull/211)
 
-## v0.12.0
+## [v0.12.0] - 2015-09-15
+
+[v0.12.0]: https://github.com/egonSchiele/contracts.ruby/compare/v0.11.0...v0.12.0
 
 - Feature: add `Regexp` validator - [Gert Goet](https://github.com/eval) [#196](https://github.com/egonSchiele/contracts.ruby/pull/196)
 - Docs: bootstrap cucumber/aruba/relish setup - [Oleksii Fedorov](https://github.com/waterlink) [#195](https://github.com/egonSchiele/contracts.ruby/pull/195)
 - Bugfix: allow to `extend` module, that has `Contracts` or `Contracts::Core` included without harming current module/class `Contracts` functionality, see: [#176](https://github.com/egonSchiele/contracts.ruby/issues/176) - [Oleksii Fedorov](https://github.com/waterlink) [#198](https://github.com/egonSchiele/contracts.ruby/pull/198)
 - Enhancement: add `include Contracts::Builtin` to allow users to use builtin contracts without `Contracts::` prefix together with `include Contracts::Core` - [PikachuEXE](https://github.com/PikachuEXE) [#199](https://github.com/egonSchiele/contracts.ruby/pull/199)
 
-## v0.11.0
+## [v0.11.0] - 2015-07-30
+
+[v0.11.0]: https://github.com/egonSchiele/contracts.ruby/compare/v0.10.1...v0.11.0
 
 - Enhancement: add `include Contracts::Core` that doesn't pollute the namespace as much as `include Contracts` - [Oleksii Federov](https://github.com/waterlink) [#185](https://github.com/egonSchiele/contracts.ruby/pull/185)
 - Bugfix: fail if a non-hash is provided to a `HashOf` contract - [Abe Voelker](https://github.com/abevoelker) [#190](https://github.com/egonSchiele/contracts.ruby/pull/190)
@@ -38,11 +52,15 @@
 - Feature: range contract added - [Oleksii Fedorov](https://github.com/waterlink) [#184](https://github.com/egonSchiele/contracts.ruby/pull/184)
 - Feature: enum contract added - [Dennis Günnewig](https://github.com/dg-ratiodata) [#181](https://github.com/egonSchiele/contracts.ruby/pull/181)
 
-## v0.10.1
+## [v0.10.1] - 2015-07-16
+
+[v0.10.1]: https://github.com/egonSchiele/contracts.ruby/compare/v0.10...v0.10.1
 
 - Enhancement: make `@pattern_match` instance variable not render ruby warning. Required to use new aruba versions in rspec tests - [Dennis Günnewig](https://github.com/dg-ratiodata) [#179](https://github.com/egonSchiele/contracts.ruby/pull/179)
 
-## v0.10
+## [v0.10] - 2015-07-07
+
+[v0.10]: https://github.com/egonSchiele/contracts.ruby/compare/v0.9...v0.10
 
 - Bugfix: make `Maybe[Proc]` work correctly - [Simon George](https://github.com/sfcgeorge) [#142](https://github.com/egonSchiele/contracts.ruby/pull/142)
 - Bugfix: make `Func` contract verified when used as return contract - [Rob Rosenbaum](https://github.com/robnormal) [#145](https://github.com/egonSchiele/contracts.ruby/pull/145)
@@ -53,7 +71,9 @@
 - Feature: custom validators with `Contract.override_validator` - [Oleksii Fedorov](https://github.com/waterlink) [#159](https://github.com/egonSchiele/contracts.ruby/pull/159)
 - Feature: add builtin `RangeOf[...]` contract - [Gavin Sinclair](https://github.com/gsinclair) [#171](https://github.com/egonSchiele/contracts.ruby/pull/171)
 
-## v0.9
+## [v0.9] - 2015-04-24
+
+[v0.9]: https://github.com/egonSchiele/contracts.ruby/compare/0.8...v0.9
 
 - MAJOR fix in pattern-matching: If the return contract for a pattern-matched function fails, it should NOT try the next pattern-match function. Pattern-matching is only for params, not return values.
 - raise an error if multiple defns have the same contract for pattern matching.
@@ -74,7 +94,7 @@
 - Add `SetOf` contract
 - various small fixes
 
-## v0.8
+## v0.8 - 2015-04-03
 
 - code refactored (very slight loss of performance, big increase in readability)
 - fail when defining a contract on a module without `include Contracts::Modules`
