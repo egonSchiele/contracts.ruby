@@ -29,9 +29,8 @@ stages:
 jobs:
   include:
     - stage: codestyle
-      script: ruby script/rubocop.rb
+      script: bundle exec rubocop
       rvm: "2.4.2"
     - stage: test
       script: bundle exec rspec
       script: script/cucumber
-
