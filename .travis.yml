@@ -5,6 +5,12 @@ language: ruby
 before_install:
   - gem install bundler
 
+env:
+  - TEST_SUITE=rspec
+  - TEST_SUITE=cucumber
+
+script: bundle exec $TEST_SUITE
+
 rvm:
   - "1.9.2"
   - "1.9.3"
@@ -17,25 +23,9 @@ rvm:
 
 bundler_args: --without development
 
-matrix:
-  fast_finish: true
-
-stages:
-  - codestyle
-  - test
-
 jobs:
   include:
     - stage: codestyle
+      env: TEST_SUITE=none
       script: bundle exec rubocop
       rvm: "2.4.2"
-    - stage: test
-      script: bundle exec rspec
-    - stage: test
-      script: bundle exec cucumber
-      rvm:
-        - "2.0.0"
-        - "2.1"
-        - "2.2.8"
-        - "2.3.5"
-        - "2.4.2"
