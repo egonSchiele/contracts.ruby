@@ -74,7 +74,7 @@ module Contracts
                  # proc, block, lambda, etc
                  method.call(*args, &blk)
                else
-                 # original method name referrence
+                 # original method name reference
                  added_block = blk ? lambda { |*params| blk.call(*params) } : nil
                  method.send_to(this, *args, &added_block)
                end

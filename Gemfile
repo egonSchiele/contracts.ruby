@@ -6,7 +6,7 @@ group :test do
   gem "rspec"
   gem "aruba"
   gem "cucumber", "~> 1.3.20"
-  gem "rubocop", "~> 0.29.1" if RUBY_VERSION >= "2"
+  gem "rubocop", "~> 0.41.2" if RUBY_VERSION >= "2"
 end
 
 group :development do

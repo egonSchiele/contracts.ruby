@@ -51,7 +51,7 @@ RSpec.describe "Contracts:" do
         end.to raise_error(ContractError)
       end
 
-      it "should fail when passed nil to an optional argument which contract shouldnt accept nil" do
+      it "should fail when passed nil to an optional argument which contract shouldn't accept nil" do
         expect do
           @o.complicated("a", true, :b, :c, 2.0, e: (1..5), f: nil, g: :d) do |x|
             x

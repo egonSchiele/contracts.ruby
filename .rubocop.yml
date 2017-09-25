@@ -1,7 +1,12 @@
+inherit_from: .rubocop_todo.yml
+
 AllCops:
+  TargetRubyVersion: 1.9
+  DisplayCopNames: true
   Exclude:
     - "tmp/**/*"
     - "vendor/**/*"
+    - "spec/ruby_version_specific/*.rb"
 
 # forces method defs to have params in parens
 Style/MethodDefParentheses:
