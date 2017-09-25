@@ -1,25 +1,35 @@
 dist: trusty
 
 language: ruby
+
+before_install:
+  - gem install bundler
+
+cache:
+  bundler: true
+
+script: "bundle exec rspec && bundle exec cucumber"
+
 rvm:
   - "1.9.2"
   - "1.9.3"
   - "2.0.0"
   - "2.1"
-  - "2.2"
-  - "ruby-2.3.0"
-
-before_install:
-  - gem install bundler
-
-script:
-  - bundle exec rspec
-  - script/cucumber
-  - ruby script/rubocop.rb
+  - "2.2.8"
+  - "2.3.5"
+  - "2.4.2"
 
 bundler_args: --without development
 
-matrix:
+jobs:
   include:
-    - rvm: jruby-19mode # JRuby in 1.9 mode
-      dist: precise
+    - stage: test
+      rvm: "jruby-1.7.27"
+      script: bundle exec rspec
+    - stage: codestyle
+      script: bundle exec rubocop
+      rvm: "2.4.2"
+
+stages:
+  - codestyle
+  - test

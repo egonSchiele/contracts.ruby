@@ -5,6 +5,7 @@ AllCops:
   DisplayCopNames: true
   Exclude:
     - "tmp/**/*"
+    - "vendor/**/*"
     - "spec/ruby_version_specific/*.rb"
 
 # forces method defs to have params in parens
