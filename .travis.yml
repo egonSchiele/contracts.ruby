@@ -8,10 +8,7 @@ before_install:
 cache:
   bundler: true
 
-env:
-  - TEST_SUITE="bundle exec rspec && bundle exec cucumber"
-
-script: $TEST_SUITE
+script: "bundle exec rspec && bundle exec cucumber"
 
 rvm:
   - "1.9.2"
@@ -27,11 +24,9 @@ bundler_args: --without development
 jobs:
   include:
     - stage: test
-      env: TEST_SUITE=none
       rvm: "jruby-1.7.27"
       script: bundle exec rspec
     - stage: codestyle
-      env: TEST_SUITE=none
       script: bundle exec rubocop
       rvm: "2.4.2"
 
