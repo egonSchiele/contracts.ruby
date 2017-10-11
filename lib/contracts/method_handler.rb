@@ -157,7 +157,7 @@ module Contracts
       return if decorators.size == 1
 
       fail %{
-Oops, it looks like method '#{name}' has multiple contracts:
+Oops, it looks like method '#{method_name}' has multiple contracts:
 #{decorators.map { |x| x[1][0].inspect }.join("\n")}
 
 Did you accidentally put more than one contract on a single function, like so?
