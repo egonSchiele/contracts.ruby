@@ -23,6 +23,7 @@ module Contracts
                                                   :contracts => self,
                                                   :arg_pos => i+1,
                                                   :total_args => args.size,
+                                                  :args => args,
                                                   :return_value => false)
         end
 
@@ -58,6 +59,7 @@ module Contracts
                                                     :contracts => self,
                                                     :arg_pos => i-1,
                                                     :total_args => args.size,
+                                                    :args => args,
                                                     :return_value => false)
           end
 
@@ -85,6 +87,7 @@ module Contracts
                                   :class => klass,
                                   :method => method,
                                   :contracts => self,
+                                  :args => args,
                                   :return_value => true)
       end
 

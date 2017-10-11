@@ -112,7 +112,7 @@ class Contract < Contracts::Decorator
     ("#{args} => #{ret}").gsub("Contracts::Builtin::", "")
   end
 
-  # Given a hash, prints out a failure message.
+  # Given a hash, returns a failure message.
   # This function is used by the default #failure_callback method
   # and uses the hash passed into the failure_callback method.
   def self.failure_msg(data)
@@ -131,6 +131,7 @@ class Contract < Contracts::Decorator
         Actual: #{data[:arg].inspect}
         Value guarded in: #{data[:class]}::#{method_name}
         With Contract: #{data[:contracts]}
+        All arguments: #{data[:args].inspect}
         At: #{position} }
   end
 
