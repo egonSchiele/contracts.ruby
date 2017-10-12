@@ -69,7 +69,7 @@ module Contracts
     end
 
     def ignore_decorators?
-      ENV["NO_CONTRACTS"] && !pattern_matching?
+      !Support.decorators_enabled? && !pattern_matching?
     end
 
     def decorated_methods
@@ -77,8 +77,8 @@ module Contracts
     end
 
     def pattern_matching?
-      return @_pattern_matching if defined?(@_pattern_matching)
-      @_pattern_matching = decorated_methods.any? { |x| x.method != method_reference }
+      return false unless Support.pattern_matching_enabled?
+      @_pattern_matching ||= decorated_methods.any? { |x| x.method != method_reference }
     end
 
     def mark_pattern_matching_decorators
@@ -154,6 +154,7 @@ module Contracts
     end
 
     def validate_decorators!
+      return unless Support.decorators_enabled?
       return if decorators.size == 1
 
       fail %{
@@ -174,6 +175,8 @@ https://github.com/egonSchiele/contracts.ruby/issues
     end
 
     def validate_pattern_matching!
+      return unless Support.pattern_matching_enabled?
+
       new_args_contract = decorator.args_contracts
       matched = decorated_methods.select do |contract|
         contract.args_contracts == new_args_contract

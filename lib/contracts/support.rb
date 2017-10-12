@@ -12,6 +12,22 @@ module Contracts
         end
       end
 
+      def decorators_enabled?
+        !ENV["NO_CONTRACTS"]
+      end
+
+      def invariants_enabled?
+        !ENV["NO_CONTRACTS"]
+      end
+
+      def pattern_matching_enabled?
+        !ENV["NO_CONTRACTS_PATTERN_MATCHING"]
+      end
+
+      def validation_enabled?
+        !ENV["NO_CONTRACTS_VALIDATION"]
+      end
+
       def method_name(method)
         method.is_a?(Proc) ? "Proc" : method.name
       end

@@ -80,8 +80,12 @@ module Contracts
       # @param [Symbol] name - method name
       # @param [Decorator] decorator - method decorator
       def add_method_decorator(type, name, decorator)
-        decorated_methods[type][name] ||= []
-        decorated_methods[type][name] << decorator
+        if Support.pattern_matching_enabled?
+          decorated_methods[type][name] ||= []
+          decorated_methods[type][name] << decorator
+        else
+          decorated_methods[type][name] = [decorator]
+        end
       end
 
       # Returns nearest ancestor's engine that has decorated methods
@@ -109,8 +113,7 @@ module Contracts
       end
 
       # No-op because it is safe to add decorators to normal classes
-      def validate!
-      end
+      def validate!; end
 
       def pop_decorators
         decorators.tap { clear_decorators }
