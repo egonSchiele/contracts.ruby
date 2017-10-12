@@ -24,7 +24,7 @@ module Contracts
 
     module InvariantExtension
       def invariant(name, &condition)
-        return if ENV["NO_CONTRACTS"]
+        return unless Support.invariants_enabled?
 
         invariants << Invariant.new(self, name, &condition)
       end
