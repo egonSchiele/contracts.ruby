@@ -1,6 +1,10 @@
 module Contracts
   module CallWith
     def call_with(this, *args, &blk)
+      call_with_inner(false, this, *args, &blk)
+    end
+
+    def call_with_inner(returns, this, *args, &blk)
       args << blk if blk
 
       # Explicitly append blk=nil if nil != Proc contract violation anticipated
@@ -16,14 +20,16 @@ module Contracts
         validator = @args_validators[i]
 
         unless validator && validator[arg]
-          return unless Contract.failure_callback(:arg => arg,
-                                                  :contract => contract,
-                                                  :class => klass,
-                                                  :method => method,
-                                                  :contracts => self,
-                                                  :arg_pos => i+1,
-                                                  :total_args => args.size,
-                                                  :return_value => false)
+          data = {:arg => arg,
+                  :contract => contract,
+                  :class => klass,
+                  :method => method,
+                  :contracts => self,
+                  :arg_pos => i+1,
+                  :total_args => args.size,
+                  :return_value => false}
+          return ParamContractError.new("as return value", data) if returns
+          return unless Contract.failure_callback(data)
         end
 
         if contract.is_a?(Contracts::Func) && blk && !nil_block_appended

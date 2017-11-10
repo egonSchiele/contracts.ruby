@@ -125,31 +125,23 @@ module Contracts
         # function. Otherwise we return the result.
         # If we run out of functions, we raise the last error, but
         # convert it to_contract_error.
-        success = false
-        i = 0
-        result = nil
-        expected_error = decorated_methods[0].failure_exception
 
-        until success
-          decorated_method = decorated_methods[i]
-          i += 1
-          begin
-            success = true
-            result = decorated_method.call_with(self, *args, &blk)
-          rescue expected_error => error
-            success = false
-            unless decorated_methods[i]
-              begin
-                ::Contract.failure_callback(error.data, false)
-              rescue expected_error => final_error
-                raise final_error.to_contract_error
-              end
-            end
-          end
+        expected_error = decorated_methods[0].failure_exception
+        last_error = nil
+
+        decorated_methods.each do |decorated_method|
+          result = decorated_method.call_with_inner(true, self, *args, &blk)
+          return result unless result.is_a?(ParamContractError)
+          last_error = result
         end
 
-        # Return the result of successfully called method
-        result
+        begin
+          if ::Contract.failure_callback(last_error.data, false)
+            decorated_methods.last.call_with_inner(false, self, *args, &blk)
+          end
+        rescue expected_error => final_error
+          raise final_error.to_contract_error
+        end
       end
     end
 
