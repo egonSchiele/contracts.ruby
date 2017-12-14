@@ -81,8 +81,10 @@ module Contracts
                  method.call(*args, &blk)
                else
                  # original method name reference
-                 added_block = blk ? lambda { |*params| blk.call(*params) } : nil
-                 method.send_to(this, *args, &added_block)
+                 # Don't reassign blk, else Travis CI shows "stack level too deep".
+                 target_blk = blk
+                 target_blk = lambda { |*params| blk.call(*params) } if blk && blk.is_a?(Contract)
+                 method.send_to(this, *args, &target_blk)
                end
 
       unless @ret_validator[result]
