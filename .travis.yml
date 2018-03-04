@@ -13,11 +13,12 @@ script: "bundle exec rspec && bundle exec cucumber"
 rvm:
   - "1.9.2"
   - "1.9.3"
-  - "2.0.0"
+  - "2.0"
   - "2.1"
-  - "2.2.8"
-  - "2.3.5"
-  - "2.4.2"
+  - "2.2"
+  - "2.3"
+  - "2.4"
+  - "2.5"
 
 bundler_args: --without development
 
