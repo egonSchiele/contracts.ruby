@@ -152,6 +152,30 @@ class GenericExample
   def nested_array_complex_contracts(data)
   end
 
+  Contract [
+    C::Or[String, Symbol],
+    C::Or[String, Symbol],
+    C::Or[String, Symbol],
+    C::Or[String, Symbol],
+    C::Or[String, Symbol],
+    C::Or[String, Symbol],
+    C::Or[String, Symbol]
+  ] => nil
+  def long_array_param_contracts(data)
+  end
+
+  Contract C::None => [
+    C::Or[String, Symbol],
+    C::Or[String, Symbol],
+    C::Or[String, Symbol],
+    C::Or[String, Symbol],
+    C::Or[String, Symbol],
+    C::Or[String, Symbol],
+    C::Or[String, Symbol]
+  ]
+  def long_array_return_contracts
+  end
+
   Contract Proc => C::Any
   def do_call(&block)
     block.call

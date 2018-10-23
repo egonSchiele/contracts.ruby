@@ -1,3 +1,5 @@
+require "pp"
+
 module Contracts
   # A namespace for classes related to formatting.
   module Formatters
@@ -25,13 +27,13 @@ module Contracts
         @full = true # Complex values output completely, overriding @full
         hash.inject({}) do |repr, (k, v)|
           repr.merge(k => InspectWrapper.create(contract(v), @full))
-        end.inspect
+        end
       end
 
       # Formats Array contracts.
       def array_contract(array)
         @full = true
-        array.map { |v| InspectWrapper.create(contract(v), @full) }.inspect
+        array.map { |v| InspectWrapper.create(contract(v), @full) }
       end
     end
 

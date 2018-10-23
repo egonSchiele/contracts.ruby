@@ -637,6 +637,28 @@ RSpec.describe "Contracts:" do
       end.to raise_error(ContractError, not_s(delim "String or Symbol"))
     end
 
+    it "should wrap and pretty print for long param contracts" do
+      expect do
+        @o.long_array_param_contracts(true)
+      end.to(
+        raise_error(
+          ParamContractError,
+          /\[\(String or Symbol\),\n                   \(String or Symbol\),/
+        )
+      )
+    end
+
+    it "should wrap and pretty print for long return contracts" do
+      expect do
+        @o.long_array_return_contracts
+      end.to(
+        raise_error(
+          ReturnContractError,
+          /\[\(String or Symbol\),\n                   \(String or Symbol\),/
+        )
+      )
+    end
+
     it "should not contain Contracts:: module prefix" do
       expect do
         @o.double("bad")
