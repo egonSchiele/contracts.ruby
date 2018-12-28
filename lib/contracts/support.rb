@@ -42,6 +42,13 @@ module Contracts
           target <= eigenclass_of(Object)
       end
 
+      def indent_string(string, amount)
+        string.gsub(
+          /^(?!$)/,
+          (string[/^[ \t]/] || " ") * amount
+        )
+      end
+
       private
 
       # Module eigenclass can be detected by its ancestor chain

@@ -116,22 +116,57 @@ class Contract < Contracts::Decorator
   # This function is used by the default #failure_callback method
   # and uses the hash passed into the failure_callback method.
   def self.failure_msg(data)
-    expected = Contracts::Formatters::Expected.new(data[:contract]).contract
-    position = Contracts::Support.method_position(data[:method])
+    indent_amount = 8
     method_name = Contracts::Support.method_name(data[:method])
 
+    # Header
     header = if data[:return_value]
                "Contract violation for return value:"
              else
                "Contract violation for argument #{data[:arg_pos]} of #{data[:total_args]}:"
              end
 
-    %{#{header}
-        Expected: #{expected},
-        Actual: #{data[:arg].inspect}
-        Value guarded in: #{data[:class]}::#{method_name}
-        With Contract: #{data[:contracts]}
-        At: #{position} }
+    # Expected
+    expected_prefix = "Expected: "
+    expected_value = Contracts::Support.indent_string(
+      Contracts::Formatters::Expected.new(data[:contract]).contract.pretty_inspect,
+      expected_prefix.length
+    ).strip
+    expected_line = expected_prefix + expected_value + ","
+
+    # Actual
+    actual_prefix = "Actual: "
+    actual_value = Contracts::Support.indent_string(
+      data[:arg].pretty_inspect,
+      actual_prefix.length
+    ).strip
+    actual_line = actual_prefix + actual_value
+
+    # Value guarded in
+    value_prefix = "Value guarded in: "
+    value_value = "#{data[:class]}::#{method_name}"
+    value_line = value_prefix + value_value
+
+    # Contract
+    contract_prefix = "With Contract: "
+    contract_value = data[:contracts].to_s
+    contract_line = contract_prefix + contract_value
+
+    # Position
+    position_prefix = "At: "
+    position_value = Contracts::Support.method_position(data[:method])
+    position_line = position_prefix + position_value
+
+    header +
+      "\n" +
+      Contracts::Support.indent_string(
+        [expected_line,
+         actual_line,
+         value_line,
+         contract_line,
+         position_line].join("\n"),
+        indent_amount
+      )
   end
 
   # Callback for when a contract fails. By default it raises
