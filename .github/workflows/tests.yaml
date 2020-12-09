@@ -47,4 +47,4 @@ jobs:
           ruby-version: ${{ matrix.ruby }}
           bundler-cache: true
       - name: Test
-        run: ${{ test_command }}
+        run: ${{ matrix.test_command }}

@@ -22,7 +22,7 @@ jobs:
         os:
           - ubuntu
         ruby:
-          - "jruby"
+          - "2.7"
     runs-on: ${{ matrix.os }}-latest
     steps:
       - name: Checkout
