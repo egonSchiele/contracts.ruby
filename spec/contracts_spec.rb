@@ -7,7 +7,7 @@ RSpec.describe "Contracts:" do
     it "should fail for insufficient arguments" do
       expect do
         @o.hello
-      end.to raise_error
+      end.to raise_error ArgumentError
     end
 
     it "should fail for insufficient contracts" do
@@ -32,7 +32,7 @@ RSpec.describe "Contracts:" do
             1
           end
         end
-      end.to raise_error
+      end.to raise_error NameError
     end
   end
 
@@ -718,7 +718,7 @@ RSpec.describe "Contracts:" do
     it "should apply the contract to an inherited method" do
       c = Child.new
       expect { c.double(2) }.to_not raise_error
-      expect { c.double("asd") }.to raise_error
+      expect { c.double("asd") }.to raise_error ParamContractError
     end
   end
 

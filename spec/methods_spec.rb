@@ -36,19 +36,19 @@ RSpec.describe "Contracts:" do
     end
 
     it "should enforce return value inside block with no other parameter" do
-      expect { obj.foo(&:to_s) }.to raise_error
+      expect { obj.foo(&:to_s) }.to raise_error ReturnContractError
     end
 
     it "should enforce return value inside block with other parameter" do
-      expect { obj.foo2(2) { |x| x.to_s } }.to raise_error
+      expect { obj.foo2(2) { |x| x.to_s } }.to raise_error ReturnContractError
     end
 
     it "should enforce return value inside lambda with no other parameter" do
-      expect { obj.bar lambda { |x| x.to_s } }.to raise_error
+      expect { obj.bar lambda { |x| x.to_s } }.to raise_error ReturnContractError
     end
 
     it "should enforce return value inside lambda with other parameter" do
-      expect { obj.bar2(2, lambda { |x| x.to_s }) }.to raise_error
+      expect { obj.bar2(2, lambda { |x| x.to_s }) }.to raise_error ReturnContractError
     end
   end
 end
