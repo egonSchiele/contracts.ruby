@@ -376,10 +376,6 @@ RSpec.describe "Contracts:" do
       fails { @o.hash_keywordargs(:hash => nil) }
       fails { @o.hash_keywordargs(:hash => 1) }
     end
-
-    it "should pass if a method is overloaded with non-KeywordArgs" do
-      passes { @o.person_keywordargs("name", 10) }
-    end
   end
 
   describe "Optional:" do
@@ -405,15 +401,15 @@ RSpec.describe "Contracts:" do
     end
 
     context "given a fulfilled contract" do
-      it { expect(@o.gives_max_value(:panda => 1, :bamboo => 2)).to eq(2) }
-      it { expect(@o.pretty_gives_max_value(:panda => 1, :bamboo => 2)).to eq(2) }
+      it { expect(@o.gives_max_value({ :panda => 1, :bamboo => 2 })).to eq(2) }
+      it { expect(@o.pretty_gives_max_value({ :panda => 1, :bamboo => 2 })).to eq(2) }
     end
 
     context "given an unfulfilled contract" do
-      it { fails { @o.gives_max_value(:panda => "1", :bamboo => "2") }  }
+      it { fails { @o.gives_max_value({ :panda => "1", :bamboo => "2" }) }  }
       it { fails { @o.gives_max_value(nil) } }
       it { fails { @o.gives_max_value(1) } }
-      it { fails { @o.pretty_gives_max_value(:panda => "1", :bamboo => "2") } }
+      it { fails { @o.pretty_gives_max_value({ :panda => "1", :bamboo => "2" }) } }
     end
 
     describe "#to_s" do
@@ -430,25 +426,25 @@ RSpec.describe "Contracts:" do
   describe "StrictHash:" do
     context "when given an exact correct input" do
       it "does not raise an error" do
-        passes { @o.strict_person(:name => "calvin", :age => 10) }
+        passes { @o.strict_person({ :name => "calvin", :age => 10 }) }
       end
     end
 
     context "when given an input with correct keys but wrong types" do
       it "raises an error" do
-        fails { @o.strict_person(:name => "calvin", :age => "10") }
+        fails { @o.strict_person({ :name => "calvin", :age => "10" }) }
       end
     end
 
     context "when given an input with missing keys" do
       it "raises an error" do
-        fails { @o.strict_person(:name => "calvin") }
+        fails { @o.strict_person({ :name => "calvin" }) }
       end
     end
 
     context "when given an input with extra keys" do
       it "raises an error" do
-        fails { @o.strict_person(:name => "calvin", :age => 10, :soft => true) }
+        fails { @o.strict_person({ :name => "calvin", :age => 10, :soft => true }) }
       end
     end
 

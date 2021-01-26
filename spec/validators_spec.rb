@@ -34,7 +34,7 @@ RSpec.describe "Contract validators" do
 
     describe "within a hash" do
       it "should pass for a matching string" do
-        expect { o.hash_containing_foo(:host => "foo.example.org") }.to_not raise_error
+        expect { o.hash_containing_foo({ :host => "foo.example.org" }) }.to_not raise_error
       end
     end
 

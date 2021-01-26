@@ -107,7 +107,7 @@ module Contracts
       current_engine = engine
 
       # We are gonna redefine original method here
-      method_reference.make_definition(target) do |*args, &blk|
+      method_reference.make_definition(target) do |*args, **kargs, &blk|
         engine = current_engine.nearest_decorated_ancestor
 
         # If we weren't able to find any ancestor that has decorated methods
@@ -130,14 +130,14 @@ module Contracts
         last_error = nil
 
         decorated_methods.each do |decorated_method|
-          result = decorated_method.call_with_inner(true, self, *args, &blk)
+          result = decorated_method.call_with_inner(true, self, *args, **kargs, &blk)
           return result unless result.is_a?(ParamContractError)
           last_error = result
         end
 
         begin
           if ::Contract.failure_callback(last_error.data, false)
-            decorated_methods.last.call_with_inner(false, self, *args, &blk)
+            decorated_methods.last.call_with_inner(false, self, *args, **kargs, &blk)
           end
         rescue expected_error => final_error
           raise final_error.to_contract_error

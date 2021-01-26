@@ -1,17 +1,17 @@
 module Contracts
   module CallWith
-    def call_with(this, *args, &blk)
-      call_with_inner(false, this, *args, &blk)
+    def call_with(this, *args, **kargs, &blk)
+      call_with_inner(false, this, *args, **kargs, &blk)
     end
 
-    def call_with_inner(returns, this, *args, &blk)
+    def call_with_inner(returns, this, *args, **kargs, &blk)
       args << blk if blk
 
       # Explicitly append blk=nil if nil != Proc contract violation anticipated
       nil_block_appended = maybe_append_block!(args, blk)
 
       # Explicitly append options={} if Hash contract is present
-      maybe_append_options!(args, blk)
+      kargs_appended = maybe_append_options!(args, kargs, blk)
 
       # Loop forward validating the arguments up to the splat (if there is one)
       (@args_contract_index || args.size).times do |i|
@@ -57,14 +57,16 @@ module Contracts
           validator = @args_validators[args_contracts.size - 1 - j]
 
           unless validator && validator[arg]
-            return unless Contract.failure_callback(:arg => arg,
-                                                    :contract => contract,
-                                                    :class => klass,
-                                                    :method => method,
-                                                    :contracts => self,
-                                                    :arg_pos => i-1,
-                                                    :total_args => args.size,
-                                                    :return_value => false)
+            return unless Contract.failure_callback({
+              :arg => arg,
+              :contract => contract,
+              :class => klass,
+              :method => method,
+              :contracts => self,
+              :arg_pos => i - 1,
+              :total_args => args.size,
+              :return_value => false,
+            })
           end
 
           if contract.is_a?(Contracts::Func)
@@ -76,15 +78,16 @@ module Contracts
       # If we put the block into args for validating, restore the args
       # OR if we added a fake nil at the end because a block wasn't passed in.
       args.slice!(-1) if blk || nil_block_appended
+      args.slice!(-1) if kargs_appended
       result = if method.respond_to?(:call)
                  # proc, block, lambda, etc
-                 method.call(*args, &blk)
+                 method.call(*args, **kargs, &blk)
                else
                  # original method name reference
                  # Don't reassign blk, else Travis CI shows "stack level too deep".
                  target_blk = blk
                  target_blk = lambda { |*params| blk.call(*params) } if blk && blk.is_a?(Contract)
-                 method.send_to(this, *args, &target_blk)
+                 method.send_to(this, *args, **kargs, &target_blk)
                end
 
       unless @ret_validator[result]
