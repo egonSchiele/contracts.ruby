@@ -1,6 +1,13 @@
+
+## Unreleased
+
+- Enhancement: Pretty-print contracts in error messages - [Corey Farwell](https://github.com/frewsxcv) [#289](https://github.com/egonSchiele/contracts.ruby/pull/289)
+- Bugfix: Fix `attr_accessor_with_contract` with multiple attribute names input - [Kevin Yeh](https://github.com/kyeah) [#259](https://github.com/egonSchiele/contracts.ruby/pull/259)
+- Bugfix: Fix "stack level too deep" in CI builds - [md-work](https://github.com/md-work) [#283](https://github.com/egonSchiele/contracts.ruby/pull/283)
+
 ## [v0.16.0] - 2017-04-24
 
-[v0.16.0]: https://github.com/egonSchiele/contracts.ruby/compare/v0.15.0...98cad25741b2dc0462229a417e3c6660e563cd84
+[v0.16.0]: https://github.com/egonSchiele/contracts.ruby/compare/v0.15.0...v0.16.0
 
 - **Support for Ruby 1.8 has been discontinued** - [Corey Farwell](https://github.com/frewsxcv) [#256](https://github.com/egonSchiele/contracts.ruby/pull/256)
 - Enhancement: Add a `Contracts::Attrs` module containing attribute w/ contracts utilities - [Corey Farwell](https://github.com/frewsxcv) [#255](https://github.com/egonSchiele/contracts.ruby/pull/255)
