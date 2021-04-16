@@ -55,7 +55,7 @@ Instead of throwing an exception, you could log it, print a clean error message 
 
 ## Tutorial
 
-Check out [this awesome tutorial](http://egonschiele.github.com/contracts.ruby).
+Check out [this awesome tutorial](https://egonschiele.github.io/contracts.ruby/).
 
 ## Use Cases
 
