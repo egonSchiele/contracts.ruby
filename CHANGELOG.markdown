@@ -1,6 +1,8 @@
 
 ## [v0.16.1] - 2021-04-17
 
+[v0.16.1]: https://github.com/egonSchiele/contracts.ruby/compare/v0.16.0...v0.16.1
+
 - Enhancement: Pretty-print contracts in error messages - [Corey Farwell](https://github.com/frewsxcv) [#289](https://github.com/egonSchiele/contracts.ruby/pull/289)
 - Bugfix: Fix `attr_accessor_with_contract` with multiple attribute names input - [Kevin Yeh](https://github.com/kyeah) [#259](https://github.com/egonSchiele/contracts.ruby/pull/259)
 - Bugfix: Fix "stack level too deep" in CI builds - [md-work](https://github.com/md-work) [#283](https://github.com/egonSchiele/contracts.ruby/pull/283)
