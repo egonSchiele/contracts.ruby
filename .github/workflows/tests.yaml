@@ -22,17 +22,11 @@ jobs:
         os:
           - ubuntu
         ruby:
-          - "2.1"
-          - "2.2"
-          - "2.3"
-          - "2.4"
-          - "2.5"
-          - "2.6"
-          - "2.7"
+          - "3.0"
         test_command: ["bundle exec rspec && bundle exec cucumber"]
         include:
           - os: ubuntu
-            ruby: "2.4.2"
+            ruby: "3.0"
             test_command: "bundle exec rspec"
     runs-on: ${{ matrix.os }}-latest
     steps:
