@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Contracts
   module Core
     def self.included(base)
@@ -25,7 +27,7 @@ module Contracts
       # NOTE: Workaround for `defined?(super)` bug in ruby 1.9.2
       # source: http://stackoverflow.com/a/11181685
       # bug: https://bugs.ruby-lang.org/issues/6644
-      base.class_eval <<-RUBY
+      base.class_eval <<-RUBY, __FILE__, __LINE__ + 1
         # TODO: deprecate
         # Required when contracts are included in global scope
         def Contract(*args)

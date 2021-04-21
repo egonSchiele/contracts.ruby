@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Contracts
   # MethodReference represents original method reference that was
   # decorated by contracts.ruby. Used for instance methods.

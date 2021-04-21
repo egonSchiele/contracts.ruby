@@ -6,6 +6,9 @@
 # Note that changes in the inspected code, or installation of new
 # versions of RuboCop, may require this file to be generated again.
 
+require:
+  - rubocop-performance
+
 # Offense count: 2
 Lint/NonLocalExitFromIterator:
   Exclude:
@@ -32,14 +35,14 @@ Style/Alias:
 # Offense count: 1
 # Cop supports --auto-correct.
 # Configuration parameters: AllowAdjacentOneLineDefs.
-Style/EmptyLineBetweenDefs:
+Layout/EmptyLineBetweenDefs:
   Exclude:
     - 'benchmarks/wrap_test.rb'
 
 # Offense count: 1
 # Cop supports --auto-correct.
 # Configuration parameters: AllowForAlignment, ForceEqualSignAlignment.
-Style/ExtraSpacing:
+Layout/ExtraSpacing:
   Exclude:
     - 'spec/builtin_contracts_spec.rb'
 
@@ -58,7 +61,7 @@ Style/IfInsideElse:
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle, SupportedStyles.
 # SupportedStyles: symmetrical, new_line, same_line
-Style/MultilineHashBraceLayout:
+Layout/MultilineHashBraceLayout:
   Exclude:
     - 'spec/contracts_spec.rb'
     - 'spec/fixtures/fixtures.rb'
@@ -130,6 +133,6 @@ Style/TrailingUnderscoreVariable:
 
 # Offense count: 1
 # Cop supports --auto-correct.
-Style/UnneededInterpolation:
+Style/RedundantInterpolation:
   Exclude:
     - 'lib/contracts/formatters.rb'

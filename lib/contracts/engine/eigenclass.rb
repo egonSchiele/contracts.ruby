@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Contracts
   module Engine
     # Special case of contracts engine for eigenclasses
@@ -27,8 +29,7 @@ module Contracts
       end
 
       # No-op for eigenclasses
-      def set_eigenclass_owner
-      end
+      def set_eigenclass_owner; end
 
       # Fetches just eigenclasses decorators
       def all_decorators

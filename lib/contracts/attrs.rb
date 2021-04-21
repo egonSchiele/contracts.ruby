@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Contracts
   module Attrs
     def attr_reader_with_contract(*names, contract)

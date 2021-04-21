@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "pp"
 
 module Contracts
@@ -7,18 +9,19 @@ module Contracts
     class Expected
       # @param full [Boolean] if false only unique `to_s` values will be output,
       #   non unique values become empty string.
-      def initialize(contract, full = true)
+      def initialize(contract, full: true)
         @contract, @full = contract, full
       end
 
       # Formats any type of Contract.
       def contract(contract = @contract)
-        if contract.is_a?(Hash)
+        case contract
+        when Hash
           hash_contract(contract)
-        elsif contract.is_a?(Array)
+        when Array
           array_contract(contract)
         else
-          InspectWrapper.create(contract, @full)
+          InspectWrapper.create(contract, full: @full)
         end
       end
 
@@ -26,14 +29,14 @@ module Contracts
       def hash_contract(hash)
         @full = true # Complex values output completely, overriding @full
         hash.inject({}) do |repr, (k, v)|
-          repr.merge(k => InspectWrapper.create(contract(v), @full))
+          repr.merge(k => InspectWrapper.create(contract(v), full: @full))
         end
       end
 
       # Formats Array contracts.
       def array_contract(array)
         @full = true
-        array.map { |v| InspectWrapper.create(contract(v), @full) }
+        array.map { |v| InspectWrapper.create(contract(v), full: @full) }
       end
     end
 
@@ -42,8 +45,8 @@ module Contracts
     module InspectWrapper
       # InspectWrapper is a factory, will never be an instance
       # @return [ClassInspectWrapper, ObjectInspectWrapper]
-      def self.create(value, full = true)
-        if value.class == Class
+      def self.create(value, full: true)
+        if value.instance_of?(Class)
           ClassInspectWrapper
         else
           ObjectInspectWrapper
@@ -66,6 +69,7 @@ module Contracts
         return @value.inspect if empty_val?
         return @value.to_s if plain?
         return delim(@value.to_s) if useful_to_s?
+
         useful_inspect
       end
 
@@ -96,7 +100,7 @@ module Contracts
       end
 
       def useful_to_s?
-        # Useless to_s value or no custom to_s behavious defined
+        # Useless to_s value or no custom to_s behaviour defined
         !empty_to_s? && custom_to_s?
       end
 
@@ -125,7 +129,7 @@ module Contracts
       include InspectWrapper
 
       def custom_to_s?
-        !@value.to_s.match(/#\<\w+:.+\>/)
+        !@value.to_s.match(/#<\w+:.+>/)
       end
 
       def useful_inspect

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "aruba/cucumber"
 require "aruba/jruby" if RUBY_PLATFORM == "java"
 

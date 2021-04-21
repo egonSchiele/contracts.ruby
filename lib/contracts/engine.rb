@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "contracts/engine/base"
 require "contracts/engine/target"
 require "contracts/engine/eigenclass"

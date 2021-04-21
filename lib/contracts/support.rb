@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Contracts
   module Support
     class << self
@@ -8,7 +10,7 @@ module Contracts
         if file.nil? || line.nil?
           ""
         else
-          file + ":" + line.to_s
+          "#{file}:#{line}"
         end
       end
 
@@ -45,7 +47,7 @@ module Contracts
       def indent_string(string, amount)
         string.gsub(
           /^(?!$)/,
-          (string[/^[ \t]/] || " ") * amount
+          (string[/^[ \t]/] || " ") * amount,
         )
       end
 

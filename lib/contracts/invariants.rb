@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Contracts
   module Invariants
     def self.included(base)
@@ -47,10 +49,10 @@ module Contracts
         return if target.instance_eval(&@condition)
 
         self.class.failure_callback({
-          :expected => expected,
-          :actual => false,
-          :target => target,
-          :method => method,
+          expected: expected,
+          actual:   false,
+          target:   target,
+          method:   method,
         })
       end
 

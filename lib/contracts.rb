@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "contracts/attrs"
 require "contracts/builtin_contracts"
 require "contracts/decorators"
@@ -51,7 +53,9 @@ class Contract < Contracts::Decorator
   end
 
   attr_reader :args_contracts, :ret_contract, :klass, :method
+
   def initialize(klass, method, *contracts)
+    super(klass, method)
     unless contracts.last.is_a?(Hash)
       unless contracts.one?
         fail %{
@@ -102,8 +106,8 @@ class Contract < Contracts::Decorator
     @klass, @method = klass, method
   end
 
-  def pretty_contract c
-    c.is_a?(Class) ? c.name : c.class.name
+  def pretty_contract contract
+    contract.is_a?(Class) ? contract.name : contract.class.name
   end
 
   def to_s
@@ -130,15 +134,15 @@ class Contract < Contracts::Decorator
     expected_prefix = "Expected: "
     expected_value = Contracts::Support.indent_string(
       Contracts::Formatters::Expected.new(data[:contract]).contract.pretty_inspect,
-      expected_prefix.length
+      expected_prefix.length,
     ).strip
-    expected_line = expected_prefix + expected_value + ","
+    expected_line = "#{expected_prefix}#{expected_value},"
 
     # Actual
     actual_prefix = "Actual: "
     actual_value = Contracts::Support.indent_string(
       data[:arg].pretty_inspect,
-      actual_prefix.length
+      actual_prefix.length,
     ).strip
     actual_line = actual_prefix + actual_value
 
@@ -157,16 +161,19 @@ class Contract < Contracts::Decorator
     position_value = Contracts::Support.method_position(data[:method])
     position_line = position_prefix + position_value
 
-    header +
-      "\n" +
+    [
+      header,
       Contracts::Support.indent_string(
-        [expected_line,
-         actual_line,
-         value_line,
-         contract_line,
-         position_line].join("\n"),
-        indent_amount
-      )
+        [
+          expected_line,
+          actual_line,
+          value_line,
+          contract_line,
+          position_line,
+        ].join("\n"),
+        indent_amount,
+      ),
+    ].join("\n")
   end
 
   # Callback for when a contract fails. By default it raises
@@ -182,7 +189,7 @@ class Contract < Contracts::Decorator
   #     puts failure_msg(data)
   #     exit
   #   end
-  def self.failure_callback(data, use_pattern_matching = true)
+  def self.failure_callback(data, use_pattern_matching: true)
     if data[:contracts].pattern_match? && use_pattern_matching
       return DEFAULT_FAILURE_CALLBACK.call(data)
     end
@@ -242,7 +249,8 @@ class Contract < Contracts::Decorator
   # returns true if it appended nil
   def maybe_append_block! args, blk
     return false unless @has_proc_contract && !blk &&
-        (@args_contract_index || args.size < args_contracts.size)
+      (@args_contract_index || args.size < args_contracts.size)
+
     args << nil
     true
   end
@@ -251,6 +259,7 @@ class Contract < Contracts::Decorator
   # returns true if it appended nil
   def maybe_append_options! args, kargs, blk
     return false unless @has_options_contract
+
     if @has_proc_contract && args_contracts[-2].is_a?(Contracts::Builtin::KeywordArgs)
       args.insert(-2, kargs)
     elsif args_contracts[-1].is_a?(Contracts::Builtin::KeywordArgs)

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Contracts
   module CallWith
     def call_with(this, *args, **kargs, &blk)
@@ -20,14 +22,16 @@ module Contracts
         validator = @args_validators[i]
 
         unless validator && validator[arg]
-          data = {:arg => arg,
-                  :contract => contract,
-                  :class => klass,
-                  :method => method,
-                  :contracts => self,
-                  :arg_pos => i+1,
-                  :total_args => args.size,
-                  :return_value => false}
+          data = {
+            arg:          arg,
+            contract:     contract,
+            class:        klass,
+            method:       method,
+            contracts:    self,
+            arg_pos:      i+1,
+            total_args:   args.size,
+            return_value: false,
+          }
           return ParamContractError.new("as return value", data) if returns
           return unless Contract.failure_callback(data)
         end
@@ -57,6 +61,7 @@ module Contracts
           validator = @args_validators[args_contracts.size - 1 - j]
 
           unless validator && validator[arg]
+            # rubocop:disable Style/SoleNestedConditional
             return unless Contract.failure_callback({
               :arg => arg,
               :contract => contract,
@@ -67,6 +72,7 @@ module Contracts
               :total_args => args.size,
               :return_value => false,
             })
+            # rubocop:enable Style/SoleNestedConditional
           end
 
           if contract.is_a?(Contracts::Func)
@@ -86,17 +92,19 @@ module Contracts
                  # original method name reference
                  # Don't reassign blk, else Travis CI shows "stack level too deep".
                  target_blk = blk
-                 target_blk = lambda { |*params| blk.call(*params) } if blk && blk.is_a?(Contract)
+                 target_blk = lambda { |*params| blk.call(*params) } if blk.is_a?(Contract)
                  method.send_to(this, *args, **kargs, &target_blk)
                end
 
       unless @ret_validator[result]
-        Contract.failure_callback(:arg => result,
-                                  :contract => ret_contract,
-                                  :class => klass,
-                                  :method => method,
-                                  :contracts => self,
-                                  :return_value => true)
+        Contract.failure_callback({
+          arg:          result,
+          contract:     ret_contract,
+          class:        klass,
+          method:       method,
+          contracts:    self,
+          return_value: true,
+        })
       end
 
       this.verify_invariants!(method) if this.respond_to?(:verify_invariants!)

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Contracts
   module Engine
     # Contracts engine
@@ -90,7 +92,7 @@ module Contracts
       def nearest_decorated_ancestor
         current = klass
         current_engine = self
-        ancestors = current.ancestors[1..-1]
+        ancestors = current.ancestors[1..]
 
         while current && current_engine && !current_engine.decorated_methods?
           current = ancestors.shift
@@ -109,8 +111,7 @@ module Contracts
       end
 
       # No-op because it is safe to add decorators to normal classes
-      def validate!
-      end
+      def validate!; end
 
       def pop_decorators
         decorators.tap { clear_decorators }
