@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 task :default => [:spec]
 
 task :add_tag do

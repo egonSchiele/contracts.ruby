@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Contracts
   module MethodDecorators
     def self.extended(klass)
@@ -25,6 +27,7 @@ module Contracts
     class << self; attr_accessor :decorators; end
 
     def self.inherited(klass)
+      super
       name = klass.name.gsub(/^./) { |m| m.downcase }
 
       return if name =~ /^[^A-Za-z_]/ || name =~ /[^0-9A-Za-z_]/
@@ -33,11 +36,11 @@ module Contracts
       # make a new method that is the name of your decorator.
       # that method accepts random args and a block.
       # inside, `decorate` is called with those params.
-      MethodDecorators.module_eval <<-ruby_eval, __FILE__, __LINE__ + 1
+      MethodDecorators.module_eval <<-RUBY_EVAL, __FILE__, __LINE__ + 1
         def #{klass}(*args, &blk)
           ::Contracts::Engine.fetch_from(self).decorate(#{klass}, *args, &blk)
         end
-      ruby_eval
+      RUBY_EVAL
     end
 
     def initialize(klass, method)

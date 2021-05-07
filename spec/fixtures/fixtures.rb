@@ -120,16 +120,11 @@ class GenericExample
   end
 
   Contract C::KeywordArgs[:name => String, :age => Fixnum] => nil
-  def person_keywordargs(data)
-  end
-
-  # Testing overloaded method
-  Contract String, Fixnum => nil
-  def person_keywordargs(name, age)
+  def person_keywordargs(name: "name", age: 10)
   end
 
   Contract C::KeywordArgs[:hash => C::HashOf[Symbol, C::Num]] => nil
-  def hash_keywordargs(data)
+  def hash_keywordargs(hash:)
   end
 
   Contract (/foo/) => nil

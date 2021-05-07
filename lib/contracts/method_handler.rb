@@ -1,15 +1,17 @@
+# frozen_string_literal: true
+
 module Contracts
   # Handles class and instance methods addition
   # Represents single such method
   class MethodHandler
     METHOD_REFERENCE_FACTORY = {
       :class_methods => SingletonMethodReference,
-      :instance_methods => MethodReference
+      :instance_methods => MethodReference,
     }
 
     RAW_METHOD_STRATEGY = {
       :class_methods => lambda { |target, name| target.method(name) },
-      :instance_methods => lambda { |target, name| target.instance_method(name) }
+      :instance_methods => lambda { |target, name| target.instance_method(name) },
     }
 
     # Creates new instance of MethodHandler
@@ -78,11 +80,13 @@ module Contracts
 
     def pattern_matching?
       return @_pattern_matching if defined?(@_pattern_matching)
+
       @_pattern_matching = decorated_methods.any? { |x| x.method != method_reference }
     end
 
     def mark_pattern_matching_decorators
       return unless pattern_matching?
+
       decorated_methods.each(&:pattern_match!)
     end
 
@@ -107,13 +111,13 @@ module Contracts
       current_engine = engine
 
       # We are gonna redefine original method here
-      method_reference.make_definition(target) do |*args, &blk|
+      method_reference.make_definition(target) do |*args, **kargs, &blk|
         engine = current_engine.nearest_decorated_ancestor
 
         # If we weren't able to find any ancestor that has decorated methods
         # FIXME : this looks like untested code (commenting it out doesn't make specs red)
         unless engine
-          fail "Couldn't find decorator for method " + self.class.name + ":#{name}.\nDoes this method look correct to you? If you are using contracts from rspec, rspec wraps classes in it's own class.\nLook at the specs for contracts.ruby as an example of how to write contracts in this case."
+          fail "Couldn't find decorator for method #{self.class.name}:#{name}.\nDoes this method look correct to you? If you are using contracts from rspec, rspec wraps classes in it's own class.\nLook at the specs for contracts.ruby as an example of how to write contracts in this case."
         end
 
         # Fetch decorated methods out of the contracts engine
@@ -130,17 +134,20 @@ module Contracts
         last_error = nil
 
         decorated_methods.each do |decorated_method|
-          result = decorated_method.call_with_inner(true, self, *args, &blk)
+          result = decorated_method.call_with_inner(true, self, *args, **kargs, &blk)
           return result unless result.is_a?(ParamContractError)
+
           last_error = result
         end
 
         begin
-          if ::Contract.failure_callback(last_error.data, false)
-            decorated_methods.last.call_with_inner(false, self, *args, &blk)
+          if ::Contract.failure_callback(last_error&.data, use_pattern_matching: false)
+            decorated_methods.last.call_with_inner(false, self, *args, **kargs, &blk)
           end
+          # rubocop:disable Naming/RescuedExceptionsVariableName
         rescue expected_error => final_error
           raise final_error.to_contract_error
+          # rubocop:enable Naming/RescuedExceptionsVariableName
         end
       end
     end
@@ -173,7 +180,8 @@ https://github.com/egonSchiele/contracts.ruby/issues
 
       return if matched.empty?
 
-      fail ContractError.new(%{
+      fail ContractError.new(
+        %{
 It looks like you are trying to use pattern-matching, but
 multiple definitions for function '#{method_name}' have the same
 contract for input parameters:
@@ -181,7 +189,9 @@ contract for input parameters:
 #{(matched + [decorator]).map(&:to_s).join("\n")}
 
 Each definition needs to have a different contract for the parameters.
-      }, {})
+        },
+        {},
+      )
     end
   end
 end

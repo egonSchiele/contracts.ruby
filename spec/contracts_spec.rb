@@ -349,19 +349,19 @@ RSpec.describe "Contracts:" do
 
   describe "Hashes" do
     it "should pass for exact correct input" do
-      expect { @o.person(:name => "calvin", :age => 10) }.to_not raise_error
+      expect { @o.person({ :name => "calvin", :age => 10 }) }.to_not raise_error
     end
 
     it "should pass even if some keys don't have contracts" do
-      expect { @o.person(:name => "calvin", :age => 10, :foo => "bar") }.to_not raise_error
+      expect { @o.person({ :name => "calvin", :age => 10, :foo => "bar" }) }.to_not raise_error
     end
 
     it "should fail if a key with a contract on it isn't provided" do
-      expect { @o.person(:name => "calvin") }.to raise_error(ContractError)
+      expect { @o.person({ :name => "calvin" }) }.to raise_error(ContractError)
     end
 
     it "should fail for incorrect input" do
-      expect { @o.person(:name => 50, :age => 10) }.to raise_error(ContractError)
+      expect { @o.person({ :name => 50, :age => 10 }) }.to raise_error(ContractError)
     end
   end
 
@@ -612,16 +612,19 @@ RSpec.describe "Contracts:" do
 
     it "should contain to_s representation within a Hash contract" do
       expect do
-        @o.hash_complex_contracts(:rigged => "bad")
+        @o.hash_complex_contracts({ :rigged => "bad" })
       end.to raise_error(ContractError, not_s(delim "TrueClass or FalseClass"))
     end
 
     it "should contain to_s representation within a nested Hash contract" do
       expect do
-        @o.nested_hash_complex_contracts(:rigged => true,
-                                         :contents => {
-                                           :kind => 0,
-                                           :total => 42 })
+        @o.nested_hash_complex_contracts({
+          :rigged => true,
+          :contents => {
+            :kind => 0,
+            :total => 42,
+          },
+        })
       end.to raise_error(ContractError, not_s(delim "String or Symbol"))
     end
 

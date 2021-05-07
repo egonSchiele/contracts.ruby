@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Contracts
   module Validators
     DEFAULT_VALIDATOR_STRATEGIES = {
@@ -9,6 +11,7 @@ module Contracts
       Array => lambda do |contract|
         lambda do |arg|
           return false unless arg.is_a?(Array) && arg.length == contract.length
+
           arg.zip(contract).all? do |_arg, _contract|
             Contract.valid?(_arg, _contract)
           end
@@ -19,6 +22,7 @@ module Contracts
       Hash => lambda do |contract|
         lambda do |arg|
           return false unless arg.is_a?(Hash)
+
           contract.keys.all? do |k|
             Contract.valid?(arg[k], contract[k])
           end
@@ -59,7 +63,7 @@ module Contracts
 
       :default => lambda do |contract|
         lambda { |arg| contract == arg }
-      end
+      end,
     }.freeze
 
     # Allows to override validator with custom one.
@@ -90,7 +94,7 @@ module Contracts
             else
               if contract.respond_to? :valid?
                 :valid
-              elsif klass == Class || klass == Module
+              elsif [Class, Module].include?(klass)
                 :class
               else
                 :default

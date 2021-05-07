@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # @private
 # Base class for Contract errors
 #
@@ -65,6 +67,7 @@ module Contracts
     alias_method :to_s, :message
 
     def initialize(message = DEFAULT_MESSAGE)
+      super
       @message = message
     end
   end

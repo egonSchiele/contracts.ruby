@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Contracts
   # MethodReference represents original method reference that was
   # decorated by contracts.ruby. Used for instance methods.
@@ -39,8 +41,8 @@ module Contracts
 
     # Calls original method on specified `this` argument with
     # specified arguments `args` and block `&blk`.
-    def send_to(this, *args, &blk)
-      this.send(aliased_name, *args, &blk)
+    def send_to(this, *args, **kargs, &blk)
+      this.send(aliased_name, *args, **kargs, &blk)
     end
 
     private

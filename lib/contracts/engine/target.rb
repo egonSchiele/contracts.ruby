@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Contracts
   module Engine
     # Represents class in question

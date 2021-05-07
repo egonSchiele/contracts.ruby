@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "contracts/formatters"
 require "set"
 
@@ -30,35 +32,35 @@ module Contracts
     # Check that an argument is a positive number.
     class Pos
       def self.valid? val
-        val && val.is_a?(Numeric) && val > 0
+        val.is_a?(Numeric) && val.positive?
       end
     end
 
     # Check that an argument is a negative number.
     class Neg
       def self.valid? val
-        val && val.is_a?(Numeric) && val < 0
+        val.is_a?(Numeric) && val.negative?
       end
     end
 
     # Check that an argument is an +Integer+.
     class Int
       def self.valid? val
-        val && val.is_a?(Integer)
+        val.is_a?(Integer)
       end
     end
 
     # Check that an argument is a natural number (includes zero).
     class Nat
       def self.valid? val
-        val && val.is_a?(Integer) && val >= 0
+        val.is_a?(Integer) && val >= 0
       end
     end
 
     # Check that an argument is a positive natural number (excludes zero).
     class NatPos
       def self.valid? val
-        val && val.is_a?(Integer) && val > 0
+        val.is_a?(Integer) && val.positive?
       end
     end
 
@@ -96,6 +98,7 @@ module Contracts
     # Example: <tt>Or[Fixnum, Float]</tt>
     class Or < CallableClass
       def initialize(*vals)
+        super()
         @vals = vals
       end
 
@@ -107,9 +110,11 @@ module Contracts
       end
 
       def to_s
+        # rubocop:disable Style/StringConcatenation
         @vals[0, @vals.size-1].map do |x|
           InspectWrapper.create(x)
         end.join(", ") + " or " + InspectWrapper.create(@vals[-1]).to_s
+        # rubocop:enable Style/StringConcatenation
       end
     end
 
@@ -118,6 +123,7 @@ module Contracts
     # Example: <tt>Xor[Fixnum, Float]</tt>
     class Xor < CallableClass
       def initialize(*vals)
+        super()
         @vals = vals
       end
 
@@ -130,9 +136,11 @@ module Contracts
       end
 
       def to_s
+        # rubocop:disable Style/StringConcatenation
         @vals[0, @vals.size-1].map do |x|
           InspectWrapper.create(x)
         end.join(", ") + " xor " + InspectWrapper.create(@vals[-1]).to_s
+        # rubocop:enable Style/StringConcatenation
       end
     end
 
@@ -141,6 +149,7 @@ module Contracts
     # Example: <tt>And[Fixnum, Float]</tt>
     class And < CallableClass
       def initialize(*vals)
+        super()
         @vals = vals
       end
 
@@ -152,9 +161,11 @@ module Contracts
       end
 
       def to_s
+        # rubocop:disable Style/StringConcatenation
         @vals[0, @vals.size-1].map do |x|
           InspectWrapper.create(x)
         end.join(", ") + " and " + InspectWrapper.create(@vals[-1]).to_s
+        # rubocop:enable Style/StringConcatenation
       end
     end
 
@@ -164,6 +175,7 @@ module Contracts
     # Example: <tt>RespondTo[:password, :credit_card]</tt>
     class RespondTo < CallableClass
       def initialize(*meths)
+        super()
         @meths = meths
       end
 
@@ -185,6 +197,7 @@ module Contracts
     # Example: <tt>Send[:valid?]</tt>
     class Send < CallableClass
       def initialize(*meths)
+        super()
         @meths = meths
       end
 
@@ -204,11 +217,12 @@ module Contracts
     # Example: <tt>Exactly[Numeric]</tt>
     class Exactly < CallableClass
       def initialize(cls)
+        super()
         @cls = cls
       end
 
       def valid?(val)
-        val.class == @cls
+        val.instance_of?(@cls)
       end
 
       def to_s
@@ -222,6 +236,7 @@ module Contracts
     # Example: <tt>Enum[:a, :b, :c]</tt>?
     class Enum < CallableClass
       def initialize(*vals)
+        super()
         @vals = vals
       end
 
@@ -235,6 +250,7 @@ module Contracts
     # Example: <tt>Eq[Class]</tt>
     class Eq < CallableClass
       def initialize(value)
+        super()
         @value = value
       end
 
@@ -252,6 +268,7 @@ module Contracts
     # Example: <tt>Not[nil]</tt>
     class Not < CallableClass
       def initialize(*vals)
+        super()
         @vals = vals
       end
 
@@ -275,12 +292,14 @@ module Contracts
     # Example: <tt>CollectionOf[Array, Num]</tt>
     class CollectionOf < CallableClass
       def initialize(collection_class, contract)
+        super()
         @collection_class = collection_class
         @contract = contract
       end
 
       def valid?(vals)
         return false unless vals.is_a?(@collection_class)
+
         vals.all? do |val|
           res, _ = Contract.valid?(val, @contract)
           res
@@ -298,7 +317,7 @@ module Contracts
         end
 
         def new(contract)
-          @before_new && @before_new.call
+          @before_new&.call
           CollectionOf.new(@collection_class, contract)
         end
 
@@ -324,7 +343,9 @@ module Contracts
     # Example: <tt>Args[Or[String, Num]]</tt>
     class Args < CallableClass
       attr_reader :contract
+
       def initialize(contract)
+        super()
         @contract = contract
       end
 
@@ -343,6 +364,7 @@ module Contracts
     # Example: <tt>RangeOf[Nat]</tt>, <tt>RangeOf[Date]</tt>, ...
     class RangeOf < CallableClass
       def initialize(contract)
+        super()
         @contract = contract
       end
 
@@ -364,6 +386,7 @@ module Contracts
       INVALID_KEY_VALUE_PAIR = "You should provide only one key-value pair to HashOf contract"
 
       def initialize(key, value = nil)
+        super()
         if value
           @key   = key
           @value = value
@@ -376,6 +399,7 @@ module Contracts
 
       def valid?(hash)
         return false unless hash.is_a?(Hash)
+
         keys_match = hash.keys.map { |k| Contract.valid?(k, @key) }.all?
         vals_match = hash.values.map { |v| Contract.valid?(v, @value) }.all?
 
@@ -400,6 +424,7 @@ module Contracts
       attr_reader :contract_hash
 
       def initialize(contract_hash)
+        super()
         @contract_hash = contract_hash
       end
 
@@ -417,12 +442,14 @@ module Contracts
     # Example: <tt>KeywordArgs[ e: Range, f: Optional[Num] ]</tt>
     class KeywordArgs < CallableClass
       def initialize(options)
+        super()
         @options = options
       end
 
       def valid?(hash)
         return false unless hash.is_a?(Hash)
         return false unless hash.keys - options.keys == []
+
         options.all? do |key, contract|
           Optional._valid?(hash, key, contract)
         end
@@ -445,6 +472,7 @@ module Contracts
     # Example: <tt>DescendantOf[ e: Range, f: Optional[Num] ]</tt>
     class DescendantOf < CallableClass
       def initialize(parent_class)
+        super()
         @parent_class = parent_class
       end
 
@@ -473,11 +501,13 @@ module Contracts
 
       def self._valid?(hash, key, contract)
         return Contract.valid?(hash[key], contract) unless contract.is_a?(Optional)
+
         contract.within_opt_hash!
         !hash.key?(key) || Contract.valid?(hash[key], contract)
       end
 
       def initialize(contract)
+        super()
         @contract = contract
         @within_opt_hash = false
       end
@@ -506,6 +536,7 @@ module Contracts
 
       def ensure_within_opt_hash
         return if within_opt_hash
+
         fail ArgumentError, UNABLE_TO_USE_OUTSIDE_OF_OPT_HASH
       end
 
@@ -531,7 +562,9 @@ module Contracts
     # Example: <tt>Func[Num => Num] # the function should take a number and return a number</tt>
     class Func < CallableClass
       attr_reader :contracts
+
       def initialize(*contracts)
+        super()
         @contracts = contracts
       end
     end

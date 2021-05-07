@@ -30,15 +30,15 @@ RSpec.describe Contract do
       obj = klass.new
 
       expect do
-        obj.something(:a => 35, :b => "hello")
+        obj.something({ :a => 35, :b => "hello" })
       end.to raise_error(ContractError)
 
       expect do
-        obj.something(
+        obj.something({
           :a => 35,
           :b => "hello",
           :it_is_a_hash => true
-        )
+        })
       end.not_to raise_error
     end
 
