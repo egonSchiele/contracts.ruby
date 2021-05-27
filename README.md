@@ -6,6 +6,12 @@ Contracts let you clearly – even beautifully – express how your code behaves
 
 You can think of contracts as `assert` on steroids.
 
+## 0.17.x = Ruby 3.x only
+
+0.17.x only supports Ruby 3.x  
+Looking for Ruby 2.x support?  
+Use 0.16.x  
+
 ## Installation
 
     gem install contracts
