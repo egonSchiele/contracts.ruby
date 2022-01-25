@@ -23,11 +23,8 @@ jobs:
           - ubuntu
         ruby:
           - "3.0"
-        test_command: ["bundle exec rspec && bundle exec cucumber"]
-        include:
-          - os: ubuntu
-            ruby: "3.0"
-            test_command: "bundle exec rspec"
+        test_command:
+          - "bundle exec rspec && bundle exec cucumber"
     runs-on: ${{ matrix.os }}-latest
     steps:
       - name: Checkout
