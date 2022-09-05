@@ -89,7 +89,7 @@ Using contracts.ruby results in very little slowdown. Check out [this blog post]
 
 **Q.** What Rubies can I use this with?
 
-**A.** It's been tested with `2.1`, `2.2`, `2.3`, `2.4`, `2.5`, `2.6` and `2.7`.
+**A.** It's been tested with `3.0` and `3.1`. (In case this list becomes outdated see [`.github/workflows/tests.yaml`](/.github/workflows/tests.yaml))
 
 If you're using the library, please [let me know](https://github.com/egonSchiele) what project you're using it on :)
 
