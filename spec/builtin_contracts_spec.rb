@@ -30,7 +30,7 @@ RSpec.describe "Contracts:" do
   end
 
   describe "Num:" do
-    it "should pass for Fixnums" do
+    it "should pass for Integers" do
       passes { @o.double(2) }
     end
 

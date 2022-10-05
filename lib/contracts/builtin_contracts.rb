@@ -95,7 +95,7 @@ module Contracts
 
     # Takes a variable number of contracts.
     # The contract passes if any of the contracts pass.
-    # Example: <tt>Or[Fixnum, Float]</tt>
+    # Example: <tt>Or[Integer, Float]</tt>
     class Or < CallableClass
       def initialize(*vals)
         super()
@@ -120,7 +120,7 @@ module Contracts
 
     # Takes a variable number of contracts.
     # The contract passes if exactly one of those contracts pass.
-    # Example: <tt>Xor[Fixnum, Float]</tt>
+    # Example: <tt>Xor[Integer, Float]</tt>
     class Xor < CallableClass
       def initialize(*vals)
         super()
@@ -146,7 +146,7 @@ module Contracts
 
     # Takes a variable number of contracts.
     # The contract passes if all contracts pass.
-    # Example: <tt>And[Fixnum, Float]</tt>
+    # Example: <tt>And[Integer, Float]</tt>
     class And < CallableClass
       def initialize(*vals)
         super()
