@@ -80,8 +80,8 @@ contracts.ruby comes with a lot of built-in contracts, including the following:
 
 * Logical combinations
   * [`Maybe`](http://www.rubydoc.info/gems/contracts/Contracts/Builtin/Maybe) – specifies that a value _may be_ nil, e.g. `Maybe[String]` (equivalent to `Or[String,nil]`)
-  * [`Or`](http://www.rubydoc.info/gems/contracts/Contracts/Builtin/Or) – passes if any of the given contracts pass, e.g. `Or[Fixnum, Float]`
-  * [`Xor`](http://www.rubydoc.info/gems/contracts/Contracts/Builtin/Xor) – passes if exactly one of the given contracts pass, e.g. `Xor[Fixnum, Float]`
+  * [`Or`](http://www.rubydoc.info/gems/contracts/Contracts/Builtin/Or) – passes if any of the given contracts pass, e.g. `Or[Integer, Float]`
+  * [`Xor`](http://www.rubydoc.info/gems/contracts/Contracts/Builtin/Xor) – passes if exactly one of the given contracts pass, e.g. `Xor[Integer, Float]`
   * [`And`](http://www.rubydoc.info/gems/contracts/Contracts/Builtin/And) – passes if all contracts pass, e.g. `And[Nat, -> (n) { n.even? }]`
   * [`Not`](http://www.rubydoc.info/gems/contracts/Contracts/Builtin/Not) – passes if all contracts fail for the given argument, e.g. `Not[nil]`
 
@@ -89,7 +89,7 @@ contracts.ruby comes with a lot of built-in contracts, including the following:
   * [`ArrayOf`](http://www.rubydoc.info/gems/contracts/Contracts/Builtin/ArrayOf) – checks that the argument is an array, and all elements pass the given contract, e.g. `ArrayOf[Num]`
   * [`SetOf`](http://www.rubydoc.info/gems/contracts/Contracts/Builtin/SetOf) – checks that the argument is a set, and all elements pass the given contract, e.g. `SetOf[Num]`
   * [`HashOf`](http://www.rubydoc.info/gems/contracts/Contracts/Builtin/HashOf) – checks that the argument is a hash, and all keys and values pass the given contract, e.g. `HashOf[Symbol => String]` or `HashOf[Symbol,String]`
-  * [`StrictHash`](http://www.rubydoc.info/gems/contracts/Contracts/Builtin/StrictHash) – checks that the argument is a hash, and every key passed is present in the given contract, e.g. `StrictHash[{ :description => String, :number => Fixnum }]`
+  * [`StrictHash`](http://www.rubydoc.info/gems/contracts/Contracts/Builtin/StrictHash) – checks that the argument is a hash, and every key passed is present in the given contract, e.g. `StrictHash[{ :description => String, :number => Integer }]`
   * [`RangeOf`](http://www.rubydoc.info/gems/contracts/Contracts/Builtin/RangeOf) – checks that the argument is a range whose elements (#first and #last) pass the given contract, e.g. `RangeOf[Date]`
   * [`Enum`](http://www.rubydoc.info/gems/contracts/Contracts/Builtin/Enum) – checks that the argument is part of a given collection of objects, e.g. `Enum[:a, :b, :c]`
 
@@ -152,7 +152,7 @@ end
 
 You always need to specify a contract for the return value. In this example, `hello` doesn't return anything, so the contract is `nil`. Now you know that you can use a constant like `nil` as the end of a contract. Valid values for a contract are:
 
-- the name of a class (like `String` or `Fixnum`)
+- the name of a class (like `String` or `Integer`)
 - a constant (like `nil` or `1`)
 - a `Proc` that takes a value and returns true or false to indicate whether the contract passed or not
 - a class that responds to the `valid?` class method (more on this later)
@@ -161,32 +161,32 @@ You always need to specify a contract for the return value. In this example, `he
 ### A Double Function
 
 ```ruby
-Contract C::Or[Fixnum, Float] => C::Or[Fixnum, Float]
+Contract C::Or[Integer, Float] => C::Or[Integer, Float]
 def double(x)
   2 * x
 end
 ```
 
 Sometimes you want to be able to choose between a few contracts. `Or` takes a variable number of contracts and checks the argument against all of them. If it passes for any of the contracts, then the `Or` contract passes.
-This introduces some new syntax. One of the valid values for a contract is an instance of a class that responds to the `valid?` method. This is what `Or[Fixnum, Float]` is. The longer way to write it would have been:
+This introduces some new syntax. One of the valid values for a contract is an instance of a class that responds to the `valid?` method. This is what `Or[Integer, Float]` is. The longer way to write it would have been:
 
 ```ruby
-Contract C::Or.new(Fixnum, Float) => C::Or.new(Fixnum, Float)
+Contract C::Or.new(Integer, Float) => C::Or.new(Integer, Float)
 ```
 
 All the built-in contracts have overridden the square brackets (`[]`) to give the same functionality. So you could write
 
 ```ruby
-Contract C::Or[Fixnum, Float] => C::Or[Fixnum, Float]
+Contract C::Or[Integer, Float] => C::Or[Integer, Float]
 ```
 
 or
 
 ```ruby
-Contract C::Or.new(Fixnum, Float) => C::Or.new(Fixnum, Float)
+Contract C::Or.new(Integer, Float) => C::Or.new(Integer, Float)
 ```
 
-whichever you prefer. They both mean the same thing here: make a new instance of `Or` with `Fixnum` and `Float`. Use that instance to validate the argument.
+whichever you prefer. They both mean the same thing here: make a new instance of `Or` with `Integer` and `Float`. Use that instance to validate the argument.
 
 ### A Product Function
 
@@ -455,7 +455,7 @@ Now you can use `Person` wherever you would have used `Or[Hash, nil]`. Your code
 
 Contracts are very easy to define. To re-iterate, there are 5 kinds of contracts:
 
-- the name of a class (like `String` or `Fixnum`)
+- the name of a class (like `String` or `Integer`)
 - a constant (like `nil` or `1`)
 - a `Proc` that takes a value and returns true or false to indicate whether the contract passed or not
 - a class that responds to the `valid?` class method (more on this later)
@@ -511,7 +511,7 @@ The `Or` contract takes a sequence of contracts, and passes if any of them pass.
 This class inherits from `CallableClass`, which allows us to use `[]` when using the class:
 
 ```ruby
-Contract C::Or[Fixnum, Float] => C::Num
+Contract C::Or[Integer, Float] => C::Num
 def double(x)
   2 * x
 end
@@ -520,7 +520,7 @@ end
 Without `CallableClass`, we would have to use `.new` instead:
 
 ```ruby
-Contract C::Or.new(Fixnum, Float) => C::Num
+Contract C::Or.new(Integer, Float) => C::Num
 def double(x)
 # etc
 ```
@@ -723,7 +723,7 @@ class MyBirthday < Struct.new(:day, :month)
   invariant(:day) { 1 <= day && day <= 31 }
   invariant(:month) { 1 <= month && month <= 12 }
 
-  Contract C::None => Fixnum
+  Contract C::None => Integer
   def silly_next_day!
     self.day += 1
   end

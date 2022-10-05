@@ -64,7 +64,7 @@ Style/Documentation:
 Layout/LineLength:
   Enabled: false
 
-# triggered by Contract ({ :name => String, :age => Fixnum }) => nil
+# triggered by Contract ({ :name => String, :age => Integer }) => nil
 Lint/ParenthesesAsGroupedExpression:
   Enabled: false
 

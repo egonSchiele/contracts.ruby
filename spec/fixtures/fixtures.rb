@@ -100,11 +100,11 @@ class GenericExample
     end
   end
 
-  Contract ({ :name => String, :age => Fixnum }) => nil
+  Contract ({ :name => String, :age => Integer }) => nil
   def person(data)
   end
 
-  Contract C::StrictHash[{ :name => String, :age => Fixnum }] => nil
+  Contract C::StrictHash[{ :name => String, :age => Integer }] => nil
   def strict_person(data)
   end
 
@@ -119,7 +119,7 @@ class GenericExample
   def nested_hash_complex_contracts(data)
   end
 
-  Contract C::KeywordArgs[:name => String, :age => Fixnum] => nil
+  Contract C::KeywordArgs[:name => String, :age => Integer] => nil
   def person_keywordargs(name: "name", age: 10)
   end
 
@@ -529,30 +529,30 @@ class MyBirthday
     @month = month
   end
 
-  Contract C::None => Fixnum
+  Contract C::None => Integer
   def silly_next_day!
     self.day += 1
   end
 
-  Contract C::None => Fixnum
+  Contract C::None => Integer
   def silly_next_month!
     self.month += 1
   end
 
-  Contract C::None => Fixnum
+  Contract C::None => Integer
   def clever_next_day!
     return clever_next_month! if day == 31
     self.day += 1
   end
 
-  Contract C::None => Fixnum
+  Contract C::None => Integer
   def clever_next_month!
     return next_year! if month == 12
     self.month += 1
     self.day = 1
   end
 
-  Contract C::None => Fixnum
+  Contract C::None => Integer
   def next_year!
     self.month = 1
     self.day = 1
@@ -610,7 +610,7 @@ with_enabled_no_contracts do
       body + "!"
     end
 
-    Contract Fixnum, String => String
+    Contract Integer, String => String
     def on_response(status, body)
       "error #{status}: #{body}"
     end
