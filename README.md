@@ -1,6 +1,8 @@
 This project is looking for a new maintainer! [More details here](https://github.com/egonSchiele/contracts.ruby/issues/249)
 
-# contracts.ruby [![GitHub Build Status](https://img.shields.io/github/workflow/status/egonSchiele/contracts.ruby/Tests?style=flat-square)](https://github.com/egonSchiele/contracts.ruby/actions?query=workflow%3ATests) [![Join the chat at https://gitter.im/egonSchiele/contracts.ruby](https://img.shields.io/badge/gitter-join%20chat-brightgreen.svg)](https://gitter.im/egonSchiele/contracts.ruby)
+
+
+# contracts.ruby [![GitHub Build Status](https://img.shields.io/github/actions/workflow/status/egonSchiele/contracts.ruby/tests.yaml?branch=master&style=flat-square)](https://github.com/egonSchiele/contracts.ruby/actions/workflows/tests.yaml) [![Join the chat at https://gitter.im/egonSchiele/contracts.ruby](https://img.shields.io/badge/gitter-join%20chat-brightgreen.svg)](https://gitter.im/egonSchiele/contracts.ruby)
 
 Contracts let you clearly – even beautifully – express how your code behaves, and free you from writing tons of boilerplate, defensive code.
 
