@@ -219,6 +219,14 @@ class GenericExample
     nil
   end
 
+  Contract C::Maybe[Symbol], Proc => nil
+  def default_nil_with_block(param = nil, &block)
+  end
+
+  Contract Symbol, Proc => nil
+  def default_with_block(param = :default, &block)
+  end
+
   Contract C::Pos => nil
   def pos_test(x)
   end
