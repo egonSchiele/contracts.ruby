@@ -16,8 +16,8 @@ Feature: NatPos
       include Contracts::Core
 
       Contract C::NatPos => C::NatPos
-      def prev(number)
-        number - 1
+      def next(number)
+        number + 1
       end
     end
     """
