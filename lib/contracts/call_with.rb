@@ -12,8 +12,20 @@ module Contracts
       # Explicitly append blk=nil if nil != Proc contract violation anticipated
       nil_block_appended = maybe_append_block!(args, blk)
 
-      # Explicitly append options={} if Hash contract is present
-      kargs_appended = maybe_append_options!(args, kargs, blk)
+      if @kargs_validator && !@kargs_validator[kargs]
+        data = {
+          arg:          kargs,
+          contract:     kargs_contract,
+          class:        klass,
+          method:       method,
+          contracts:    self,
+          arg_pos:      :keyword,
+          total_args:   args.size,
+          return_value: false,
+        }
+        return ParamContractError.new("as return value", data) if returns
+        return unless Contract.failure_callback(data)
+      end
 
       # Loop forward validating the arguments up to the splat (if there is one)
       (@args_contract_index || args.size).times do |i|
@@ -84,7 +96,6 @@ module Contracts
       # If we put the block into args for validating, restore the args
       # OR if we added a fake nil at the end because a block wasn't passed in.
       args.slice!(-1) if blk || nil_block_appended
-      args.slice!(-1) if kargs_appended
       result = if method.respond_to?(:call)
                  # proc, block, lambda, etc
                  method.call(*args, **kargs, &blk)
