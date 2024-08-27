@@ -26,7 +26,8 @@ Feature: None
     def autorescue
       yield
     rescue => e
-      puts e.inspect
+      # Since ruby 3.2 the `#inspect` output becomes a bit different
+      puts e.inspect.gsub(/^#</, "").gsub(/Error:\"/, "Error: ")
     end
     """
     Given a file named "none_usage.rb" with:
@@ -40,6 +41,11 @@ Feature: None
 
       Contract C::None => Symbol
       def self.a_symbol(*args)
+        :a_symbol
+      end
+
+      Contract C::None => Symbol
+      def a_symbol(*args)
         :a_symbol
       end
     end
@@ -61,14 +67,14 @@ Feature: None
     Given a file named "anything.rb" with:
     """ruby
     require "./none_usage"
-    autorescue { Example.a_symbol(nil) }
-    autorescue { Example.a_symbol(12) }
-    autorescue { Example.a_symbol(37.5) }
-    autorescue { Example.a_symbol("foo") }
-    autorescue { Example.a_symbol(:foo) }
-    autorescue { Example.a_symbol({}) }
-    autorescue { Example.a_symbol([]) }
-    autorescue { Example.a_symbol(Object) }
+    autorescue { Example.new.a_symbol(nil) }
+    autorescue { Example.new.a_symbol(12) }
+    autorescue { Example.new.a_symbol(37.5) }
+    autorescue { Example.new.a_symbol("foo") }
+    autorescue { Example.new.a_symbol(:foo) }
+    autorescue { Example.new.a_symbol({}) }
+    autorescue { Example.new.a_symbol([]) }
+    autorescue { Example.new.a_symbol(Object) }
     """
     When I run `ruby anything.rb`
 
