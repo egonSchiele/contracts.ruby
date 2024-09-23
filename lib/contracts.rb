@@ -53,7 +53,7 @@ class Contract < Contracts::Decorator
     end
   end
 
-  attr_reader :args_contracts, :ret_contract, :klass, :method
+  attr_reader :args_contracts, :kargs_contract, :ret_contract, :klass, :method
 
   def initialize(klass, method, *contracts)
     super(klass, method)
@@ -70,12 +70,17 @@ class Contract < Contracts::Decorator
 
     # internally we just convert that return value syntax back to an array
     @args_contracts = contracts[0, contracts.size - 1] + contracts[-1].keys
+    # Extract contract for keyword arguments
+    @kargs_contract = args_contracts.find { |c| c.is_a?(Contracts::Builtin::KeywordArgs) }
+    args_contracts.delete(kargs_contract) if kargs_contract
 
     @ret_contract = contracts[-1].values[0]
 
     @args_validators = args_contracts.map do |contract|
       Contract.make_validator(contract)
     end
+
+    @kargs_validator = kargs_contract ? Contract.make_validator(kargs_contract) : nil
 
     @args_contract_index = args_contracts.index do |contract|
       contract.is_a? Contracts::Args
@@ -93,16 +98,6 @@ class Contract < Contracts::Decorator
     @has_proc_contract = is_a_proc || maybe_a_proc || last_contract.is_a?(Contracts::Func)
 
     # ====
-
-    # == @has_options_contract
-    last_contract = args_contracts.last
-    penultimate_contract = args_contracts[-2]
-    @has_options_contract = if @has_proc_contract
-                              penultimate_contract.is_a?(Contracts::Builtin::KeywordArgs)
-                            else
-                              last_contract.is_a?(Contracts::Builtin::KeywordArgs)
-                            end
-    # ===
 
     @klass, @method = klass, method
   end
@@ -253,19 +248,6 @@ class Contract < Contracts::Decorator
       (@args_contract_index || args.size < args_contracts.size)
 
     args << nil
-    true
-  end
-
-  # Same thing for when we have named params but didn't pass any in.
-  # returns true if it appended nil
-  def maybe_append_options! args, kargs, blk
-    return false unless @has_options_contract
-
-    if @has_proc_contract && args_contracts[-2].is_a?(Contracts::Builtin::KeywordArgs)
-      args.insert(-2, kargs)
-    elsif args_contracts[-1].is_a?(Contracts::Builtin::KeywordArgs)
-      args << kargs
-    end
     true
   end
 
