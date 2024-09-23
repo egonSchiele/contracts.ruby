@@ -48,3 +48,29 @@ Feature: KeywordArgs when used with optional positional arguments
     ["c", "d"]
     output
     """
+
+  Scenario: Accepts arguments when only require arguments & optional keyword arguments filled and valid
+    Given a file named "accepts_all_filled_valid_args.rb" with:
+    """ruby
+    require "./keyword_args_with_optional_positional_args_usage"
+    puts Example.new.foo(:output, b: 'd')
+    """
+    When I run `ruby accepts_all_filled_valid_args.rb`
+    Then output should contain:
+    """
+    ["a", "d"]
+    output
+    """
+
+  Scenario: Accepts arguments when only require arguments & optional positional arguments filled and valid
+    Given a file named "accepts_all_filled_valid_args.rb" with:
+    """ruby
+    require "./keyword_args_with_optional_positional_args_usage"
+    puts Example.new.foo(:output, 'c')
+    """
+    When I run `ruby accepts_all_filled_valid_args.rb`
+    Then output should contain:
+    """
+    ["c", "b"]
+    output
+    """
