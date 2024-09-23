@@ -13,8 +13,4 @@ Gem::Specification.new do |s|
   s.homepage    = "https://github.com/egonSchiele/contracts.ruby"
   s.license     = "BSD-2-Clause"
   s.required_ruby_version = [">= 3.0", "< 4"]
-  s.post_install_message = "
-    0.16.x will be the supporting Ruby 2.x and be feature frozen (only fixes will be released)
-    For Ruby 3.x use 0.17.x or later
-  "
 end
