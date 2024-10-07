@@ -1,4 +1,18 @@
 
+## [v0.17.1] - 2024-10-06
+
+[v0.17.1]: https://github.com/egonSchiele/contracts.ruby/compare/v0.17...v0.17.1
+
+- Bugfix: Fix keyword arguments contract when used with optional positional arguments - [PikachuEXE](https://github.com/PikachuEXE) [#305](https://github.com/egonSchiele/contracts.ruby/pull/305)
+- Enhancement: Always load version.rb, suppress legacy deprecation warning - [Vlad Pisanov](https://github.com/vlad-pisanov) [#301](https://github.com/egonSchiele/contracts.ruby/pull/306)
+- Enhancement: Update doc & spec about deprecated `Fixnum` to `Integer` - [PikachuEXE](https://github.com/PikachuEXE) [#301](https://github.com/egonSchiele/contracts.ruby/pull/301)
+
+## [v0.17] - 2021-09-28
+
+[v0.17]: https://github.com/egonSchiele/contracts.ruby/compare/v0.16.1...v0.17
+
+- Update implementation & spec to be 3.0 compatible **Support for Ruby 2 has been discontinued** - [PikachuEXE](https://github.com/PikachuEXE) [#295](https://github.com/egonSchiele/contracts.ruby/pull/295)
+
 ## [v0.16.1] - 2021-04-17
 
 [v0.16.1]: https://github.com/egonSchiele/contracts.ruby/compare/v0.16.0...v0.16.1
@@ -20,7 +34,7 @@
 [v0.15.0]: https://github.com/egonSchiele/contracts.ruby/compare/v0.14.0...v0.15.0
 
 - Bugfix: Func contract's return value isn't enforced with blocks - [Piotr Szmielew](https://github.com/esse) [#251](https://github.com/egonSchiele/contracts.ruby/pull/251)
-- Bugfx: Fix contracts used in AR-models - [Gert Goet](https://github.com/eval) [#237](https://github.com/egonSchiele/contracts.ruby/pull/237)
+- Bugfix: Fix contracts used in AR-models - [Gert Goet](https://github.com/eval) [#237](https://github.com/egonSchiele/contracts.ruby/pull/237)
 
 ## [v0.14.0] - 2016-04-26
 
