@@ -6,11 +6,13 @@ on:
       - master
     paths-ignore:
       - 'README.md'
+      - 'CHANGELOG.markdown'
   push:
     branches:
       - master
     paths-ignore:
       - 'README.md'
+      - 'CHANGELOG.markdown'
 
 jobs:
   unit_tests:
