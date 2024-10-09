@@ -102,3 +102,32 @@ Feature: Method Overloading
     """
     sound: woof
     """
+
+  Scenario: Incorrect Positional Args Method
+    Given a file named "incorrect_positional_args_method.rb" with:
+    """ruby
+    require "contracts"
+    C = Contracts
+
+    class Example
+      include Contracts::Core
+
+      # Notice that this method's contract is wider than the one below
+      # This would cause this method to be called every time but never the one below
+      Contract C::Num => C::Num
+      def fact(x)
+        x * fact(x - 1)
+      end
+
+      Contract 1 => 1
+      def fact(x)
+        x
+      end
+    end
+    puts Example.new.fact(4)
+    """
+    When I run `ruby incorrect_positional_args_method.rb`
+    Then the output should contain:
+    """
+    stack level too deep (SystemStackError)
+    """
