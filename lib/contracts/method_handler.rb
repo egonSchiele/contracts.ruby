@@ -174,8 +174,10 @@ https://github.com/egonSchiele/contracts.ruby/issues
 
     def validate_pattern_matching!
       new_args_contract = decorator.args_contracts
+      new_kargs_contract = decorator.kargs_contract
       matched = decorated_methods.select do |contract|
-        contract.args_contracts == new_args_contract
+        contract.args_contracts == new_args_contract &&
+          contract.kargs_contract == new_kargs_contract
       end
 
       return if matched.empty?
