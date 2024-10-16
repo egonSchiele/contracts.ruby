@@ -1,4 +1,10 @@
 
+## [v0.17.2] - 2024-10-06
+
+[v0.17.2]: https://github.com/egonSchiele/contracts.ruby/compare/v0.17.1...v0.17.2
+
+- Bugfix: Fix pattern matching  - [PikachuEXE](https://github.com/PikachuEXE) [#308](https://github.com/egonSchiele/contracts.ruby/pull/308)
+
 ## [v0.17.1] - 2024-10-06
 
 [v0.17.1]: https://github.com/egonSchiele/contracts.ruby/compare/v0.17...v0.17.1
