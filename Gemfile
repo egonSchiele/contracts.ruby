@@ -6,7 +6,7 @@ gemspec
 
 group :test do
   gem "aruba"
-  gem "cucumber", "~> 1.3.20"
+  gem "cucumber", "~> 9.2"
   gem "rspec"
 
   gem "rubocop", ">= 1.0.0"
