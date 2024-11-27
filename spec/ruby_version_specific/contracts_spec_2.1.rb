@@ -56,7 +56,11 @@ RSpec.describe "Contracts:" do
           @o.complicated("a", true, :b, :c, 2.0, e: (1..5), f: nil, g: :d) do |x|
             x
           end
-        end.to raise_error(ContractError, /Expected: \(KeywordArgs\[{:e=>Range, :f=>Optional\[Num\], :g=>Symbol}\]\)/)
+        end.to raise_error(
+          ContractError,
+          # 3.3- vs 3.4+ error message format
+          /(Expected: \(KeywordArgs\[{:e=>Range, :f=>Optional\[Num\], :g=>Symbol}\]\)|Expected: \(KeywordArgs\[{e: Range, f: Optional\[Num\], g: Symbol}\]\))/,
+        )
       end
     end
   end
