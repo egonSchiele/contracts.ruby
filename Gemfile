@@ -6,7 +6,13 @@ gemspec
 
 group :test do
   gem "aruba"
-  gem "cucumber", "~> 9.2"
+  if RUBY_VERSION >= '3.4'
+    # Cucumber is broken on Ruby 3.4, requires the fix in
+    # https://github.com/cucumber/cucumber-ruby/pull/1757
+    gem "cucumber", ">= 9.2", git: 'https://github.com/cucumber/cucumber-ruby'
+  else
+    gem "cucumber", "~> 9.2"
+  end
   gem "rspec"
 
   gem "rubocop", ">= 1.0.0"
