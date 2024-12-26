@@ -9,7 +9,7 @@ group :test do
   if RUBY_VERSION >= "3.4"
     # Cucumber is broken on Ruby 3.4, requires the fix in
     # https://github.com/cucumber/cucumber-ruby/pull/1757
-    gem "cucumber", ">= 9.2", git: "https://github.com/cucumber/cucumber-ruby"
+    gem "cucumber", ">= 9.2", git: "https://github.com/cucumber/cucumber-ruby", ref: "a468bc682eec68ef5b5660a17c4c0e7e52cfc67b"
   else
     gem "cucumber", "~> 9.2"
   end

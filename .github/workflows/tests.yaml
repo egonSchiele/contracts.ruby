@@ -47,4 +47,4 @@ jobs:
           ruby-version: ${{ matrix.ruby }}
           bundler-cache: true
       - name: Test
-        run: "bundle exec rspec && bundle exec cucumber || $ALLOW_FAILURES"
+        run: "bundle exec rspec && bundle exec rake cucumber || $ALLOW_FAILURES"

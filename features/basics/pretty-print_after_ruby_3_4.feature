@@ -1,4 +1,5 @@
-Feature: Pretty printing Contract violations
+@after_ruby_3_4
+Feature: Pretty printing Contract violations (Ruby 3.4+)
 
   Scenario: Big array argument being passed to big array method parameter
     Given a file named "example.rb" with:
@@ -163,20 +164,20 @@ Feature: Pretty printing Contract violations
     Then the output should contain:
     """
     : Contract violation for argument 1 of 1: (ParamContractError)
-            Expected: {:a=>(String or Symbol),
-                       :b=>(String or Symbol),
-                       :c=>(String or Symbol),
-                       :d=>(String or Symbol),
-                       :e=>(String or Symbol),
-                       :f=>(String or Symbol),
-                       :g=>(String or Symbol)},
-            Actual: {:a=>["foo", "foo"],
-                     :b=>["foo", "foo"],
-                     :c=>["foo", "foo"],
-                     :d=>["foo", "foo"],
-                     :e=>["foo", "foo"],
-                     :f=>["foo", "foo"],
-                     :g=>["foo", "foo"]}
+            Expected: {a: (String or Symbol),
+                       b: (String or Symbol),
+                       c: (String or Symbol),
+                       d: (String or Symbol),
+                       e: (String or Symbol),
+                       f: (String or Symbol),
+                       g: (String or Symbol)},
+            Actual: {a: ["foo", "foo"],
+                     b: ["foo", "foo"],
+                     c: ["foo", "foo"],
+                     d: ["foo", "foo"],
+                     e: ["foo", "foo"],
+                     f: ["foo", "foo"],
+                     g: ["foo", "foo"]}
             Value guarded in: Example::run
             With Contract: Hash => NilClass
             At: example.rb:17
@@ -221,20 +222,20 @@ Feature: Pretty printing Contract violations
     Then the output should contain:
     """
     : Contract violation for return value: (ReturnContractError)
-            Expected: {:a=>(String or Symbol),
-                       :b=>(String or Symbol),
-                       :c=>(String or Symbol),
-                       :d=>(String or Symbol),
-                       :e=>(String or Symbol),
-                       :f=>(String or Symbol),
-                       :g=>(String or Symbol)},
-            Actual: {:a=>["foo", "foo"],
-                     :b=>["foo", "foo"],
-                     :c=>["foo", "foo"],
-                     :d=>["foo", "foo"],
-                     :e=>["foo", "foo"],
-                     :f=>["foo", "foo"],
-                     :g=>["foo", "foo"]}
+            Expected: {a: (String or Symbol),
+                       b: (String or Symbol),
+                       c: (String or Symbol),
+                       d: (String or Symbol),
+                       e: (String or Symbol),
+                       f: (String or Symbol),
+                       g: (String or Symbol)},
+            Actual: {a: ["foo", "foo"],
+                     b: ["foo", "foo"],
+                     c: ["foo", "foo"],
+                     d: ["foo", "foo"],
+                     e: ["foo", "foo"],
+                     f: ["foo", "foo"],
+                     g: ["foo", "foo"]}
             Value guarded in: Example::run
             With Contract: None => Hash
             At: example.rb:17
