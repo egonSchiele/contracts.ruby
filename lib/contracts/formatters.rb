@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
-# rubocop:disable Lint/RedundantRequireStatement
 # If removed, spec/module_spec fails
 require "pp"
-# rubocop:enable Lint/RedundantRequireStatement
 
 module Contracts
   # A namespace for classes related to formatting.
