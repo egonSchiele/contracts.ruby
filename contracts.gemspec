@@ -12,5 +12,5 @@ Gem::Specification.new do |s|
   s.files       = `git ls-files`.split("\n")
   s.homepage    = "https://github.com/egonSchiele/contracts.ruby"
   s.license     = "BSD-2-Clause"
-  s.required_ruby_version = [">= 3.0", "< 4"]
+  s.required_ruby_version = [">= 3.0", "< 5"]
 end
