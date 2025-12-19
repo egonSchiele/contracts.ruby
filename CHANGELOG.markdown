@@ -1,3 +1,6 @@
+## [v0.17.3]
+- Relax `required_ruby_version` to support Ruby 4.0
+- Bump cucumber, rubocop, actions/checkout
 
 ## [v0.17.2] - 2024-10-06
 
