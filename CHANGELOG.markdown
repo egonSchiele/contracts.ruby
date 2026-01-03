@@ -1,6 +1,8 @@
-## [v0.17.3]
+## [v0.17.3] - 2025-12-19
 - Relax `required_ruby_version` to support Ruby 4.0
 - Bump cucumber, rubocop, actions/checkout
+
+[v0.17.3]: https://github.com/egonSchiele/contracts.ruby/compare/v0.17.2...v0.17.3
 
 ## [v0.17.2] - 2024-10-06
 
