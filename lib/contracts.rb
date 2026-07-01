@@ -65,7 +65,7 @@ class Contract < Contracts::Decorator
           return_value`.
         }.strip
       end
-      contracts = [nil => contracts[-1]]
+      contracts = [{ nil => contracts[-1] }]
     end
 
     # internally we just convert that return value syntax back to an array
