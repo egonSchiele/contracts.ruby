@@ -27,7 +27,9 @@ Feature: None
       yield
     rescue => e
       # Since ruby 3.2 the `#inspect` output becomes a bit different
-      puts e.inspect.gsub(/^#</, "").gsub(/Error:\"/, "Error: ")
+      puts e.inspect.gsub(/^#</, "").gsub(/Error:\"/, "Error: ").
+        gsub(/\\n/, "\n").
+        gsub(/\\"/, "\"")
     end
     """
     Given a file named "none_usage.rb" with:
