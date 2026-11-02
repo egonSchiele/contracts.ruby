@@ -3,7 +3,7 @@ Feature: Simple examples and Contract violations
   Contracts.ruby allows specification of contracts on per-method basis, where
   method arguments and return value will be validated upon method call.
 
-  Example:
+  \Example:
 
   ```ruby
   Contract C::Num, C::Num => C::Num
